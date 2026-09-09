@@ -53,6 +53,21 @@ høyere opp i gården, flytt pinnen eller endre høyden.
 Knappen **⛱️ Solhjørnet** setter pinnen tilbake på det faste utepunktet og regner ut
 på nytt.
 
+## ⛱️ Solhjørnet-modus
+
+Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen fullskjermvisning
+med italiensk sommerstemning:
+
+- **Nedtelling** – står sola på hjørnet nå, telles det ned til den forsvinner. Ellers
+  telles det ned til neste gang sola treffer, og appen søker framover dag for dag
+  (inntil 200 dager) slik at den også finner svaret midt på vinteren.
+- **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
+  ned fra Kartverket med en framdriftsvisning.
+- **Musikk** – «Funiculì, Funiculà» (Denza/Turco, 1880) syntetiseres direkte i
+  nettleseren med Web Audio, med mandolin-tremolo på de lange tonene. Melodien er
+  falt i det fri, og ingen lydfiler lastes ned. Kan slås av og på.
+- Lukkes med **← Tilbake** eller **Esc**.
+
 ## Nøyaktighet
 
 Beregningene bruker [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/)-algoritmen.

@@ -51,7 +51,7 @@
     #app { max-width: 700px; margin: 0 auto; width: 100%; }
 
     /* ── Header ── */
-    header { text-align: center; padding: 28px 0 22px; }
+    header { text-align: center; padding: 16px 0 14px; }
     header h1 {
       font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px;
       background: linear-gradient(135deg, #f4a429, #ff7f2a);
@@ -171,9 +171,9 @@
 
     /* ── Sol-ansikt i header ── */
     .sun-face-wrap {
-      position: relative; display: inline-block; margin-bottom: 10px;
+      position: relative; display: inline-block; margin-bottom: 6px;
     }
-    #sunFaceCanvas { display: block; border-radius: 50%; }
+    #sunFaceCanvas { display: block; border-radius: 50%; width: 104px; height: 104px; }
     /* face-pick-btn fjernet – bilde lastes fra face.png */
 
     /* ── Export ── */
@@ -255,6 +255,49 @@
     footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; color: #9ab8d0; font-size: .72rem; padding: 16px 0 28px; opacity: .85; }
     footer a { color: #9ab8d0; }
     .footer-ig { white-space: nowrap; font-weight: 800; color: #c8dff0; font-size: .78rem; }
+
+    /* ── Solhjørnet: hero-knapp ── */
+    .sol-hero { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin: 0 0 14px; padding: 17px 20px; border: 0; border-radius: 18px; cursor: pointer;
+      font-family: inherit; font-size: 1.16rem; font-weight: 900; letter-spacing: .3px; color: #2b1a0d;
+      background: linear-gradient(135deg, #ffd27a 0%, #ffb347 45%, #ff8a3d 100%);
+      box-shadow: 0 8px 26px rgba(255,150,60,.34); transition: transform .12s, box-shadow .12s; }
+    .sol-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,150,60,.44); }
+    .sol-hero:active { transform: translateY(0); }
+    .sol-hero .um { font-size: 1.5em; line-height: 1; }
+    .sol-hero small { display: block; font-size: .66rem; font-weight: 700; opacity: .72; letter-spacing: .2px; }
+
+    /* ── Solhjørnet: italiensk modus ── */
+    #solMode { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+      padding: 22px; text-align: center; overflow-y: auto;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(255,236,180,.95) 0%, rgba(255,193,110,.92) 32%, rgba(233,124,72,.95) 62%, rgba(150,58,50,.97) 100%),
+        #963a32;
+      animation: solIn .45s ease both; }
+    @keyframes solIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
+    /* Parasoll-striper i toppen */
+    #solMode::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 190px; opacity: .5;
+      background: repeating-linear-gradient(105deg, rgba(200,40,45,.85) 0 26px, rgba(255,255,255,.9) 26px 52px);
+      -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent); }
+    .sol-inner { position: relative; z-index: 1; max-width: 460px; width: 100%; }
+    .sol-flag { width: 74px; height: 7px; border-radius: 4px; margin: 0 auto 18px;
+      background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
+      box-shadow: 0 2px 8px rgba(0,0,0,.22); }
+    .sol-place { font-size: 2.1rem; font-weight: 900; color: #5a1f14; letter-spacing: .5px; line-height: 1.05; }
+    .sol-place .um { display: block; font-size: 2.4rem; margin-bottom: 2px; }
+    .sol-state { margin-top: 16px; font-size: .82rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 2.4px; color: #7a2d1c; opacity: .9; }
+    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 900;
+      line-height: 1; margin: 6px 0 4px; color: #40130c; text-shadow: 0 3px 0 rgba(255,255,255,.28); }
+    .sol-note { font-size: .95rem; font-weight: 700; color: #6b2618; min-height: 1.3em; }
+    .sol-sub { margin-top: 8px; font-size: .78rem; color: #7a3222; opacity: .85; }
+    .sol-actions { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sol-btn { border: 0; cursor: pointer; font-family: inherit; font-weight: 800; font-size: .86rem;
+      padding: 11px 18px; border-radius: 12px; background: rgba(255,255,255,.72); color: #6b2618;
+      box-shadow: 0 3px 12px rgba(0,0,0,.14); transition: background .15s, transform .1s; }
+    .sol-btn:hover { background: #fff; transform: translateY(-1px); }
+    .sol-btn.on { background: #2f7a4a; color: #fff; }
+    .sol-spinner { font-size: .9rem; color: #6b2618; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -267,6 +310,11 @@
     <h1>Arntes solservice</h1>
     <p>Dagslys, solstatistikk og merkedager i mørketida</p>
   </header>
+
+  <button class="sol-hero" onclick="enterSolMode()">
+    <span class="um">⛱️</span>
+    <span>Solhjørnet<small>Sol i hjørnet – akkurat nå</small></span>
+  </button>
 
   <!-- Input -->
   <div class="input-panel">
@@ -296,9 +344,8 @@
     </div>
     <div id="hzBody" class="hidden">
       <p class="hz-help">
-        Dra kartet og klikk for å sette punktet nøyaktig der du bor. Horisonten regnes ut fra
-        Kartverkets <b>1-meters overflatemodell (DOM1)</b> – bygninger, trær og terreng inkludert –
-        og gir tidene sola faktisk er synlig fra akkurat det punktet.
+        Klikk i kartet for å sette punktet. Horisonten regnes ut fra Kartverkets 1-meters
+        overflatemodell – terreng, bygninger og trær inkludert.
       </p>
       <div class="map-wrap">
         <canvas id="hzMap" width="640" height="380"></canvas>
@@ -431,13 +478,29 @@
   </div>
 
   <footer>
-    <span>Beregninger: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA Solar Calculator</a> ·
-    Høydedata og kart: <a href="https://hoydedata.no/" target="_blank" rel="noopener">Kartverket</a> (CC BY 4.0) ·
-    Geokoding: <a href="https://nominatim.openstreetmap.org/" target="_blank">OSM Nominatim</a></span>
+    <span>Data: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA</a> ·
+    <a href="https://hoydedata.no/" target="_blank" rel="noopener">Kartverket</a> ·
+    <a href="https://nominatim.openstreetmap.org/" target="_blank">OSM</a></span>
     <a class="footer-ig" href="https://www.instagram.com/arntessolservice/" target="_blank" rel="noopener">Følg @arntessolservice</a>
   </footer>
 
 </div><!-- /app -->
+
+<!-- ── Solhjørnet: italiensk modus ── -->
+<div id="solMode" class="hidden">
+  <div class="sol-inner">
+    <div class="sol-flag"></div>
+    <div class="sol-place"><span class="um">⛱️</span>Solhjørnet</div>
+    <div class="sol-state" id="solState">Regner ut …</div>
+    <div class="sol-count" id="solCount">–</div>
+    <div class="sol-note" id="solNote"></div>
+    <div class="sol-sub" id="solSub"></div>
+    <div class="sol-actions">
+      <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()">🎵 Musikk</button>
+      <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
+    </div>
+  </div>
+</div>
 
 <canvas id="instagramCanvas" style="display:none" width="1080" height="1920"></canvas>
 
@@ -2211,9 +2274,218 @@ function drawPanorama(d) {
   }
 
   document.getElementById('hzPanoSub').textContent =
-    `Horisont sett fra punktet: mørkt felt er terreng, bygninger og trær fra Kartverkets `
-    + `1 m overflatemodell. Stiplet: solbanen ved sommer- og vintersolverv.`;
+    'Mørkt felt: horisonten rundt punktet. Stiplet: solbanen ved solverv.';
 }
+
+// ════════════════════════════════════════════════════════
+//  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
+// ════════════════════════════════════════════════════════
+let solProfile = null, solTarget = null, solTimer = null;
+
+function solEl(id) { return document.getElementById(id); }
+
+/** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */
+function solComputeTarget(nowMs) {
+  if (!solProfile) return null;
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  const n = new Date(nowMs);
+  for (let i = 0; i < 200; i++) {
+    // Bygg hver dag lokalt, så sommertidsskifter ikke forskyver døgnet.
+    const day = new Date(n.getFullYear(), n.getMonth(), n.getDate() + i);
+    const r = computeSunWindows(day.getTime(), lat, lng, solProfile);
+    for (const w of r.shown) {
+      if (nowMs < w[0]) return { kind: 'until', at: w[0], win: w, dayOffset: i, day: r };
+      if (nowMs < w[1]) return { kind: 'left',  at: w[1], win: w, dayOffset: i, day: r };
+    }
+  }
+  return null;
+}
+
+function solFmtCountdown(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  const d = Math.floor(s / 86400);
+  const h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, sec = s % 60;
+  const two = v => String(v).padStart(2, '0');
+  if (d > 0) return `${d} d ${two(h)}:${two(m)}`;
+  return `${two(h)}:${two(m)}:${two(sec)}`;
+}
+
+const SOL_DAYS = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
+
+function solRender() {
+  const now = Date.now();
+  if (!solTarget || now >= solTarget.at) {
+    solTarget = solComputeTarget(now);
+    if (!solTarget) {
+      solEl('solState').textContent = 'Ingen sol på en god stund';
+      solEl('solCount').textContent = '–';
+      solEl('solNote').textContent = 'Sola når ikke hjørnet de neste månedene.';
+      solEl('solSub').textContent = '';
+      return;
+    }
+  }
+  const t = solTarget;
+  const hhmm = ms => new Date(ms).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+  solEl('solCount').textContent = solFmtCountdown(t.at - now);
+
+  if (t.kind === 'left') {
+    solEl('solState').textContent = '☀️ Sola er her nå';
+    solEl('solNote').textContent = `Sol i hjørnet til ${hhmm(t.win[1])}`;
+  } else {
+    solEl('solState').textContent = t.dayOffset === 0 ? 'Sola kommer' : 'Neste sol';
+    const when = t.dayOffset === 0 ? ''
+      : t.dayOffset === 1 ? 'i morgen ' : SOL_DAYS[new Date(t.win[0]).getDay()] + ' ';
+    solEl('solNote').textContent = `Sol ${when}${hhmm(t.win[0])} – ${hhmm(t.win[1])}`;
+  }
+  const tot = t.day.total;
+  solEl('solSub').textContent = tot > 0
+    ? `${t.dayOffset === 0 ? 'I dag' : 'Den dagen'}: ${fmtHMS(tot)} direkte sol`
+    : '';
+}
+
+async function enterSolMode() {
+  const box = solEl('solMode');
+  box.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  solEl('solState').textContent = 'Et øyeblikk';
+  solEl('solCount').textContent = '⛱️';
+  solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
+  solEl('solSub').textContent = '';
+
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  try {
+    let p = hzLoadCached(lat, lng, hzEye);
+    if (!p) {
+      p = await buildHorizonProfile(lat, lng, hzEye, (done, total) => {
+        solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
+      });
+      hzSaveCached(p);
+    }
+    solProfile = p;
+  } catch {
+    solEl('solState').textContent = 'Fikk ikke tak i dataene';
+    solEl('solCount').textContent = '😕';
+    solEl('solNote').textContent = 'Sjekk nettforbindelsen og prøv igjen.';
+    return;
+  }
+
+  solTarget = null;
+  solRender();
+  clearInterval(solTimer);
+  solTimer = setInterval(solRender, 1000);
+  solStartMusic();
+}
+
+function exitSolMode() {
+  solEl('solMode').classList.add('hidden');
+  document.body.style.overflow = '';
+  clearInterval(solTimer); solTimer = null;
+  solStopMusic();
+}
+
+// ── «Funiculì, Funiculà» (Denza/Turco, 1880 – falt i det fri i 1993) ──
+// Refrenget, satt opp som [tone, lengde i åttendedeler]. null = pause.
+const SOL_TUNE = [
+  ['D5',3],['Ab4',1],[null,2],   ['D5',3],['Ab4',1],[null,2],
+  ['Eb5',2],['D5',1],['Ab4',2],['Eb5',1],   ['D5',5],[null,1],
+  ['D5',3],['Ab4',1],[null,2],   ['D5',3],['Ab4',1],[null,2],
+  ['Eb5',2],['D5',1],['C5',2],['Eb5',1],
+  ['Bb4',1],[null,1],['Eb4',1],['Eb4',2],['Eb4',1],
+  ['F4',2],['F4',1],['F4',2],['F4',1],
+  ['Eb4',2],['Eb4',1],['Eb4',2],['G4',1],
+  ['G4',2],['G4',1],['G4',2],['G4',1],
+  ['C5',6],
+  ['D5',2],['C5',1],['Ab4',2],['C5',1],
+  ['Bb4',1],[null,1],['Eb4',1],['Eb4',2],['Ab4',1],
+  ['Bb4',2],['Ab4',1],['Eb4',2],['D4',1],
+  ['Eb4',2],[null,4],
+];
+
+const SOL_SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+function solFreq(name) {
+  const m = /^([A-G])([b#]?)(\d)$/.exec(name);
+  const semi = SOL_SEMI[m[1]] + (m[2] === 'b' ? -1 : m[2] === '#' ? 1 : 0);
+  return 440 * Math.pow(2, (semi - 9 + (+m[3] - 4) * 12) / 12);
+}
+
+let solCtx = null, solGain = null, solLoopTimer = null, solNextAt = 0, solMusicOn = false;
+
+/** Ett mandolinaktig anslag. */
+function solPluck(freq, t0, dur) {
+  const o = solCtx.createOscillator(), g = solCtx.createGain();
+  o.type = 'triangle'; o.frequency.value = freq;
+  const o2 = solCtx.createOscillator(), g2 = solCtx.createGain();
+  o2.type = 'sawtooth'; o2.frequency.value = freq; o2.detune.value = 7; g2.gain.value = .22;
+  g.gain.setValueAtTime(0.0001, t0);
+  g.gain.exponentialRampToValueAtTime(.6, t0 + .006);
+  g.gain.exponentialRampToValueAtTime(.0004, t0 + Math.max(.18, dur));
+  o.connect(g); o2.connect(g2); g2.connect(g); g.connect(solGain);
+  o.start(t0); o2.start(t0);
+  o.stop(t0 + dur + .08); o2.stop(t0 + dur + .08);
+}
+
+/** Legg ut hele refrenget fra t0. Returnerer lengden i sekunder. */
+function solScheduleTune(t0) {
+  const U = .19, TREM = .092;
+  let t = t0;
+  for (const [note, len] of SOL_TUNE) {
+    const dur = len * U;
+    if (note) {
+      const f = solFreq(note);
+      if (len >= 3) {
+        // Lange toner spilles som tremolo, slik en mandolin gjør.
+        for (let s = 0; s < dur - .03; s += TREM) solPluck(f, t + s, Math.min(TREM * 1.7, dur - s));
+      } else {
+        solPluck(f, t, dur * .95);
+      }
+    }
+    t += dur;
+  }
+  return t - t0;
+}
+
+function solLoopTune() {
+  if (!solMusicOn) return;
+  solNextAt = Math.max(solNextAt, solCtx.currentTime + .06);
+  const len = solScheduleTune(solNextAt);
+  solNextAt += len;
+  solLoopTimer = setTimeout(solLoopTune, Math.max(250, (solNextAt - solCtx.currentTime - .4) * 1000));
+}
+
+function solStartMusic() {
+  try {
+    if (!solCtx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      solCtx = new AC();
+      solGain = solCtx.createGain();
+      solGain.gain.value = .2;
+      solGain.connect(solCtx.destination);
+    }
+    if (solCtx.state === 'suspended') solCtx.resume();
+    solMusicOn = true;
+    solNextAt = solCtx.currentTime + .12;
+    solLoopTune();
+    solEl('solMusicBtn').classList.add('on');
+    solEl('solMusicBtn').textContent = '🎵 Musikk på';
+  } catch {}
+}
+
+function solStopMusic() {
+  solMusicOn = false;
+  clearTimeout(solLoopTimer); solLoopTimer = null;
+  if (solCtx) { try { solCtx.close(); } catch {} solCtx = null; solGain = null; }
+  const b = solEl('solMusicBtn');
+  if (b) { b.classList.remove('on'); b.textContent = '🎵 Musikk'; }
+}
+
+function solToggleMusic() {
+  if (solMusicOn) solStopMusic(); else solStartMusic();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !solEl('solMode').classList.contains('hidden')) exitSolMode();
+});
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
