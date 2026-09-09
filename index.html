@@ -299,6 +299,7 @@
       transition: background .15s, transform .1s; }
     .sol-btn:hover { background: #fff; transform: translateY(-1px); }
     .sol-btn.on { background: #2f7a4a; color: #fff; }
+    .sol-music-hint { margin-top: 10px; font-size: .73rem; line-height: 1.5; color: var(--muted); }
     .sol-spinner { font-size: .9rem; color: var(--muted); font-weight: 600; }
 
     .sol-daily { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px;
@@ -332,7 +333,15 @@
     /* Takten følger musikken: 108 punktert firedel gir 1,111 s per takt. */
     .sol-nonnas { position: relative; width: 100%; height: 265px; flex-shrink: 0;
       margin-top: auto; overflow: hidden; pointer-events: none; z-index: 2; }
-    .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px; }
+    .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px;
+      padding: 0; border: 0; background: transparent; font: inherit; pointer-events: auto;
+      transition: none; -webkit-tap-highlight-color: transparent; }
+    .nonna:hover, .nonna.is-speaking { animation-play-state: paused; }
+    .nonna:focus-visible { outline: 3px solid #3e694c; outline-offset: 4px; }
+    .sol-nonnas.is-still .nonna { animation: none; transform: none; }
+    .sol-nonnas.is-still .nonna-a { left: 8%; }
+    .sol-nonnas.is-still .nonna-b { left: auto; right: 8%; }
+    .sol-nonnas.is-still .nonna-b .nn-say { transform: translateX(-50%); animation: none; opacity: 1; }
     .nonna .shadow { position: absolute; bottom: 2px; left: 50%; width: 76px; height: 11px;
       margin-left: -38px; border-radius: 50%; background: rgba(90,25,15,.22);
       animation: nnShadow var(--nn-beat) infinite ease-in-out; }
@@ -345,7 +354,7 @@
                           to   { transform: translateX(-150px) scaleX(-1); } }
 
     /* Hoppet: ett per punktert firedel, med litt slark i kroppen. */
-    .nn-hop { width: 100%; height: 100%; animation: nnHop var(--nn-beat) infinite; }    @keyframes nnHop {
+    .nn-hop { display: block; width: 100%; height: 100%; animation: nnHop var(--nn-beat) infinite; }    @keyframes nnHop {
       0%   { transform: translateY(0)     scale(1.06, .94); }
       30%  { transform: translateY(-24px) scale(.95, 1.06); }
       60%  { transform: translateY(-6px)  scale(1, 1); }
@@ -386,6 +395,8 @@
                        12%, 42% { opacity: 1; transform: translateX(-50%) scale(1); }
                        52%, 100% { opacity: 0; transform: translateX(-50%) scale(.9); } }
     .nonna-b .nn-say { animation-name: nnSayB; }
+    .nonna.is-speaking .nn-say { animation: none; opacity: 1; white-space: normal; width: 150px; }
+    .nonna.is-speaking .nn-hop { animation-play-state: paused; }
     @keyframes nnSayB { 0%, 6% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.7); }
                         12%, 42% { opacity: 1; transform: translateX(-50%) scaleX(-1) scale(1); }
                         52%, 100% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.9); } }
@@ -399,7 +410,10 @@
       .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; } }
     @media (prefers-reduced-motion: reduce) {
       #solMode { animation: none; padding-bottom: 36px; }
-      .sol-nonnas { display: none; }
+      .sol-nonnas * { animation: none !important; }
+      .nonna-a { left: 8%; }
+      .nonna-b { left: auto; right: 8%; }
+      .nonna-b .nn-say { transform: translateX(-50%); }
       .sol-quiz-inner { transition: none; }
     }
   </style>
@@ -637,9 +651,10 @@
     <div class="sol-note" id="solNote"></div>
     <div class="sol-sub" id="solSub"></div>
     <div class="sol-actions">
-      <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()">🎵 Musikk</button>
+      <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-describedby="solMusicHint">🎵 Musikk</button>
       <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
     </div>
+    <p class="sol-music-hint hidden" id="solMusicHint" role="status"></p>
     <section class="sol-daily" aria-label="Dagens Italia">
       <article class="sol-day-card" aria-labelledby="solFactHeading">
         <h2 class="sol-card-kicker" id="solFactHeading">På denne dag</h2>
@@ -650,28 +665,29 @@
       <button class="sol-quiz" id="solQuiz" type="button" onclick="solFlipQuiz()" aria-pressed="false">
         <span class="sol-quiz-inner" aria-hidden="true">
           <span class="sol-quiz-face sol-quiz-front">
-            <span class="sol-card-kicker">Dagens Italia-quiz</span>
+            <span class="sol-card-kicker">Italia-quiz</span>
             <span class="sol-quiz-copy" id="solQuizQuestion"></span>
-            <span class="sol-card-hint">Trykk for å snu ↻</span>
+            <span class="sol-card-hint">Trykk for å se svaret ↻</span>
           </span>
           <span class="sol-quiz-face sol-quiz-back">
             <span class="sol-card-kicker">La risposta · Svaret</span>
             <span class="sol-quiz-copy" id="solQuizAnswer"></span>
-            <span class="sol-card-hint">Trykk for å se spørsmålet igjen ↻</span>
+            <span class="sol-card-hint">Trykk for neste spørsmål ↻</span>
           </span>
         </span>
       </button>
       <span class="sol-sr-only" id="solQuizAnnouncement" aria-live="polite"></span>
     </section>
+    <p class="sol-music-hint" id="solSpeechNotice" role="status">Trykk på en nonna for et italiensk utrop 🔊</p>
   </div>
 
-  <!-- To nonnaer på vei over skjermen. Rent dekor. -->
-  <div class="sol-nonnas" aria-hidden="true">
+  <div class="sol-nonnas" id="solNonnas" role="group" aria-label="Nonnaene" onfocusin="solFocusNonnas(event)">
 
-    <div class="nonna nonna-a" style="--nn-dress:#23222a; --nn-scarf:#1a1a21; --nn-dot:#6d6d78">
-      <div class="nn-say" id="nnSayA">Mamma mia!</div>
-      <div class="nn-hop">
-        <svg viewBox="0 0 120 170">
+    <button class="nonna nonna-a" id="nonnaA" type="button" onclick="solSpeakNonna('a')"
+      aria-label="Hør nonna med kjevlen rope på italiensk" style="--nn-dress:#23222a; --nn-scarf:#1a1a21; --nn-dot:#6d6d78">
+      <span class="nn-say" id="nnSayA" lang="it" aria-hidden="true">Mamma mia!</span>
+      <span class="nn-hop">
+        <svg viewBox="0 0 120 170" aria-hidden="true">
           <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
           <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
           <g class="nn-skirt">
@@ -719,14 +735,15 @@
             <ellipse cx="60" cy="45" rx="5.2" ry="3.8" fill="#7d3232"/>
           </g>
         </svg>
-      </div>
-      <div class="shadow"></div>
-    </div>
+      </span>
+      <span class="shadow" aria-hidden="true"></span>
+    </button>
 
-    <div class="nonna nonna-b" style="--nn-dress:#4a2530; --nn-scarf:#6d3238; --nn-dot:#8a5a60">
-      <div class="nn-say" id="nnSayB">Bellissimo!</div>
-      <div class="nn-hop">
-        <svg viewBox="0 0 120 170">
+    <button class="nonna nonna-b" id="nonnaB" type="button" onclick="solSpeakNonna('b')"
+      aria-label="Hør nonna med tresleiven rope på italiensk" style="--nn-dress:#4a2530; --nn-scarf:#6d3238; --nn-dot:#8a5a60">
+      <span class="nn-say" id="nnSayB" lang="it" aria-hidden="true">Bellissimo!</span>
+      <span class="nn-hop">
+        <svg viewBox="0 0 120 170" aria-hidden="true">
           <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
           <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
           <g class="nn-skirt">
@@ -774,9 +791,9 @@
             <circle cx="70" cy="43" r="1.5" fill="#8a6a52"/>
           </g>
         </svg>
-      </div>
-      <div class="shadow"></div>
-    </div>
+      </span>
+      <span class="shadow" aria-hidden="true"></span>
+    </button>
 
   </div>
 </div>
@@ -2548,6 +2565,7 @@ function drawPanorama(d) {
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 let solDailyTimer = null, solDailyKey = '', solPreviousFocus = null;
+let solQuizIndex = 0;
 
 function solEl(id) { return document.getElementById(id); }
 
@@ -2637,15 +2655,32 @@ function solQuizFace(revealed) {
   button.setAttribute('aria-pressed', String(revealed));
   const content = solEl(revealed ? 'solQuizAnswer' : 'solQuizQuestion').textContent;
   button.setAttribute('aria-label', revealed
-    ? `Svar: ${content} Trykk for å se spørsmålet igjen.`
-    : `Dagens Italia-quiz: ${content} Trykk for å vise svaret.`);
+    ? `Svar: ${content} Trykk for neste spørsmål.`
+    : `Italia-quiz: ${content} Trykk for å vise svaret.`);
+}
+
+function solShowQuizQuestion(index) {
+  solQuizIndex = index;
+  const [question] = SOL_QUIZ[index];
+  solEl('solQuizQuestion').textContent = question;
+  // Behold det gamle svaret mens baksiden snur bort, så neste svar ikke røpes.
+  solQuizFace(false);
+  solEl('solQuizAnnouncement').textContent = 'Nytt spørsmål: ' + question;
 }
 
 function solFlipQuiz() {
+  const previousDay = solDailyKey;
   solUpdateDaily();
-  const revealed = !solEl('solQuiz').classList.contains('is-flipped');
-  solQuizFace(revealed);
-  solEl('solQuizAnnouncement').textContent = revealed ? 'Svar: ' + solEl('solQuizAnswer').textContent : '';
+  if (solDailyKey !== previousDay) return;
+
+  if (solEl('solQuiz').classList.contains('is-flipped')) {
+    solShowQuizQuestion((solQuizIndex + 1) % SOL_QUIZ.length);
+  } else {
+    const answer = SOL_QUIZ[solQuizIndex][1];
+    solEl('solQuizAnswer').textContent = answer;
+    solQuizFace(true);
+    solEl('solQuizAnnouncement').textContent = 'Svar: ' + answer;
+  }
 }
 
 function solUpdateDaily(nowMs = Date.now(), reset = false) {
@@ -2671,11 +2706,7 @@ function solUpdateDaily(nowMs = Date.now(), reset = false) {
   }
 
   const index = ((day.ordinal % SOL_QUIZ.length) + SOL_QUIZ.length) % SOL_QUIZ.length;
-  const [question, answer] = SOL_QUIZ[index];
-  solEl('solQuizQuestion').textContent = question;
-  solEl('solQuizAnswer').textContent = answer;
-  solEl('solQuizAnnouncement').textContent = '';
-  solQuizFace(false);
+  solShowQuizQuestion(index);
 }
 
 /** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */
@@ -2755,6 +2786,7 @@ async function enterSolMode() {
   box.classList.remove('hidden');
   solEl('app').inert = true;
   document.body.style.overflow = 'hidden';
+  document.documentElement.style.overflowY = 'hidden';
   solUpdateDaily(Date.now(), true);
   clearInterval(solDailyTimer);
   solDailyTimer = setInterval(solUpdateDaily, 1000);
@@ -2797,10 +2829,13 @@ function exitSolMode() {
   solEl('solMode').classList.add('hidden');
   solEl('app').inert = false;
   document.body.style.overflow = '';
+  document.documentElement.style.overflowY = '';
   clearInterval(solTimer); solTimer = null;
   clearInterval(solSayTimer); solSayTimer = null;
   clearInterval(solDailyTimer); solDailyTimer = null;
   solStopMusic();
+  solStopNonnaSpeech();
+  solEl('solNonnas').classList.remove('is-still');
   if (solPreviousFocus && document.contains(solPreviousFocus)) solPreviousFocus.focus({ preventScroll: true });
   solPreviousFocus = null;
 }
@@ -2823,13 +2858,95 @@ const NN_SAY_B = ['Bellissimo!', 'Tarantella!', 'Sole mio!', 'Ancora!', 'Vino?',
                   'Chi paga? Tu!', 'Pizza margherita!', 'Gnocchi!', 'Tiramisù!',
                   'Polpette!', 'Melanzane alla parmigiana!'];
 let solSayTimer = null, solSayIx = 0;
+let solUtterance = null, solSpeechTimeout = null;
+const solSpokenIndex = { a: 0, b: 0 };
+
+function solFocusNonnas(event) {
+  if (event.target.matches('.nonna:focus-visible')) {
+    event.currentTarget.classList.add('is-still');
+  }
+}
+
+function solSpeechNotice(text, lang = 'nb') {
+  const notice = solEl('solSpeechNotice');
+  notice.textContent = text;
+  notice.lang = lang;
+}
+
+function solStopNonnaSpeech() {
+  const utterance = solUtterance;
+  solUtterance = null;
+  clearTimeout(solSpeechTimeout); solSpeechTimeout = null;
+  document.querySelectorAll('.nonna.is-speaking').forEach(el => el.classList.remove('is-speaking'));
+  if (utterance) {
+    utterance.onstart = null; utterance.onend = null; utterance.onerror = null;
+    window.speechSynthesis.cancel();
+  }
+  solReleaseAudioPlayback();
+  solSpeechNotice('Trykk på en nonna for et italiensk utrop 🔊');
+}
+
+function solSpeakNonna(who) {
+  if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
+    console.warn('Nettleseren støtter ikke talesyntese.');
+    solSpeechNotice('Denne nettleseren støtter ikke tale. Prøv Safari eller en annen oppdatert nettleser.');
+    return;
+  }
+  solStopNonnaSpeech();
+  const phrases = who === 'a' ? NN_SAY_A : NN_SAY_B;
+  const phrase = phrases[solSpokenIndex[who]++ % phrases.length];
+  const button = solEl(who === 'a' ? 'nonnaA' : 'nonnaB');
+  const bubble = solEl(who === 'a' ? 'nnSayA' : 'nnSayB');
+  const utterance = new SpeechSynthesisUtterance(phrase);
+  solUtterance = utterance;
+  const finish = message => {
+    if (solUtterance !== utterance) return;
+    solStopNonnaSpeech();
+    if (message) solSpeechNotice(message);
+    solResumeMusicAfterSpeech();
+  };
+  utterance.lang = 'it-IT';
+  utterance.rate = who === 'a' ? 1.05 : 1.12;
+  utterance.pitch = who === 'a' ? 1.15 : 1;
+  utterance.volume = 1;
+  utterance.onstart = () => {
+    if (solUtterance === utterance) solSpeechNotice('Nonna: ' + phrase, 'it');
+  };
+  utterance.onend = () => finish();
+  utterance.onerror = event => {
+    if (solUtterance !== utterance) return;
+    console.warn('Nonnaens tale ble avbrutt:', event.error);
+    finish('Fikk ikke spilt av stemmen. Sjekk volum og italienske stemmer på enheten, og trykk igjen.');
+  };
+  bubble.textContent = phrase;
+  button.classList.add('is-speaking');
+  solSpeechNotice('Nonna gjør seg klar …');
+  solSpeechTimeout = setTimeout(() => {
+    if (solUtterance !== utterance) return;
+    console.warn('Nonnaens tale svarte ikke innen fristen.');
+    finish('Stemmen svarte ikke. Sjekk volum og italienske stemmer på enheten, og trykk igjen.');
+  }, 12000);
+  try {
+    const voices = window.speechSynthesis.getVoices().filter(voice => /^it(?:-|$)/i.test(voice.lang));
+    const localVoices = voices.filter(voice => voice.localService);
+    const available = localVoices.length ? localVoices : voices;
+    if (available.length) utterance.voice = available[who === 'b' && available.length > 1 ? 1 : 0];
+    solClaimAudioPlayback();
+    window.speechSynthesis.resume();
+    // Må skje direkte i trykket også når stemmelisten ennå er tom på iPhone.
+    window.speechSynthesis.speak(utterance);
+  } catch (error) {
+    console.warn('Kunne ikke starte nonnaens tale:', error);
+    finish('Kunne ikke starte stemmen. Prøv igjen i en oppdatert nettleser.');
+  }
+}
 
 function solStartSaying() {
   clearInterval(solSayTimer);
   const step = () => {
     const a = solEl('nnSayA'), b = solEl('nnSayB');
-    if (a) a.textContent = NN_SAY_A[solSayIx % NN_SAY_A.length];
-    if (b) b.textContent = NN_SAY_B[(solSayIx + 3) % NN_SAY_B.length];
+    if (a && !solEl('nonnaA').classList.contains('is-speaking')) a.textContent = NN_SAY_A[solSayIx % NN_SAY_A.length];
+    if (b && !solEl('nonnaB').classList.contains('is-speaking')) b.textContent = NN_SAY_B[(solSayIx + 3) % NN_SAY_B.length];
     solSayIx++;
   };
   step();
@@ -2929,6 +3046,21 @@ function solFreq(name) {
 
 let solCtx = null, solGain = null, solSource = null, solMusicOn = false;
 let solMusicRequest = 0, solMusicBufferPromise = null, solStartedAt = 0;
+let solPreviousAudioType = null;
+
+function solClaimAudioPlayback() {
+  if (navigator.audioSession && solPreviousAudioType === null) {
+    solPreviousAudioType = navigator.audioSession.type;
+    navigator.audioSession.type = 'playback';
+  }
+}
+
+function solReleaseAudioPlayback() {
+  if (solPreviousAudioType !== null && !solMusicOn && !solUtterance) {
+    navigator.audioSession.type = solPreviousAudioType;
+    solPreviousAudioType = null;
+  }
+}
 
 /** Plukkede strenger: overtonene dør ut raskere enn grunntonen. */
 function solStringBuffer(ctx, voice, name) {
@@ -3041,8 +3173,59 @@ function solMusicButton(text, on) {
   button.setAttribute('aria-pressed', String(on));
 }
 
+function solMusicNotice(text) {
+  const notice = solEl('solMusicHint');
+  notice.textContent = text;
+  notice.classList.toggle('hidden', !text);
+}
+
 function solCloseAudio(ctx) {
   if (ctx.state !== 'closed') ctx.close().catch(error => console.warn('Kunne ikke lukke lyd:', error));
+}
+
+async function solResumeAudio(ctx) {
+  let timeout;
+  try {
+    await Promise.race([
+      ctx.resume(),
+      new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error('Trykk på Musikk igjen for å gi nettleseren tilgang til lyd.')), 5000);
+      }),
+    ]);
+    if (ctx.state !== 'running') throw new Error('Lyden er satt på pause av nettleseren. Prøv Musikk igjen.');
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+function solUpdateMusicPlayback(ctx) {
+  if (ctx !== solCtx || !solSource) return;
+  if (ctx.state === 'running') {
+    solMusicButton('🎵 Musikk på', true);
+    solMusicNotice('Ingen lyd? Sjekk medievolum, lydløsmodus og Bluetooth.');
+  } else if (solUtterance) {
+    solMusicButton('🎵 Musikk pauset', true);
+    solMusicNotice('Nonna snakker. Musikken fortsetter etterpå.');
+  } else {
+    solStopMusic();
+    solMusicButton('🎵 Start musikk igjen', false);
+    solMusicNotice('Lyden ble satt på pause. Trykk på Musikk for å starte igjen.');
+  }
+}
+
+async function solResumeMusicAfterSpeech() {
+  const ctx = solCtx, request = solMusicRequest;
+  if (!solMusicOn || !ctx) return;
+  try {
+    await solResumeAudio(ctx);
+    if (request === solMusicRequest && !solUtterance) solUpdateMusicPlayback(ctx);
+  } catch (error) {
+    if (request !== solMusicRequest || solUtterance) return;
+    solStopMusic();
+    console.warn('Kunne ikke fortsette musikken:', error);
+    solMusicButton('🎵 Start musikk igjen', false);
+    solMusicNotice('Trykk på Musikk for å starte igjen etter nonnaens utrop.');
+  }
 }
 
 async function solStartMusic() {
@@ -3050,13 +3233,21 @@ async function solStartMusic() {
   const request = ++solMusicRequest;
   solMusicOn = true;
   solMusicButton('🎵 Starter …', true);
+  solMusicNotice('');
   try {
     const AC = window.AudioContext || window.webkitAudioContext;
     if (!AC) throw new Error('Nettleseren støtter ikke avspilling.');
+    solClaimAudioPlayback();
     const ctx = new AC();
     solCtx = ctx;
-    // Åpne lyden mens klikket fortsatt er aktivt, før horisontdata eller rendering ventes på.
-    const resumed = ctx.resume();
+    ctx.onstatechange = () => solUpdateMusicPlayback(ctx);
+    // iOS trenger en startet lydkilde i selve knappetrykket, før den lange sløyfen rendres.
+    const unlock = ctx.createBufferSource();
+    unlock.buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    unlock.connect(ctx.destination);
+    unlock.onended = () => unlock.disconnect();
+    unlock.start();
+    const resumed = solResumeAudio(ctx);
     if (!solMusicBufferPromise) {
       solMusicBufferPromise = solRenderMusic().catch(error => {
         solMusicBufferPromise = null;
@@ -3065,6 +3256,7 @@ async function solStartMusic() {
     }
     const [, buffer] = await Promise.all([resumed, solMusicBufferPromise]);
     if (request !== solMusicRequest) return;
+    if (ctx.state !== 'running' && !solUtterance) throw new Error('Lyden er satt på pause av nettleseren. Prøv Musikk igjen.');
     const source = ctx.createBufferSource(), gain = ctx.createGain();
     source.buffer = buffer; source.loop = true;
     solStartedAt = ctx.currentTime;
@@ -3073,7 +3265,7 @@ async function solStartMusic() {
     source.connect(gain); gain.connect(ctx.destination);
     solGain = gain; solSource = source;
     source.start(solStartedAt);
-    solMusicButton('🎵 Musikk på', true);
+    solUpdateMusicPlayback(ctx);
     solEl('solMusicBtn').title = 'Nonnaenes kjøkkendans – egen melodi, genererte strengeinstrumenter';
   } catch (error) {
     if (request !== solMusicRequest) return;
@@ -3081,6 +3273,7 @@ async function solStartMusic() {
     console.warn('Kunne ikke starte kjøkkendansen:', error);
     solMusicButton('🎵 Prøv musikk igjen', false);
     solEl('solMusicBtn').title = error.message;
+    solMusicNotice('Kunne ikke starte musikken. ' + error.message);
   }
 }
 
@@ -3090,6 +3283,7 @@ function solStopMusic() {
   const ctx = solCtx, source = solSource, gain = solGain;
   solCtx = null; solSource = null; solGain = null;
   if (ctx) {
+    ctx.onstatechange = null;
     if (source && ctx.state === 'running') {
       const now = ctx.currentTime;
       const level = SOL_VOLUME * Math.min(1, Math.max(0, (now - solStartedAt) / SOL_FADE_IN));
@@ -3102,7 +3296,9 @@ function solStopMusic() {
       solCloseAudio(ctx);
     }
   }
+  solReleaseAudioPlayback();
   solMusicButton('🎵 Musikk', false);
+  solMusicNotice('');
 }
 
 function solToggleMusic() {

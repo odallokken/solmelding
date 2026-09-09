@@ -74,11 +74,13 @@ med italiensk sommerstemning:
   Oppføringene gjentas årlig. Fødselsdatoer og yrker bygger på Wikidata (CC0);
   utvalgte oppføringer er kontrollert mot Britannica og historiske oversikter.
   Tekstene er egenformulert på norsk, og hver oppføring lenker til sin kilde.
-- **Dagens Italia-quiz** – ett spørsmål fra en bank på 60 spørsmål. Samme dato gir
-  samme spørsmål for alle; oppdatering av siden gir ikke et nytt. Trykk på kortet
-  for å snu det og se svaret, og trykk igjen for spørsmålet. Det fungerer også med
-  Enter og mellomrom. Dagens innhold skifter ved norsk midnatt, og svaret skjules
-  når et nytt spørsmål kommer. Redusert bevegelse slår av snuanimasjonen.
+- **Italia-quiz** – én knapp som veksler mellom spørsmål og svar. Trykk for å snu
+  kortet og se svaret; neste trykk snur til et nytt spørsmål. Du kan fortsette
+  gjennom alle 60 spørsmål før rekken begynner på nytt. Det fungerer også med
+  Enter og mellomrom. Første spørsmål bestemmes av norsk dato; åpning av modusen
+  eller oppdatering av siden starter på dette spørsmålet igjen. Ved norsk midnatt
+  vises et nytt startspørsmål uten å røpe svaret. Redusert bevegelse slår av
+  snuanimasjonen.
 - **Musikk** – «Nonnaenes kjøkkendans», en egen italienskinspirert melodi med
   mandolinaktige plukk, myk gitar og spretten bass. Instrumentene genereres med
   Web Audio; dette er ikke en innspilling av levende musikere. Ingen eksterne
@@ -91,13 +93,26 @@ med italiensk sommerstemning:
   sløyfes av lydmotoren, uten tidtakere som kan forstyrre rytmen i bakgrunnen.
   Musikken starter ved knappetrykket, uavhengig av hvor lang tid horisontdataene tar,
   og kan slås av og på.
+  På iPhone aktiveres lydmotoren i selve trykket. Nettlesere med Audio Session API
+  bruker `playback` for musikken i stedet for Web Audios vanlige omgivelseslyd;
+  forrige lydtype gjenopprettes når musikken stoppes. Blokkert eller avbrutt
+  avspilling gir en synlig beskjed og mulighet til å starte igjen, ikke en
+  misvisende «Musikk på». Ved stille lyd: sjekk medievolum, lydløsmodus
+  (særlig på eldre iOS) og om lyden sendes til Bluetooth.
 - **To dansende nonnaer** krysser skjermen i takt med musikken. De er tegnet som
   ren SVG: sølvgrått hår samlet i nakkeknute, briller, svart enkekjole med forkle,
   gullringer og kors – den ene med kjevle, den andre med tresleiv. Hoppet følger
   musikkens tempo (0,556 s per hovedslag), og armer, bein, skjørt og hode har hver sin
   animasjon. Underveis kjefter de på hverandre og maser om mat og drikke
   i snakkebobler. De har sitt eget område under kortene, slik at tekst og knapper
-  ikke dekkes til. Figurene er `pointer-events: none` og skjules ved `prefers-reduced-motion`.
+  ikke dekkes til. **Trykk på en nonna** for å høre et italiensk utrop; boblen viser
+  det hun sier. Hvert trykk gir en ny replikk, uten å legge flere stemmer i kø.
+  Stemmen bruker enhetens talesyntese med italiensk språk og foretrekker lokale
+  italienske stemmer. Klang og tilgjengelighet avhenger av nettleser og installerte
+  stemmer; ingen opptak eller egen taletjeneste lastes inn.
+  Tale virker også når musikken er slått av, og stoppes når modusen lukkes.
+  Figurene er knapper som kan brukes med tastatur. Ved redusert bevegelse vises
+  de i ro, slik at det fortsatt er mulig å trykke på dem.
 - **Italiensk landskap** – en egen SVG-illustrasjon med dempede olivengrønne åser,
   sypresser og en villa med terrakottatak erstatter vinflasken og grønnsakene.
   Ingen eksterne bilder lastes ned.
