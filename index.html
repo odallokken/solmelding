@@ -268,20 +268,19 @@
     .sol-hero small { display: block; font-size: .66rem; font-weight: 700; opacity: .72; letter-spacing: .2px; }
 
     /* ── Solhjørnet: italiensk modus ── */
-    #solMode { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
-      padding: 22px; text-align: center; overflow-y: auto;
+    #solMode { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
+      align-items: center; padding: 48px 20px 0; text-align: center; overflow-y: auto; isolation: isolate;
       --nn-beat: .5556s; --nn-bar: 1.1111s;
       background:
-        radial-gradient(circle at 50% 16%, rgba(255,236,180,.95) 0%, rgba(255,193,110,.92) 32%, rgba(233,124,72,.95) 62%, rgba(150,58,50,.97) 100%),
-        #963a32;
+        radial-gradient(ellipse at 72% 8%, #fff7d9 0%, transparent 58%),
+        linear-gradient(180deg, #f9ecda 0%, #f4dcc3 60%, #d9bb96 100%);
       animation: solIn .45s ease both; }
     @keyframes solIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
-    /* Parasoll-striper i toppen */
-    #solMode::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 190px; opacity: .5;
-      background: repeating-linear-gradient(105deg, rgba(200,40,45,.85) 0 26px, rgba(255,255,255,.9) 26px 52px);
-      -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent); }
-    .sol-inner { position: relative; z-index: 1; max-width: 460px; width: 100%; }
-    .sol-flag { width: 74px; height: 7px; border-radius: 4px; margin: 0 auto 18px;
+    .sol-landscape { position: fixed; inset: auto 0 0; width: 100%; height: min(46vh, 440px);
+      pointer-events: none; z-index: -1; }
+    .sol-inner { position: relative; z-index: 1; max-width: 660px; width: 100%; flex-shrink: 0;
+      margin-top: auto; }
+    .sol-flag { width: 56px; height: 4px; border-radius: 4px; margin: 0 auto 14px;
       background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
       box-shadow: 0 2px 8px rgba(0,0,0,.22); }
     .sol-place { font-size: 2.1rem; font-weight: 900; color: #5a1f14; letter-spacing: .5px; line-height: 1.05; }
@@ -292,7 +291,7 @@
       line-height: 1; margin: 6px 0 4px; color: #40130c; text-shadow: 0 3px 0 rgba(255,255,255,.28); }
     .sol-note { font-size: .95rem; font-weight: 700; color: #6b2618; min-height: 1.3em; }
     .sol-sub { margin-top: 8px; font-size: .78rem; color: #7a3222; opacity: .85; }
-    .sol-actions { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sol-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .sol-btn { border: 0; cursor: pointer; font-family: inherit; font-weight: 800; font-size: .86rem;
       padding: 11px 18px; border-radius: 12px; background: rgba(255,255,255,.72); color: #6b2618;
       box-shadow: 0 3px 12px rgba(0,0,0,.14); transition: background .15s, transform .1s; }
@@ -300,10 +299,41 @@
     .sol-btn.on { background: #2f7a4a; color: #fff; }
     .sol-spinner { font-size: .9rem; color: #6b2618; font-weight: 700; }
 
+    .sol-daily { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
+      margin-top: 26px; text-align: left; color: #493d30; }
+    .sol-day-card, .sol-quiz-face { padding: 20px; border-radius: 20px;
+      border: 1px solid rgba(129,100,67,.18); background: #fffaf0;
+      box-shadow: 0 8px 24px rgba(95,67,43,.07); }
+    .sol-day-card { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .sol-card-kicker { margin: 0; font-size: .67rem; font-weight: 800;
+      letter-spacing: 1.7px; text-transform: uppercase; color: #736045; }
+    .sol-fact-date { font-size: .73rem; color: #776955; }
+    .sol-fact { margin: 0; font-size: .94rem; line-height: 1.55; overflow-wrap: anywhere; }
+    .sol-fact strong { color: #9b4934; }
+    .sol-fact-source { margin-top: auto; padding-top: 5px; font-size: .73rem; color: #48654c;
+      text-decoration-thickness: 1px; text-underline-offset: 3px; }
+    .sol-quiz { width: 100%; padding: 0; border: 0; background: none; color: inherit;
+      text-align: left; font: inherit; cursor: pointer; perspective: 1000px; border-radius: 20px; }
+    .sol-quiz-inner { display: grid; height: 100%; transform-style: preserve-3d;
+      transition: transform .55s cubic-bezier(.2,.7,.2,1); }
+    .sol-quiz.is-flipped .sol-quiz-inner { transform: rotateY(180deg); }
+    .sol-quiz-face { grid-area: 1 / 1; min-height: 200px; display: flex; flex-direction: column;
+      gap: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .sol-quiz-front { background: #f5f2df; }
+    .sol-quiz-back { transform: rotateY(180deg); background: #e6eddf; }
+    .sol-quiz-copy { font-family: Georgia, 'Times New Roman', serif; font-size: 1.12rem;
+      line-height: 1.4; overflow-wrap: anywhere; }
+    .sol-card-hint { margin-top: auto; font-size: .73rem; color: #52634c; }
+    .sol-quiz:hover .sol-card-hint { text-decoration: underline; text-underline-offset: 3px; }
+    .sol-quiz:focus-visible, .sol-btn:focus-visible, .sol-fact-source:focus-visible {
+      outline: 3px solid #3e694c; outline-offset: 5px; }
+    .sol-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+      overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
     /* ── To nonnaer som danser kjøkkendans ── */
     /* Takten følger musikken: 108 punktert firedel gir 1,111 s per takt. */
-    .sol-nonnas { position: absolute; left: 0; right: 0; bottom: 0; height: 265px;
-      overflow: hidden; pointer-events: none; z-index: 2; }
+    .sol-nonnas { position: relative; width: 100%; height: 265px; flex-shrink: 0;
+      margin-top: auto; overflow: hidden; pointer-events: none; z-index: 2; }
     .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px; }
     .nonna .shadow { position: absolute; bottom: 2px; left: 50%; width: 76px; height: 11px;
       margin-left: -38px; border-radius: 50%; background: rgba(90,25,15,.22);
@@ -362,22 +392,19 @@
                         12%, 42% { opacity: 1; transform: translateX(-50%) scaleX(-1) scale(1); }
                         52%, 100% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.9); } }
 
-    /* Italienske omgivelser: vimpler i toppen, stilleben langs bakken. */
-    .sol-bunting { position: absolute; top: 0; left: 0; right: 0; height: 50px;
-      pointer-events: none; z-index: 2; opacity: .92;
-      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='50'%3E%3Cpath d='M0 5 H120' stroke='%238a4a33' stroke-width='2'/%3E%3Cpath d='M3 6 H37 L20 40 Z' fill='%231f8a4c'/%3E%3Cpath d='M43 6 H77 L60 40 Z' fill='%23f7f3ea'/%3E%3Cpath d='M83 6 H117 L100 40 Z' fill='%23cf2b2b'/%3E%3C/svg%3E") repeat-x;
-      animation: nnFlag 3.4s ease-in-out infinite; }
-    @keyframes nnFlag { 0%, 100% { transform: translateY(0); }
-                        50%      { transform: translateY(4px); } }
-    .nn-still { position: absolute; bottom: 4px; z-index: 0; display: flex;
-      align-items: flex-end; gap: 6px; opacity: .95; }
-    .nn-still-l { left: 3%; }
-    .nn-still-r { right: 3%; }
-
+    @media (max-width: 540px) {
+      #solMode { padding-top: 30px; }
+      .sol-daily { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
+      .sol-quiz-face { min-height: 168px; }
+      .sol-day-card, .sol-quiz-face { padding: 17px 20px; }
+    }
     @media (max-width: 480px) { .sol-nonnas { height: 215px; } .nonna { width: 100px; height: 132px; }
-      .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; }
-      .nn-still { transform: scale(.72); transform-origin: bottom; } }
-    @media (prefers-reduced-motion: reduce) { .sol-nonnas { display: none; } }
+      .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; } }
+    @media (prefers-reduced-motion: reduce) {
+      #solMode { animation: none; padding-bottom: 36px; }
+      .sol-nonnas { display: none; }
+      .sol-quiz-inner { transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -566,10 +593,48 @@
 </div><!-- /app -->
 
 <!-- ── Solhjørnet: italiensk modus ── -->
-<div id="solMode" class="hidden">
+<div id="solMode" class="hidden" role="dialog" aria-modal="true" aria-labelledby="solModeTitle">
+  <svg class="sol-landscape" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="solHillFar" x2="0" y2="1">
+        <stop stop-color="#b0b99c"/><stop offset="1" stop-color="#94a383"/>
+      </linearGradient>
+      <linearGradient id="solHillNear" x2="0" y2="1">
+        <stop stop-color="#819675"/><stop offset="1" stop-color="#6c8163"/>
+      </linearGradient>
+    </defs>
+    <circle cx="1080" cy="100" r="52" fill="#f4ce8f" opacity=".55"/>
+    <path d="M0 315 Q200 175 390 265 T770 248 T1120 206 T1440 254 V520 H0Z" fill="#c4c9b3"/>
+    <path d="M0 350 Q180 240 390 310 T820 286 T1170 292 T1440 264 V520 H0Z" fill="url(#solHillFar)"/>
+    <path d="M0 395 Q240 300 480 390 T880 361 T1200 360 T1440 330 V520 H0Z" fill="url(#solHillNear)"/>
+    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#d8c4a0" stroke-width="23"/>
+    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#ecddba" stroke-width="13"/>
+    <g stroke-linejoin="round">
+      <path d="M529 277 H625 V354 H529Z" fill="#ead6b3"/>
+      <path d="M516 281 L577 245 L638 281Z" fill="#b9785c"/>
+      <path d="M532 279 L577 253 L622 279" fill="none" stroke="#cf9975" stroke-width="3"/>
+      <path d="M625 304 H667 V354 H625Z" fill="#d9bf97"/>
+      <path d="M617 306 L646 282 L678 306Z" fill="#a66b52"/>
+      <path d="M565 354 V328 a12 12 0 0 1 24 0 V354" fill="#64715a"/>
+      <path d="M542 305 V295 a5 5 0 0 1 10 0 V305Z M602 305 V295 a5 5 0 0 1 10 0 V305Z" fill="#728064"/>
+      <path d="M641 334 V323 a5 5 0 0 1 10 0 V334Z" fill="#68765f"/>
+      <path d="M533 355 H670" stroke="#a99270" stroke-width="3"/>
+    </g>
+    <g fill="#4f6b54">
+      <path d="M795 369 C763 358 784 292 795 262 C805 292 826 358 795 369Z"/>
+      <path d="M824 376 C799 365 814 316 824 288 C834 316 850 365 824 376Z"/>
+      <path d="M1015 361 C983 349 1003 274 1015 240 C1026 274 1048 349 1015 361Z"/>
+      <path d="M365 370 C340 363 354 311 365 283 C375 311 390 363 365 370Z"/>
+    </g>
+    <g stroke="#667051" stroke-width="4" stroke-linecap="round">
+      <path d="M795 368 V386 M824 374 V390 M1015 358 V380 M365 368 V390"/>
+    </g>
+    <path d="M0 469 Q380 422 690 478 T1440 452 V520 H0Z" fill="#d5bd97"/>
+    <path d="M0 483 Q350 445 690 495 T1440 468" fill="none" stroke="#ead6b5" stroke-width="3" opacity=".6"/>
+  </svg>
   <div class="sol-inner">
     <div class="sol-flag"></div>
-    <div class="sol-place"><span class="um">⛱️</span>Solhjørnet</div>
+    <div class="sol-place" id="solModeTitle"><span class="um">⛱️</span>Solhjørnet</div>
     <div class="sol-state" id="solState">Regner ut …</div>
     <div class="sol-count" id="solCount">–</div>
     <div class="sol-note" id="solNote"></div>
@@ -578,46 +643,33 @@
       <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()">🎵 Musikk</button>
       <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
     </div>
+    <section class="sol-daily" aria-label="Dagens Italia">
+      <article class="sol-day-card" aria-labelledby="solFactHeading">
+        <h2 class="sol-card-kicker" id="solFactHeading">På denne dag</h2>
+        <time class="sol-fact-date" id="solFactDate"></time>
+        <p class="sol-fact"><strong id="solFactYear"></strong> <span id="solFactText">Henter dagens historie …</span></p>
+        <a class="sol-fact-source hidden" id="solFactSource" target="_blank" rel="noopener noreferrer">Les mer ↗</a>
+      </article>
+      <button class="sol-quiz" id="solQuiz" type="button" onclick="solFlipQuiz()" aria-pressed="false">
+        <span class="sol-quiz-inner" aria-hidden="true">
+          <span class="sol-quiz-face sol-quiz-front">
+            <span class="sol-card-kicker">Dagens Italia-quiz</span>
+            <span class="sol-quiz-copy" id="solQuizQuestion"></span>
+            <span class="sol-card-hint">Trykk for å snu ↻</span>
+          </span>
+          <span class="sol-quiz-face sol-quiz-back">
+            <span class="sol-card-kicker">La risposta · Svaret</span>
+            <span class="sol-quiz-copy" id="solQuizAnswer"></span>
+            <span class="sol-card-hint">Trykk for å se spørsmålet igjen ↻</span>
+          </span>
+        </span>
+      </button>
+      <span class="sol-sr-only" id="solQuizAnnouncement" aria-live="polite"></span>
+    </section>
   </div>
 
   <!-- To nonnaer på vei over skjermen. Rent dekor. -->
-  <div class="sol-bunting" aria-hidden="true"></div>
   <div class="sol-nonnas" aria-hidden="true">
-
-    <div class="nn-still nn-still-l">
-      <svg viewBox="0 0 60 92" width="46" height="70">
-        <ellipse cx="30" cy="88" rx="19" ry="4" fill="rgba(90,25,15,.18)"/>
-        <rect x="25" y="2" width="10" height="7" rx="2" fill="#b3823f"/>
-        <path d="M26 8 h8 v22 q12 7 14 22 v22 q0 10 -18 10 q-18 0 -18 -10 v-22 q2 -15 14 -22 z" fill="#2f5d3a"/>
-        <path d="M12 56 q0 -6 1 -10 q17 -5 34 0 q1 4 1 10 v18 q0 10 -18 10 q-18 0 -18 -10 z" fill="#d9b871"/>
-        <path d="M13 60 h34 M13 68 h34 M13 76 h33" stroke="#b8925a" stroke-width="1.4" fill="none"/>
-        <rect x="22" y="34" width="16" height="14" rx="2" fill="#f2e8d5"/>
-        <rect x="22" y="34" width="16" height="4" fill="#a5232b"/>
-      </svg>
-      <svg viewBox="0 0 40 64" width="26" height="42">
-        <path d="M9 7 h22 v9 q0 13 -11 15 q-11 -2 -11 -15 z" fill="#7a1220"/>
-        <path d="M8 4 h24 v12 q0 14 -12 17 q-12 -3 -12 -17 z" fill="none" stroke="#efe9dc" stroke-width="2"/>
-        <path d="M20 33 v20" stroke="#efe9dc" stroke-width="2.4"/>
-        <path d="M9 55 h22" stroke="#efe9dc" stroke-width="3" stroke-linecap="round"/>
-      </svg>
-    </div>
-
-    <div class="nn-still nn-still-r">
-      <svg viewBox="0 0 96 62" width="76" height="49">
-        <ellipse cx="48" cy="58" rx="36" ry="4" fill="rgba(90,25,15,.18)"/>
-        <path d="M14 56 q-7 0 -7 -9 q0 -9 7 -13 q7 4 7 13 q0 9 -7 9 z" fill="#f3ece2"/>
-        <path d="M14 34 v-6" stroke="#c9bda9" stroke-width="2"/>
-        <path d="M9 53 q2 -12 5 -19 M19 53 q-2 -12 -5 -19" stroke="#ddd3c4" stroke-width="1.2" fill="none"/>
-        <circle cx="42" cy="44" r="12" fill="#d8342c"/>
-        <circle cx="38" cy="40" r="3.5" fill="#fff" opacity=".3"/>
-        <path d="M42 32 l-5 -3 M42 32 l5 -3 M42 32 v-4" stroke="#3f8b3f" stroke-width="2" stroke-linecap="round"/>
-        <circle cx="64" cy="48" r="9" fill="#c22a24"/>
-        <path d="M64 39 l-4 -2 M64 39 l4 -2" stroke="#3f8b3f" stroke-width="1.8" stroke-linecap="round"/>
-        <path d="M82 54 q0 -10 4 -14 q4 4 4 14 z" fill="#2f7d3e"/>
-        <ellipse cx="80" cy="42" rx="6" ry="4" fill="#3f9b4e" transform="rotate(-25 80 42)"/>
-        <ellipse cx="90" cy="43" rx="6" ry="4" fill="#358a44" transform="rotate(25 90 43)"/>
-      </svg>
-    </div>
 
     <div class="nonna nonna-a" style="--nn-dress:#23222a; --nn-scarf:#1a1a21; --nn-dot:#6d6d78">
       <div class="nn-say" id="nnSayA">Mamma mia!</div>
@@ -734,6 +786,7 @@
 
 <canvas id="instagramCanvas" style="display:none" width="1080" height="1920"></canvas>
 
+<script src="italy-days.js"></script>
 <script>
 // ════════════════════════════════════════════════════════
 //  NOAA SOLAR CALCULATOR
@@ -2497,8 +2550,136 @@ function drawPanorama(d) {
 // ════════════════════════════════════════════════════════
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
+let solDailyTimer = null, solDailyKey = '', solPreviousFocus = null;
 
 function solEl(id) { return document.getElementById(id); }
+
+const SOL_CALENDAR_FORMAT = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'Europe/Oslo', year: 'numeric', month: '2-digit', day: '2-digit',
+});
+const SOL_DATE_LABEL = new Intl.DateTimeFormat('nb-NO', {
+  timeZone: 'Europe/Oslo', day: 'numeric', month: 'long',
+});
+
+const SOL_QUIZ = [
+  ['Hva heter hovedstaden i Italia?', 'Roma.'],
+  ['Hva heter osten som brukes i tiramisù?', 'Mascarpone.'],
+  ['Hvem malte Mona Lisa?', 'Leonardo da Vinci.'],
+  ['Hva betyr «buongiorno»?', 'God dag eller god morgen.'],
+  ['Hvilken italiensk by er kjent for gondolene sine?', 'Venezia.'],
+  ['Hvilken vulkan ligger ved Napoli?', 'Vesuv.'],
+  ['Hva kalles italiensk iskrem?', 'Gelato.'],
+  ['Hvilket italiensk bilmerke har en steilende hest som symbol?', 'Ferrari.'],
+  ['Hvilken by forbindes særlig med pizza napoletana?', 'Napoli.'],
+  ['Hvem skrev Den guddommelige komedie?', 'Dante Alighieri.'],
+  ['Hva heter den største øya i Middelhavet?', 'Sicilia.'],
+  ['Hva betyr «grazie»?', 'Takk.'],
+  ['Hvilken italiensk by har et berømt skjevt tårn?', 'Pisa.'],
+  ['Hvilket instrument har tangenter og en belg som trekkes ut og inn?', 'Trekkspill – fisarmonica på italiensk.'],
+  ['Hvilken by er hovedstad i Toscana?', 'Firenze.'],
+  ['Hva betyr «al dente» når du koker pasta?', 'At pastaen fortsatt har litt tyggemotstand.'],
+  ['Hva heter det store antikke amfiteateret i Roma?', 'Colosseum.'],
+  ['Hvilken italiensk kunstner skapte marmorstatuen David i Firenze?', 'Michelangelo.'],
+  ['Hva heter Italias lengste elv?', 'Po.'],
+  ['Hvilken urt gir pesto genovese den grønne fargen?', 'Basilikum.'],
+  ['Hva betyr det italienske ordet «nonna»?', 'Bestemor.'],
+  ['I hvilken by ligger operahuset La Scala?', 'Milano.'],
+  ['Hva heter den italienske kaffekannen som brukes på komfyren?', 'Mokkakanne, eller moka.'],
+  ['Hvilken fjellkjede ligger langs Italias nordgrense?', 'Alpene.'],
+  ['Hvem komponerte De fire årstidene?', 'Antonio Vivaldi.'],
+  ['Hva er en «piazza»?', 'Et torg eller en åpen plass.'],
+  ['Hva heter den kjente hvite osten som tradisjonelt lages av bøffelmelk?', 'Mozzarella di bufala.'],
+  ['Hvilken italiensk region ligger helt i sør og danner «støveltåen»?', 'Calabria.'],
+  ['Hvilken by forbindes med Romeo og Julie?', 'Verona.'],
+  ['Hva betyr «cin cin» når man løfter glasset?', 'Skål!'],
+  ['Hva heter øya vest for det italienske fastlandet og sør for Korsika?', 'Sardinia.'],
+  ['Hva heter den italienske risretten som røres kremet med kraft?', 'Risotto.'],
+  ['Hvem komponerte operaen Barberen i Sevilla?', 'Gioachino Rossini.'],
+  ['Hvilken farge forbinder man med Italias fotballandslag, «gli Azzurri»?', 'Blå.'],
+  ['Hva betyr «dolce» på italiensk?', 'Søt. Det brukes også om dessert.'],
+  ['Hvilken gammel romersk by ble begravd av Vesuv i år 79?', 'Pompeii.'],
+  ['Hva heter de fem kystlandsbyene i Liguria som har et navn som betyr «fem land»?', 'Cinque Terre.'],
+  ['Hva er hovedingrediensen i polenta?', 'Maismel.'],
+  ['Hvilken italiensk forsker er kjent for sine tidlige astronomiske observasjoner med teleskop?', 'Galileo Galilei.'],
+  ['Hva heter pavens lille bystat, omgitt av Roma?', 'Vatikanstaten.'],
+  ['Hva betyr «arrivederci»?', 'På gjensyn.'],
+  ['Hvilken italiensk dessert har et navn som betyr «kokt fløte»?', 'Panna cotta.'],
+  ['Hvilken by er kjent for den store fontenen Fontana di Trevi?', 'Roma.'],
+  ['Hvilket italiensk strengeinstrument har vanligvis fire par strenger?', 'Mandolin.'],
+  ['Hva heter den aktive vulkanen ved Catania på Sicilia?', 'Etna.'],
+  ['Hvilken italiensk by er kjent for hesteløpet Il Palio?', 'Siena.'],
+  ['Hva betyr «la dolce vita»?', 'Det søte liv.'],
+  ['Hvilken pasta har form som små sommerfugler eller sløyfer?', 'Farfalle.'],
+  ['Hvilken italiensk by er hjemsted for fotballklubbene Juventus og Torino?', 'Torino.'],
+  ['Hvem malte taket i Det sixtinske kapell?', 'Michelangelo.'],
+  ['Hva kalles et lite måltid eller en drink før middagen i Italia?', 'Aperitivo.'],
+  ['Hvilket hav ligger mellom Italia og blant annet Kroatia?', 'Adriaterhavet.'],
+  ['Hva heter det italienske brødet som ofte er flatt og toppet med olivenolje?', 'Focaccia.'],
+  ['Hva heter den lille republikken som er omgitt av Italia og ligger ved Monte Titano?', 'San Marino.'],
+  ['Hvilken komponist skrev operaen La traviata?', 'Giuseppe Verdi.'],
+  ['Hva betyr «rosso» på en italiensk vinmeny?', 'Rød – vino rosso er rødvin.'],
+  ['Hvilken italiensk by er kjent for kanaler, karneval og Markusplassen?', 'Venezia.'],
+  ['Hvilken ost er kjent som Parmigiano Reggiano?', 'Parmesan.'],
+  ['Hva er en «trattoria»?', 'Et uformelt italiensk spisested med tradisjonell mat.'],
+  ['Hvilken italiensk by er hovedstad i regionen Emilia-Romagna?', 'Bologna.'],
+];
+
+function solCalendarDay(nowMs) {
+  const parts = Object.fromEntries(SOL_CALENDAR_FORMAT.formatToParts(nowMs)
+    .filter(p => p.type !== 'literal').map(p => [p.type, p.value]));
+  return {
+    key: `${parts.year}-${parts.month}-${parts.day}`,
+    monthDay: `${parts.month}-${parts.day}`,
+    ordinal: Math.floor(Date.UTC(+parts.year, +parts.month - 1, +parts.day) / 86400000),
+  };
+}
+
+function solQuizFace(revealed) {
+  const button = solEl('solQuiz');
+  button.classList.toggle('is-flipped', revealed);
+  button.setAttribute('aria-pressed', String(revealed));
+  const content = solEl(revealed ? 'solQuizAnswer' : 'solQuizQuestion').textContent;
+  button.setAttribute('aria-label', revealed
+    ? `Svar: ${content} Trykk for å se spørsmålet igjen.`
+    : `Dagens Italia-quiz: ${content} Trykk for å vise svaret.`);
+}
+
+function solFlipQuiz() {
+  solUpdateDaily();
+  const revealed = !solEl('solQuiz').classList.contains('is-flipped');
+  solQuizFace(revealed);
+  solEl('solQuizAnnouncement').textContent = revealed ? 'Svar: ' + solEl('solQuizAnswer').textContent : '';
+}
+
+function solUpdateDaily(nowMs = Date.now(), reset = false) {
+  const day = solCalendarDay(nowMs);
+  if (day.key === solDailyKey && !reset) return;
+  solDailyKey = day.key;
+  solEl('solFactDate').dateTime = day.key;
+  solEl('solFactDate').textContent = SOL_DATE_LABEL.format(nowMs);
+
+  const fact = typeof ITALY_DAYS === 'undefined' ? null : ITALY_DAYS[day.monthDay];
+  const source = solEl('solFactSource');
+  if (fact) {
+    solEl('solFactYear').textContent = fact.year + ' ·';
+    solEl('solFactText').textContent = fact.text;
+    source.href = fact.source;
+    source.classList.remove('hidden');
+  } else {
+    console.warn('Mangler Italia-historie for', day.monthDay);
+    solEl('solFactYear').textContent = '';
+    solEl('solFactText').textContent = 'Dagens historie er ikke tilgjengelig. Prøv å laste siden på nytt.';
+    source.removeAttribute('href');
+    source.classList.add('hidden');
+  }
+
+  const index = ((day.ordinal % SOL_QUIZ.length) + SOL_QUIZ.length) % SOL_QUIZ.length;
+  const [question, answer] = SOL_QUIZ[index];
+  solEl('solQuizQuestion').textContent = question;
+  solEl('solQuizAnswer').textContent = answer;
+  solEl('solQuizAnnouncement').textContent = '';
+  solQuizFace(false);
+}
 
 /** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */
 function solComputeTarget(nowMs) {
@@ -2573,10 +2754,16 @@ async function enterSolMode() {
   const box = solEl('solMode');
   box.style.setProperty('--nn-beat', (SOL_UNIT * 3) + 's');
   box.style.setProperty('--nn-bar', (SOL_UNIT * SOL_BEATS) + 's');
+  if (box.classList.contains('hidden')) solPreviousFocus = document.activeElement;
   box.classList.remove('hidden');
+  solEl('app').inert = true;
   document.body.style.overflow = 'hidden';
+  solUpdateDaily(Date.now(), true);
+  clearInterval(solDailyTimer);
+  solDailyTimer = setInterval(solUpdateDaily, 1000);
   solStartSaying();
   solStartMusic();
+  solEl('solMusicBtn').focus({ preventScroll: true });
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';
   solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
@@ -2611,11 +2798,19 @@ async function enterSolMode() {
 function exitSolMode() {
   solRequest++;
   solEl('solMode').classList.add('hidden');
+  solEl('app').inert = false;
   document.body.style.overflow = '';
   clearInterval(solTimer); solTimer = null;
   clearInterval(solSayTimer); solSayTimer = null;
+  clearInterval(solDailyTimer); solDailyTimer = null;
   solStopMusic();
+  if (solPreviousFocus && document.contains(solPreviousFocus)) solPreviousFocus.focus({ preventScroll: true });
+  solPreviousFocus = null;
 }
+
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden && !solEl('solMode').classList.contains('hidden')) solUpdateDaily();
+});
 
 // Nonnaene kjefter på hverandre, maser om mat og drikke. Bare italiensk.
 const NN_SAY_A = ['Mamma mia!', 'Mangia, mangia!', 'Che sole!', 'Balla, balla!',
@@ -2918,7 +3113,18 @@ function solToggleMusic() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape' && !solEl('solMode').classList.contains('hidden')) exitSolMode();
+  const mode = solEl('solMode');
+  if (mode.classList.contains('hidden')) return;
+  if (e.key === 'Escape') exitSolMode();
+  if (e.key === 'Tab') {
+    const controls = [...mode.querySelectorAll('button, a[href]')].filter(el => el.offsetParent !== null);
+    const first = controls[0], last = controls[controls.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault(); last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault(); first.focus();
+    }
+  }
 });
 
 function roundRect(ctx, x, y, w, h, r) {

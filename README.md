@@ -67,6 +67,18 @@ med italiensk sommerstemning:
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
   ned fra Kartverket med en framdriftsvisning.
+- **På denne dag** – en kort Italia-relatert historie med årstall og kildelenke.
+  Kalenderen følger norsk dato (`Europe/Oslo`), også gjennom sommertid og skuddår.
+  Historiene følger med appen i `italy-days.js`, uten et eksternt API ved hvert besøk.
+  Alle 366 kalenderdatoer er dekket med fødselsdager og historiske hendelser.
+  Oppføringene gjentas årlig. Fødselsdatoer og yrker bygger på Wikidata (CC0);
+  utvalgte oppføringer er kontrollert mot Britannica og historiske oversikter.
+  Tekstene er egenformulert på norsk, og hver oppføring lenker til sin kilde.
+- **Dagens Italia-quiz** – ett spørsmål fra en bank på 60 spørsmål. Samme dato gir
+  samme spørsmål for alle; oppdatering av siden gir ikke et nytt. Trykk på kortet
+  for å snu det og se svaret, og trykk igjen for spørsmålet. Det fungerer også med
+  Enter og mellomrom. Dagens innhold skifter ved norsk midnatt, og svaret skjules
+  når et nytt spørsmål kommer. Redusert bevegelse slår av snuanimasjonen.
 - **Musikk** – «Nonnaenes kjøkkendans», en egen italienskinspirert melodi med
   mandolinaktige plukk, myk gitar og spretten bass. Instrumentene genereres med
   Web Audio; dette er ikke en innspilling av levende musikere. Ingen eksterne
@@ -84,9 +96,11 @@ med italiensk sommerstemning:
   gullringer og kors – den ene med kjevle, den andre med tresleiv. Hoppet følger
   musikkens tempo (0,556 s per hovedslag), og armer, bein, skjørt og hode har hver sin
   animasjon. Underveis kjefter de på hverandre og maser om mat og drikke
-  i snakkebobler. Kulissene er italienske: tricolore-vimpler langs toppen og et
-  stilleben med chianti-flaske, vinglass, tomater, hvitløk og basilikum.
-  Hele laget er `pointer-events: none` og skjules ved `prefers-reduced-motion`.
+  i snakkebobler. De har sitt eget område under kortene, slik at tekst og knapper
+  ikke dekkes til. Figurene er `pointer-events: none` og skjules ved `prefers-reduced-motion`.
+- **Italiensk landskap** – en egen SVG-illustrasjon med dempede olivengrønne åser,
+  sypresser og en villa med terrakottatak erstatter vinflasken og grønnsakene.
+  Ingen eksterne bilder lastes ned.
 - Lukkes med **← Tilbake** eller **Esc**.
 
 ## Nøyaktighet
@@ -111,7 +125,8 @@ faktiske høyden, så «første sol» kan avvike med et halvt minutt ved helt fr
 serveres av GitHub Pages fra `main`, så hver push til `main` oppdaterer siden automatisk.
 
 Alternativt kan du åpne `index.html` rett i en nettleser – ingen installasjon eller server
-nødvendig. Kan lagres på hjemskjerm på iPhone e.l.
+nødvendig. Behold `italy-days.js` i samme mappe for dagsfaktaene.
+Kan lagres på hjemskjerm på iPhone e.l.
 
 ## Teknisk
 
@@ -126,4 +141,6 @@ nødvendig. Kan lagres på hjemskjerm på iPhone e.l.
 - Solberegning: [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/)
 - Høydedata og kart: [Kartverket](https://hoydedata.no/) (CC BY 4.0)
 - Geokoding: [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/)
+- Italia-kalender: [Wikidata](https://www.wikidata.org/) (CC0), Britannica og
+  Wikipedia, med kildelenke ved hver oppføring. Faktagrunnlag hentet 9. september 2026.
 - Instagram: [@arntessolservice](https://www.instagram.com/arntessolservice/)
