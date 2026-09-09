@@ -2495,6 +2495,7 @@ function drawPanorama(d) {
 // ════════════════════════════════════════════════════════
 //  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
 // ════════════════════════════════════════════════════════
+const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 
 function solEl(id) { return document.getElementById(id); }
@@ -2564,9 +2565,9 @@ async function enterSolMode() {
   solProfile = null;
   solTarget = null;
 
-  // Beregn alltid for Solhjørnet uten å flytte pinnen i det vanlige kartet.
+  // Fast punkt og bakkeplan, uavhengig av kartpinnen og høydeskyveren.
   const { lat, lng } = HZ_HOME_DEFAULT;
-  const eye = hzEye;
+  const eye = SOL_EYE_HEIGHT;
   const cached = hzLoadCached(lat, lng, eye);
 
   const box = solEl('solMode');

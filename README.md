@@ -59,8 +59,9 @@ med italiensk sommerstemning:
 
 - **Fast posisjon** – viser alltid soldata for **59.93414° N, 10.76769° Ø**,
   uavhengig av kartpinnen og lagret sted. Kartet og ditt valgte sted endres ikke.
-  Nedtellingen bruker horisonten for dette eksakte punktet og den valgte høyden
-  over bakken, ikke en tidligere profil fra et annet punkt.
+  Beregningen er låst til **bakkeplan (1,7 m øyehøyde)**, uavhengig av høydeskyveren
+  i kartet. Nedtellingen bruker bare horisonten for dette eksakte punktet og
+  denne høyden, aldri en lagret profil fra en høyere etasje.
 - **Nedtelling** – står sola på hjørnet nå, telles det ned til den forsvinner. Ellers
   telles det ned til neste gang sola treffer, og appen søker framover dag for dag
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
