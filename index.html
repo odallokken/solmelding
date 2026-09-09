@@ -132,16 +132,16 @@
     }
     @media(max-width:500px){ .results-grid{ grid-template-columns: 1fr; } }
 
-    .card {
+    .card, .sol-day-card, .sol-quiz-face {
       background: var(--card); border: 1px solid var(--cborder);
       border-radius: 14px; padding: 16px; position: relative; overflow: hidden;
     }
-    .card::before {
+    .card::before, .sol-day-card::before, .sol-quiz-face::before {
       content:''; position:absolute; top:0; left:0; right:0; height:2px;
       background: linear-gradient(90deg,var(--accent),var(--accent2)); opacity:.38;
     }
     .card.full-width { grid-column: 1 / -1; }
-    .card.green-card::before { background: linear-gradient(90deg,#4ade80,#22c55e); opacity:.55; }
+    .card.green-card::before, .sol-quiz-back::before { background: linear-gradient(90deg,#4ade80,#22c55e); opacity:.55; }
 
     .card-label {
       font-size: .71rem; text-transform: uppercase; letter-spacing: .07em;
@@ -271,6 +271,8 @@
     #solMode { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
       align-items: center; padding: 48px 20px 0; text-align: center; overflow-y: auto; isolation: isolate;
       --nn-beat: .5556s; --nn-bar: 1.1111s;
+      --card: #fffaf0; --cborder: rgba(31,58,87,.18); --text: #1a2e44; --muted: #52677a;
+      color: var(--text);
       background:
         radial-gradient(ellipse at 72% 8%, #fff7d9 0%, transparent 58%),
         linear-gradient(180deg, #f9ecda 0%, #f4dcc3 60%, #d9bb96 100%);
@@ -283,47 +285,43 @@
     .sol-flag { width: 56px; height: 4px; border-radius: 4px; margin: 0 auto 14px;
       background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
       box-shadow: 0 2px 8px rgba(0,0,0,.22); }
-    .sol-place { font-size: 2.1rem; font-weight: 900; color: #5a1f14; letter-spacing: .5px; line-height: 1.05; }
+    .sol-place { font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; }
     .sol-place .um { display: block; font-size: 2.4rem; margin-bottom: 2px; }
-    .sol-state { margin-top: 16px; font-size: .82rem; font-weight: 800; text-transform: uppercase;
-      letter-spacing: 2.4px; color: #7a2d1c; opacity: .9; }
-    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 900;
-      line-height: 1; margin: 6px 0 4px; color: #40130c; text-shadow: 0 3px 0 rgba(255,255,255,.28); }
-    .sol-note { font-size: .95rem; font-weight: 700; color: #6b2618; min-height: 1.3em; }
-    .sol-sub { margin-top: 8px; font-size: .78rem; color: #7a3222; opacity: .85; }
+    .sol-state { margin-top: 16px; font-size: .72rem; font-weight: 600; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--muted); }
+    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 800;
+      line-height: 1.1; letter-spacing: -.5px; margin: 6px 0 4px; }
+    .sol-note { font-size: .9rem; font-weight: 600; min-height: 1.3em; }
+    .sol-sub { margin-top: 8px; font-size: .78rem; color: var(--muted); }
     .sol-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-    .sol-btn { border: 0; cursor: pointer; font-family: inherit; font-weight: 800; font-size: .86rem;
-      padding: 11px 18px; border-radius: 12px; background: rgba(255,255,255,.72); color: #6b2618;
-      box-shadow: 0 3px 12px rgba(0,0,0,.14); transition: background .15s, transform .1s; }
+    .sol-btn { border: 1px solid var(--cborder); cursor: pointer; font-family: inherit; font-weight: 600; font-size: .9rem;
+      padding: 10px 18px; border-radius: 10px; background: var(--card); color: var(--text);
+      transition: background .15s, transform .1s; }
     .sol-btn:hover { background: #fff; transform: translateY(-1px); }
     .sol-btn.on { background: #2f7a4a; color: #fff; }
-    .sol-spinner { font-size: .9rem; color: #6b2618; font-weight: 700; }
+    .sol-spinner { font-size: .9rem; color: var(--muted); font-weight: 600; }
 
-    .sol-daily { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px;
-      margin-top: 26px; text-align: left; color: #493d30; }
-    .sol-day-card, .sol-quiz-face { padding: 20px; border-radius: 20px;
-      border: 1px solid rgba(129,100,67,.18); background: #fffaf0;
-      box-shadow: 0 8px 24px rgba(95,67,43,.07); }
+    .sol-daily { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px;
+      margin-top: 22px; text-align: left; }
     .sol-day-card { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
-    .sol-card-kicker { margin: 0; font-size: .67rem; font-weight: 800;
-      letter-spacing: 1.7px; text-transform: uppercase; color: #736045; }
-    .sol-fact-date { font-size: .73rem; color: #776955; }
-    .sol-fact { margin: 0; font-size: .94rem; line-height: 1.55; overflow-wrap: anywhere; }
-    .sol-fact strong { color: #9b4934; }
-    .sol-fact-source { margin-top: auto; padding-top: 5px; font-size: .73rem; color: #48654c;
+    .sol-card-kicker { margin: 0; font-size: .71rem; font-weight: 600;
+      letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+    .sol-fact-date { font-size: .73rem; color: var(--muted); }
+    .sol-fact { margin: 0; font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
+    .sol-fact strong { font-weight: 700; }
+    .sol-fact-source { margin-top: auto; padding-top: 5px; font-size: .73rem; color: var(--text);
       text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .sol-quiz { width: 100%; padding: 0; border: 0; background: none; color: inherit;
-      text-align: left; font: inherit; cursor: pointer; perspective: 1000px; border-radius: 20px; }
+      text-align: left; font: inherit; cursor: pointer; perspective: 1000px; border-radius: 14px; }
     .sol-quiz-inner { display: grid; height: 100%; transform-style: preserve-3d;
       transition: transform .55s cubic-bezier(.2,.7,.2,1); }
     .sol-quiz.is-flipped .sol-quiz-inner { transform: rotateY(180deg); }
     .sol-quiz-face { grid-area: 1 / 1; min-height: 200px; display: flex; flex-direction: column;
       gap: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .sol-quiz-front { background: #f5f2df; }
-    .sol-quiz-back { transform: rotateY(180deg); background: #e6eddf; }
-    .sol-quiz-copy { font-family: Georgia, 'Times New Roman', serif; font-size: 1.12rem;
-      line-height: 1.4; overflow-wrap: anywhere; }
-    .sol-card-hint { margin-top: auto; font-size: .73rem; color: #52634c; }
+    .sol-quiz-back { transform: rotateY(180deg); background: #eaf1e8; }
+    .sol-quiz-copy { font-family: inherit; font-size: 1rem; font-weight: 600;
+      line-height: 1.5; overflow-wrap: anywhere; }
+    .sol-card-hint { margin-top: auto; font-size: .73rem; color: var(--muted); }
     .sol-quiz:hover .sol-card-hint { text-decoration: underline; text-underline-offset: 3px; }
     .sol-quiz:focus-visible, .sol-btn:focus-visible, .sol-fact-source:focus-visible {
       outline: 3px solid #3e694c; outline-offset: 5px; }
@@ -396,7 +394,6 @@
       #solMode { padding-top: 30px; }
       .sol-daily { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
       .sol-quiz-face { min-height: 168px; }
-      .sol-day-card, .sol-quiz-face { padding: 17px 20px; }
     }
     @media (max-width: 480px) { .sol-nonnas { height: 215px; } .nonna { width: 100px; height: 132px; }
       .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; } }
