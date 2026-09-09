@@ -67,24 +67,23 @@ med italiensk sommerstemning:
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
   ned fra Kartverket med en framdriftsvisning.
-- **Musikk** – «Tarantella Napoletana», altså Luigi Riccis *Tarantella di Piedigrotta*
-  fra 1852 – melodien folk flest kjenner som selve Italia-låta. Ricci døde i 1859,
-  så den falt i det fri i 1930. Melodien er transkribert direkte fra notekilden:
-  åtte takter i 6/8, a-moll, punktert firedel = 140.
+- **Musikk** – «Nonnaenes kjøkkendans», en egen italienskinspirert melodi med
+  mandolinaktige plukk, myk gitar og spretten bass. Instrumentene genereres med
+  Web Audio; dette er ikke en innspilling av levende musikere. Ingen eksterne
+  opptak, lydpakker eller lånte melodier brukes.
 
-  Den spilles på et syntetisk trekkspill. Fritungene er egne bølgeformer med
-  formanttopper, og hver tone klinger på flere tungerekker som er stemt noen cent
-  fra hverandre – det er musette-svevingen som gjør at et trekkspill høres ut som
-  et trekkspill. Melodien har i tillegg en oktavtunge, bassen en 16-fots under.
-  Venstre hånd spiller stradella: bass på slaget og korte akkordstøt imellom,
-  «oom-pah-pah». Alt er kort og avkortet, slik en tarantella faktisk spilles, med
-  tamburin på åttendedelene. Ingen lydfiler lastes ned – alt lages i nettleseren
-  med Web Audio. Kan slås av og på.
+  Dansen har 40 takter i 6/8 ved 108 punkterte firedeler per minutt, omtrent
+  44 sekunder før den gjentas. Intro, musikalske spørsmål og svar, små pauser og
+  variasjoner erstatter den korte trekkspillsløyfen. Volumet er dempet, med myk
+  inn- og utfading og uten vedvarende tamburin. Hele stykket rendres én gang og
+  sløyfes av lydmotoren, uten tidtakere som kan forstyrre rytmen i bakgrunnen.
+  Musikken starter ved knappetrykket, uavhengig av hvor lang tid horisontdataene tar,
+  og kan slås av og på.
 - **To dansende nonnaer** krysser skjermen i takt med musikken. De er tegnet som
   ren SVG: sølvgrått hår samlet i nakkeknute, briller, svart enkekjole med forkle,
   gullringer og kors – den ene med kjevle, den andre med tresleiv. Hoppet følger
-  den punkterte firedelen (0,857 s), og armer, bein, skjørt og hode har hver sin
-  animasjon på takten. Underveis kjefter de på hverandre og maser om mat og drikke
+  musikkens tempo (0,556 s per hovedslag), og armer, bein, skjørt og hode har hver sin
+  animasjon. Underveis kjefter de på hverandre og maser om mat og drikke
   i snakkebobler. Kulissene er italienske: tricolore-vimpler langs toppen og et
   stilleben med chianti-flaske, vinglass, tomater, hvitløk og basilikum.
   Hele laget er `pointer-events: none` og skjules ved `prefers-reduced-motion`.
