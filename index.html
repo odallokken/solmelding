@@ -210,6 +210,47 @@
     .source-badge.noaa   { background: rgba(251,191,36,.12); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
     .source-badge.loading{ background: rgba(122,155,181,.1); color: var(--muted); border: 1px solid rgba(122,155,181,.2); }
 
+    /* ── Horisont / nøyaktig sted ── */
+    .hz-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hz-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: #b8d0e8; font-weight: 600; }
+    .hz-switch { display: flex; align-items: center; gap: 7px; font-size: .8rem; color: var(--muted); cursor: pointer; user-select: none; }
+    .hz-switch input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+    .hz-help { font-size: .76rem; color: var(--muted); line-height: 1.5; margin: 11px 0; }
+    .map-wrap { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #2a4a6e; background: #0d1b2a; }
+    #hzMap { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: none; }
+    .map-zoom { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .map-zoom button {
+      width: 30px; height: 30px; padding: 0; font-size: 1.05rem; line-height: 1;
+      background: rgba(13,27,42,.82); color: var(--text); border: 1px solid #2a4a6e;
+    }
+    .map-attr {
+      position: absolute; right: 5px; bottom: 4px; font-size: .58rem; color: #cfe3f3;
+      background: rgba(13,27,42,.62); padding: 1px 6px; border-radius: 5px;
+    }
+    .hz-coords { font-size: .74rem; color: var(--muted); margin-top: 8px; text-align: center; }
+    .hz-coords b { color: var(--text); font-weight: 600; }
+    .hz-slider-row { margin-top: 12px; }
+    .hz-slider-row label { font-size: .74rem; color: #b8d0e8; display: flex; justify-content: space-between; gap: 8px; }
+    .hz-slider-row label b { color: var(--accent); }
+    .hz-floor { color: var(--muted); font-weight: 400; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); margin-top: 7px; }
+    .hz-progress { margin-top: 11px; font-size: .74rem; color: var(--muted); }
+    .hz-progress .bar { height: 5px; background: #0d1b2a; border-radius: 4px; overflow: hidden; border: 1px solid #2a4a6e; margin-bottom: 5px; }
+    .hz-progress .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg,var(--accent),var(--accent2)); transition: width .18s; }
+    .hz-warn {
+      margin-top: 11px; font-size: .75rem; line-height: 1.5; border-radius: 10px; padding: 9px 12px;
+      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.35); color: #fcd34d;
+    }
+    .hz-card::before { background: linear-gradient(90deg,#38bdf8,#818cf8); opacity: .55; }
+    .hz-windows { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .hz-win {
+      font-size: .76rem; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+      background: rgba(244,164,41,.14); border: 1px solid rgba(244,164,41,.34); color: var(--accent);
+    }
+    .hz-win.none { background: rgba(122,155,181,.1); border-color: rgba(122,155,181,.25); color: var(--muted); }
+    #hzPano { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .source-badge.dom { background: rgba(56,189,248,.14); color: #38bdf8; border: 1px solid rgba(56,189,248,.35); }
+
     .hidden { display: none !important; }
     footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; color: #9ab8d0; font-size: .72rem; padding: 16px 0 28px; opacity: .85; }
     footer a { color: #9ab8d0; }
@@ -247,6 +288,46 @@
 
   <div class="status-msg" id="statusMsg"></div>
 
+  <!-- Nøyaktig sted: horisont fra terreng + bygninger -->
+  <div class="input-panel">
+    <div class="hz-head">
+      <div class="hz-title">🏙️ Nøyaktig sol der du bor</div>
+      <label class="hz-switch"><input type="checkbox" id="hzEnable"> Terreng + bygninger</label>
+    </div>
+    <div id="hzBody" class="hidden">
+      <p class="hz-help">
+        Dra kartet og klikk for å sette punktet nøyaktig der du bor. Horisonten regnes ut fra
+        Kartverkets <b>1-meters overflatemodell (DOM1)</b> – bygninger, trær og terreng inkludert –
+        og gir tidene sola faktisk er synlig fra akkurat det punktet.
+      </p>
+      <div class="map-wrap">
+        <canvas id="hzMap" width="640" height="380"></canvas>
+        <div class="map-zoom">
+          <button type="button" onclick="hzZoom(1)" title="Zoom inn">+</button>
+          <button type="button" onclick="hzZoom(-1)" title="Zoom ut">−</button>
+        </div>
+        <div class="map-attr">© Kartverket</div>
+      </div>
+      <div class="hz-coords" id="hzCoords">–</div>
+      <div class="hz-slider-row">
+        <label>
+          <span>👁 Høyde over bakken</span>
+          <span><b id="hzEyeVal">1,7 m</b> <span class="hz-floor" id="hzFloor">(bakkeplan)</span></span>
+        </label>
+        <input type="range" id="hzEye" min="0" max="40" step="0.1" value="1.7">
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
+        <button class="btn-secondary" onclick="hzUseHome()" title="Hopp til lagret hjemmeposisjon">🏠 Hjemme</button>
+      </div>
+      <div class="hz-progress hidden" id="hzProgress">
+        <div class="bar"><i id="hzBar"></i></div>
+        <span id="hzProgTxt"></span>
+      </div>
+      <div class="hz-warn hidden" id="hzWarn"></div>
+    </div>
+  </div>
+
   <!-- Milestone -->
   <div id="milestoneBanner" class="hidden"></div>
   <div id="solvervMilestoneBanner" class="hidden"></div>
@@ -258,6 +339,20 @@
     <!-- Sun arc -->
     <div class="card full-width arc-card" style="margin-bottom:11px">
       <canvas id="sunArcCanvas" width="660" height="110"></canvas>
+    </div>
+
+    <!-- Direkte sol på stedet (terreng + bygninger) -->
+    <div id="hzResults" class="hidden">
+      <div class="card full-width hz-card" style="margin-bottom:11px">
+        <div class="card-label"><span>🏙️</span> Direkte sol på stedet (terreng + bygninger)</div>
+        <div class="card-value orange" id="hzTotal">–</div>
+        <div class="card-sub" id="hzSub"></div>
+        <div class="hz-windows" id="hzWindows"></div>
+      </div>
+      <div class="card full-width arc-card" style="margin-bottom:11px">
+        <canvas id="hzPano" width="660" height="300"></canvas>
+        <div class="card-sub" id="hzPanoSub" style="padding:6px 6px 2px"></div>
+      </div>
     </div>
 
     <div class="results-grid">
@@ -336,7 +431,8 @@
   </div>
 
   <footer>
-    <span>Beregninger: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA Solar Calculator</a> (nøyaktighet ±30 sek) ·
+    <span>Beregninger: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA Solar Calculator</a> ·
+    Høydedata og kart: <a href="https://hoydedata.no/" target="_blank" rel="noopener">Kartverket</a> (CC BY 4.0) ·
     Geokoding: <a href="https://nominatim.openstreetmap.org/" target="_blank">OSM Nominatim</a></span>
     <a class="footer-ig" href="https://www.instagram.com/arntessolservice/" target="_blank" rel="noopener">Følg @arntessolservice</a>
   </footer>
@@ -362,13 +458,10 @@ function toJulianDay(y, mo, d) {
 }
 
 /**
- * noaaSolar(year, month, day, lat, lng)
- * Returns { type, sunrise, sunset, dawn, dusk, noon, daylightMs }
- * All Date objects are UTC moments; display via toLocaleTimeString() for local time.
- * type: 'normal' | 'polar_night' | 'midnight_sun'
+ * Sola sine to grunnstørrelser på et gitt julian day:
+ * deklinasjon (grader) og tidsutjevning (minutter).
  */
-function noaaSolar(year, month, day, lat, lng) {
-  const jd = toJulianDay(year, month, day);
+function solarParams(jd) {
   const jc = (jd - 2451545.0) / 36525.0;
 
   // Geometric mean longitude (deg)
@@ -389,12 +482,10 @@ function noaaSolar(year, month, day, lat, lng) {
 
   // Mean obliquity of ecliptic (deg)
   const moe = 23 + (26 + (21.448 - jc * (46.815 + jc * (0.00059 - jc * 0.001813))) / 60) / 60;
-  const oc   = moe + 0.00256 * Math.cos(omega * D2R); // corrected obliquity
+  const oc  = moe + 0.00256 * Math.cos(omega * D2R); // corrected obliquity
 
-  // Solar declination (deg)
   const decl = Math.asin(Math.sin(oc * D2R) * Math.sin(sal * D2R)) / D2R;
 
-  // Equation of time (minutes)
   const y2 = Math.pow(Math.tan(oc * D2R / 2), 2);
   const eqtime = (4 / D2R) * (
       y2 * Math.sin(2 * gml * D2R)
@@ -404,8 +495,24 @@ function noaaSolar(year, month, day, lat, lng) {
     - 1.25 * eoe * eoe * Math.sin(2 * gma * D2R)
   ); // minutes
 
-  // Hour angle calculator (returns degrees, or null for polar cases)
-  function hourAngle(zenithDeg) {
+  return { decl, eqtime };
+}
+
+/**
+ * noaaSolar(year, month, day, lat, lng)
+ * Returns { type, sunrise, sunset, dawn, dusk, noon, daylightMs }
+ * All Date objects are UTC moments; display via toLocaleTimeString() for local time.
+ * type: 'normal' | 'polar_night' | 'midnight_sun'
+ *
+ * Deklinasjon og tidsutjevning itereres fram til selve hendelsestidspunktet.
+ * Uten den itereringen regnes sola sin posisjon kl. 12 UT, noe som gir opptil
+ * halvannet minutts feil på våre breddegrader vår og høst.
+ */
+function noaaSolar(year, month, day, lat, lng) {
+  const jd0 = toJulianDay(year, month, day); // JD ved 12 UT
+
+  // Hour angle calculator (returns degrees, or a polar marker object)
+  function hourAngle(zenithDeg, decl) {
     const cosHA = Math.cos(zenithDeg * D2R) / (Math.cos(lat * D2R) * Math.cos(decl * D2R))
                 - Math.tan(lat * D2R) * Math.tan(decl * D2R);
     if (cosHA > 1)  return { type: 'polar_night' };
@@ -413,23 +520,36 @@ function noaaSolar(year, month, day, lat, lng) {
     return Math.acos(cosHA) / D2R;
   }
 
-  const ha_sun   = hourAngle(90.833); // standard sunrise/sunset (refraction + limb)
-  const ha_civil = hourAngle(96.0);   // civil twilight (-6°)
-
-  if (typeof ha_sun === 'object') {
-    return ha_sun; // { type: 'polar_night' } or { type: 'midnight_sun' }
+  // Minutter fra midnatt UTC for en hendelse. sign: -1 = før middag, +1 = etter.
+  function solveEvent(zenithDeg, sign) {
+    let p = solarParams(jd0);
+    let minutes = 720 - 4 * lng - p.eqtime;
+    for (let i = 0; i < 3; i++) {
+      const ha = hourAngle(zenithDeg, p.decl);
+      if (typeof ha === 'object') return ha;
+      minutes = 720 - 4 * lng - p.eqtime + sign * ha * 4;
+      p = solarParams(jd0 + (minutes - 720) / 1440);
+    }
+    const ha = hourAngle(zenithDeg, p.decl);
+    if (typeof ha === 'object') return ha;
+    return 720 - 4 * lng - p.eqtime + sign * ha * 4;
   }
 
-  // Solar noon = minutes from midnight UTC
-  const noonMin = 720 - 4 * lng - eqtime;
-  const riseMin = noonMin - ha_sun * 4;
-  const setMin  = noonMin + ha_sun * 4;
+  const riseMin = solveEvent(90.833, -1); // standard sunrise/sunset (refraction + limb)
+  const setMin  = solveEvent(90.833, +1);
+  if (typeof riseMin === 'object') return riseMin;
+  if (typeof setMin  === 'object') return setMin;
 
-  let dawnMin = null, duskMin = null;
-  if (typeof ha_civil === 'number') {
-    dawnMin = noonMin - ha_civil * 4;
-    duskMin = noonMin + ha_civil * 4;
-  }
+  const dawnRaw = solveEvent(96.0, -1);   // civil twilight (-6°)
+  const duskRaw = solveEvent(96.0, +1);
+  const dawnMin = typeof dawnRaw === 'number' ? dawnRaw : null;
+  const duskMin = typeof duskRaw === 'number' ? duskRaw : null;
+
+  // Solar noon, også iterert
+  let pn = solarParams(jd0);
+  let noonMin = 720 - 4 * lng - pn.eqtime;
+  pn = solarParams(jd0 + (noonMin - 720) / 1440);
+  noonMin = 720 - 4 * lng - pn.eqtime;
 
   // Convert to UTC Date objects
   const baseUTC = Date.UTC(year, month - 1, day);
@@ -472,6 +592,53 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('locationInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleCalculate();
   });
+
+  // ── Nøyaktig horisont ──
+  const hzS = hzLoadSettings();
+  if (hzS) {
+    if (hzS.pin) hzPin = { ...hzS.pin };
+    if (typeof hzS.eye === 'number') hzEye = hzS.eye;
+  }
+  hzMap.center = { ...hzPin };
+  document.getElementById('hzEye').value = hzEye;
+  hzUpdateEyeUI();
+  hzUpdateCoordUI();
+
+  const cachedProfile = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  if (cachedProfile) hzProfile = cachedProfile;
+
+  document.getElementById('hzEnable').addEventListener('change', e => {
+    document.getElementById('hzBody').classList.toggle('hidden', !e.target.checked);
+    hzSaveSettings();
+    if (e.target.checked) {
+      hzMap.init();
+      hzMap.draw();
+      hzUpdateCoordUI();
+      if (hzIsFresh()) hzCheckPlacement();
+    }
+    if (coords) updateSolarData();
+  });
+  document.getElementById('hzEye').addEventListener('input', e => {
+    hzEye = parseFloat(e.target.value);
+    hzUpdateEyeUI();
+  });
+  document.getElementById('hzEye').addEventListener('change', () => {
+    hzSaveSettings();
+    if (!hzIsFresh()) {
+      const c = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+      if (c) { hzProfile = c; hzSetWarn(''); hzCheckPlacement(); if (coords) updateSolarData(); }
+      else hzSetWarn('ℹ️ Høyden er endret. Trykk «Beregn horisont her» for å oppdatere tallene.');
+    }
+  });
+
+  if (hzS && hzS.enabled) {
+    document.getElementById('hzEnable').checked = true;
+    document.getElementById('hzBody').classList.remove('hidden');
+    hzMap.init();
+    hzMap.draw();
+    if (hzIsFresh()) hzCheckPlacement();
+    if (coords) updateSolarData();
+  }
 });
 
 // ════════════════════════════════════════════════════════
@@ -680,7 +847,10 @@ const SOLSTICE_MILESTONES = (() => {
 function setSourceBadge(source) {
   const el = document.getElementById('sourceBadge');
   if (!el) return;
-  if (source === 'noaa') {
+  if (source === 'dom') {
+    el.className = 'source-badge dom';
+    el.textContent = '🔵 NOAA + Kartverket DOM1 (terreng og bygninger)';
+  } else if (source === 'noaa') {
     el.className = 'source-badge noaa';
     el.textContent = '🟡 NOAA Solar Calculator (±30 sek)';
   } else {
@@ -695,6 +865,7 @@ function setSourceBadge(source) {
 function updateSolarData() {
   if (!coords) return;
   clearStatus();
+  hzSunResult = null;
   setSourceBadge('noaa');
 
   const parts  = document.getElementById('dateInput').value.split('-');
@@ -765,6 +936,16 @@ function updateSolarData() {
                todayDL, yesterdayDL, solsticeDL, moreThanYesterday, moreSinceSolstice,
                equivalentDate, dgSidenSist, dawnDur, duskDur, milestones, solvervMilestones, dataSource,
                summerSolstice, daysSinceSummerSolstice, equivalentDateSummer, dgSidenSistSommer };
+
+  // Direkte sol på stedet – kun når horisontprofilen gjelder gjeldende punkt
+  hzSunResult = null;
+  if (hzEnabled() && hzIsFresh()) {
+    const startMs = new Date(year, month - 1, day).getTime();
+    const real = computeSunWindows(startMs, coords.lat, coords.lng, hzProfile);
+    const flat = computeSunWindows(startMs, coords.lat, coords.lng, null);
+    hzSunResult = { ...real, flatTotal: flat.total };
+  }
+  setSourceBadge(hzSunResult ? 'dom' : 'noaa');
 
   renderResults(lastData);
 }
@@ -869,6 +1050,7 @@ function renderResults(d) {
   }
 
   drawSunArc(td);
+  renderHorizonResults(d);
   document.getElementById('mainResults').classList.remove('hidden');
   document.getElementById('exportSection').classList.remove('hidden');
 }
@@ -931,6 +1113,29 @@ function drawSunArc(td) {
   ctx.beginPath(); ctx.moveTo(rX, horizY);
   ctx.quadraticCurveTo(nX, arcPeak, sX, horizY);
   ctx.strokeStyle = '#f4a429'; ctx.lineWidth = 2.2; ctx.stroke();
+
+  // Perioder der bygninger/terreng skygger for sola
+  if (hzSunResult) {
+    const gaps = [];
+    let cursor = riseMs;
+    for (const w of hzSunResult.windows) {
+      if (w[0] > cursor) gaps.push([cursor, Math.min(w[0], setMs)]);
+      cursor = Math.max(cursor, w[1]);
+    }
+    if (cursor < setMs) gaps.push([cursor, setMs]);
+    ctx.fillStyle = 'rgba(13,27,42,.58)';
+    for (const g of gaps) {
+      const a = tX(Math.max(g[0], riseMs)), b = tX(Math.min(g[1], setMs));
+      if (b - a > 0.5) ctx.fillRect(a, horizY - 72, b - a, 72);
+    }
+    if (hzSunResult.first !== null) {
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.5;
+      [hzSunResult.first, hzSunResult.last].forEach(t => {
+        const x = tX(t);
+        ctx.beginPath(); ctx.moveTo(x, horizY - 72); ctx.lineTo(x, horizY); ctx.stroke();
+      });
+    }
+  }
 
   // Current time indicator – uses face image if available
   const now = Date.now();
@@ -1278,6 +1483,718 @@ function exportPNG() {
   a.download = `solmelding_${d.coords.name.replace(/\s+/g,'_')}_${d.year}${pad(d.month)}${pad(d.day)}.png`;
   a.href = canvas.toDataURL('image/png');
   a.click();
+}
+
+// ════════════════════════════════════════════════════════
+//  NØYAKTIG HORISONT – terreng + bygninger (Kartverket DOM1/DTM1)
+// ════════════════════════════════════════════════════════
+const R_EARTH   = 6371000;   // m
+const REFR_K    = 0.13;      // atmosfærisk refraksjonskoeffisient (standard)
+const SUN_RADIUS = 0.2667;   // sola sin halve diameter i grader (øvre rand)
+const HZ_BINS   = 360;       // 1° oppløsning i horisontprofilen
+const HZ_HOME_DEFAULT = { lat: 59.9341, lng: 10.7677, name: 'Torshov' };
+
+/**
+ * Sola sin posisjon på et vilkårlig tidspunkt (NOAA-algoritmen).
+ * Returnerer geometrisk høyde, refraktert (synlig) høyde og asimut (0=N, 90=Ø).
+ */
+function solarPosition(ms, lat, lng) {
+  const jd = ms / 86400000 + 2440587.5;
+  const { decl, eqtime } = solarParams(jd);
+
+  const utcMin = (((ms % 86400000) + 86400000) % 86400000) / 60000;
+  let ha = ((utcMin + eqtime + 4 * lng) / 4) - 180;
+  if (ha < -180) ha += 360;
+  if (ha >  180) ha -= 360;
+
+  const latR = lat * D2R, declR = decl * D2R;
+  const cosZen = Math.sin(latR) * Math.sin(declR) + Math.cos(latR) * Math.cos(declR) * Math.cos(ha * D2R);
+  const zen  = Math.acos(Math.max(-1, Math.min(1, cosZen))) / D2R;
+  const elev = 90 - zen;
+
+  let az;
+  const den = Math.cos(latR) * Math.sin(zen * D2R);
+  if (Math.abs(den) > 1e-9) {
+    const c = Math.max(-1, Math.min(1, ((Math.sin(latR) * Math.cos(zen * D2R)) - Math.sin(declR)) / den));
+    const a = Math.acos(c) / D2R;
+    az = ha > 0 ? (a + 180) % 360 : (540 - a) % 360;
+  } else {
+    az = lat >= 0 ? 180 : 0;
+  }
+  return { elevation: elev, azimuth: az, refracted: elev + atmRefraction(elev) };
+}
+
+/**
+ * Atmosfærisk refraksjon i grader, fra sann (geometrisk) høyde.
+ * Sæmundssons formel — i motsetning til NOAA sitt stykkevise polynom er den
+ * kontinuerlig og fysisk gyldig helt ned til horisonten, som er akkurat der
+ * hustak og åsrygger ligger.
+ */
+function atmRefraction(elev) {
+  if (elev > 85) return 0;
+  const h = Math.max(elev, -1.9);
+  const r = 1.02 / Math.tan((h + 10.3 / (h + 5.11)) * D2R); // bueminutter
+  return Math.min(Math.max(r, 0), 62) / 60;                 // grader
+}
+
+/** Punkt d meter unna i retning az (grader fra nord), på kulejorda. */
+function destPoint(lat, lng, azDeg, d) {
+  const ad = d / R_EARTH, l1 = lat * D2R, b = azDeg * D2R;
+  const l2 = Math.asin(Math.sin(l1) * Math.cos(ad) + Math.cos(l1) * Math.sin(ad) * Math.cos(b));
+  const g2 = lng * D2R + Math.atan2(Math.sin(b) * Math.sin(ad) * Math.cos(l1),
+                                    Math.cos(ad) - Math.sin(l1) * Math.sin(l2));
+  return [l2 / D2R, ((g2 / D2R) + 540) % 360 - 180];
+}
+
+/** Geometrisk fordelte avstander a→b. */
+function geoSpread(a, b, n) {
+  const out = [], r = Math.pow(b / a, 1 / (n - 1));
+  let d = a;
+  for (let i = 0; i < n; i++) { out.push(d); d *= r; }
+  return out;
+}
+
+/**
+ * Henter høyder fra Kartverkets åpne høyde-API. Maks 50 punkter per kall,
+ * så vi deler opp og kjører flere kall i parallell.
+ */
+async function fetchElevations(points, datakilde, onChunk) {
+  const CHUNK = 50, CONCURRENCY = 8;
+  const out = new Array(points.length).fill(null);
+  const queue = [];
+  let failedChunks = 0, okChunks = 0;
+  for (let i = 0; i < points.length; i += CHUNK) queue.push([i, points.slice(i, i + CHUNK)]);
+
+  async function worker() {
+    while (queue.length) {
+      const [start, chunk] = queue.shift();
+      const body = '[' + chunk.map(p => `[${p[1].toFixed(7)},${p[0].toFixed(7)}]`).join(',') + ']';
+      const url = `https://ws.geonorge.no/hoydedata/v1/datakilder/${datakilde}/punkt`
+                + `?koordsys=4258&punkter=${encodeURIComponent(body)}`;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('http ' + res.status);
+          const json = await res.json();
+          (json.punkter || []).forEach((p, i) => {
+            if (typeof p.z === 'number') out[start + i] = p.z;
+          });
+          okChunks++;
+          break;
+        } catch {
+          if (attempt === 2) { failedChunks++; break; }
+          await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
+        }
+      }
+      if (onChunk) onChunk(chunk.length);
+    }
+  }
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  // Ingen svar i det hele tatt betyr nett-/tjenestefeil, ikke manglende kartdekning.
+  if (okChunks === 0 && failedChunks > 0) throw new Error('network');
+  return out;
+}
+
+// Avstandsringer: tett der bygninger står, grovere ut mot åsene.
+const HZ_D_NEAR = geoSpread(2, 160, 13);      // pass 1 – overflatemodell
+const HZ_D_MID  = geoSpread(170, 600, 10);    // pass 3 – overflatemodell
+const HZ_D_FAR  = geoSpread(650, 30000, 13);  // pass 4 – terrengmodell
+const HZ_REFINE = 5;                          // pass 2 – radiell forfining
+const HZ_MID_RAYS = 120, HZ_FAR_RAYS = 60;
+const HZ_TOTAL_POINTS = 1
+  + HZ_BINS * HZ_D_NEAR.length + HZ_BINS * HZ_REFINE
+  + HZ_MID_RAYS * HZ_D_MID.length + HZ_FAR_RAYS * HZ_D_FAR.length;
+
+/**
+ * Bygger en horisontprofil: for hver av 360 asimut-retninger, hvor høyt over
+ * øyehøyde det høyeste hinderet ligger. Nærsonen (0–600 m) leses fra DOM1
+ * (overflatemodell = bygninger, trær og terreng), fjernsonen fra DTM1 (terreng).
+ */
+async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
+  let done = 0;
+  const tick = n => { done += n; if (onProgress) onProgress(done, HZ_TOTAL_POINTS); };
+
+  const [ground] = await fetchElevations([[lat, lng]], 'dtm1', tick);
+  if (ground === null) throw new Error('no-coverage');
+  const eyeZ = ground + eyeHeight;
+
+  // Synsvinkel til et punkt, korrigert for jordkrumning og refraksjon.
+  const angleTo = (d, z) => Math.atan2(z - eyeZ - d * d * (1 - REFR_K) / (2 * R_EARTH), d) / D2R;
+
+  const best = Array.from({ length: HZ_BINS }, () => ({ alt: -90, dist: 0, z: 0, src: null }));
+  const consider = (bin, d, z, src) => {
+    if (z === null) return;
+    const a = angleTo(d, z);
+    if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src };
+  };
+
+  // Pass 1 – nærsone, 1° stråler
+  const p1 = [];
+  for (let i = 0; i < HZ_BINS; i++) for (const d of HZ_D_NEAR) p1.push(destPoint(lat, lng, i, d));
+  const z1 = await fetchElevations(p1, 'dom1', tick);
+  let nearHits = 0;
+  const peakIdx = [];
+  for (let i = 0; i < HZ_BINS; i++) {
+    let bi = 0, ba = -90;
+    HZ_D_NEAR.forEach((d, k) => {
+      const z = z1[i * HZ_D_NEAR.length + k];
+      if (z !== null) nearHits++;
+      consider(i, d, z, 'bygg');
+      if (z !== null) { const a = angleTo(d, z); if (a > ba) { ba = a; bi = k; } }
+    });
+    peakIdx.push(bi);
+  }
+  if (nearHits < p1.length * 0.5) throw new Error('no-coverage');
+
+  // Pass 2 – forfin radielt rundt hver stråles høyeste treff, slik at vi
+  // treffer den nære kanten av taket og ikke bare midt på taket.
+  const p2 = [], m2 = [];
+  for (let i = 0; i < HZ_BINS; i++) {
+    const k = peakIdx[i];
+    const lo = k > 0 ? HZ_D_NEAR[k - 1] : 1.5, hi = HZ_D_NEAR[k];
+    for (let s = 1; s <= HZ_REFINE; s++) {
+      const d = lo + (hi - lo) * s / (HZ_REFINE + 1);
+      p2.push(destPoint(lat, lng, i, d)); m2.push([i, d]);
+    }
+  }
+  const z2 = await fetchElevations(p2, 'dom1', tick);
+  m2.forEach(([i, d], k) => consider(i, d, z2[k], 'bygg'));
+
+  // Pass 3 – mellomsone (170–600 m), 3° stråler
+  const p3 = [];
+  for (let i = 0; i < HZ_MID_RAYS; i++) for (const d of HZ_D_MID) p3.push(destPoint(lat, lng, i * 3, d));
+  const z3 = await fetchElevations(p3, 'dom1', tick);
+  spreadRays(z3, HZ_MID_RAYS, HZ_D_MID, 3, 1, best, angleTo, 'bygg');
+
+  // Pass 4 – fjernsone (0,65–30 km) fra terrengmodellen: åser og fjell
+  const p4 = [];
+  for (let i = 0; i < HZ_FAR_RAYS; i++) for (const d of HZ_D_FAR) p4.push(destPoint(lat, lng, i * 6, d));
+  const z4 = await fetchElevations(p4, 'dtm1', tick);
+  spreadRays(z4, HZ_FAR_RAYS, HZ_D_FAR, 6, 3, best, angleTo, 'terreng');
+
+  const rays = best.map(b => ({
+    alt:  Math.max(b.alt, -2),
+    dist: b.dist,
+    z:    b.z,
+    src:  b.src,
+  }));
+  const nearest = rays.reduce((m, r) => (r.dist > 0 && r.alt > 5 && r.dist < m ? r.dist : m), 9999);
+  return { lat, lng, eye: eyeHeight, ground, eyeZ, rays, nearest, builtAt: Date.now() };
+}
+
+/** Sprer grovere stråler (3°/6°) utover nabo-binene i profilen. */
+function spreadRays(zs, rayCount, dists, stepDeg, spread, best, angleTo, src) {
+  for (let i = 0; i < rayCount; i++) {
+    dists.forEach((d, k) => {
+      const z = zs[i * dists.length + k];
+      if (z === null) return;
+      const a = angleTo(d, z);
+      for (let o = -spread; o <= spread; o++) {
+        const bin = ((i * stepDeg + o) % HZ_BINS + HZ_BINS) % HZ_BINS;
+        if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src };
+      }
+    });
+  }
+}
+
+/** Horisonthøyde (grader) i en vilkårlig retning, lineært interpolert. */
+function horizonAt(profile, azDeg) {
+  if (!profile) return 0;
+  const n = profile.rays.length;
+  const f = (((azDeg % 360) + 360) % 360) * n / 360;
+  const i0 = Math.floor(f) % n, i1 = (i0 + 1) % n, t = f - Math.floor(f);
+  return profile.rays[i0].alt * (1 - t) + profile.rays[i1].alt * t;
+}
+
+/**
+ * Finner alle tidsrom på dagen der sola faktisk er synlig over den lokale
+ * horisonten. Med profile = null får du «flat horisont» (astronomisk).
+ */
+function computeSunWindows(startMs, lat, lng, profile) {
+  const end = startMs + 86400000, STEP = 10000;
+  const visible = t => {
+    const s = solarPosition(t, lat, lng);
+    return (s.refracted + SUN_RADIUS) > horizonAt(profile, s.azimuth);
+  };
+  const raw = [];
+  let prev = visible(startMs), open = prev ? startMs : null;
+  for (let t = startMs + STEP; t <= end; t += STEP) {
+    const v = visible(t);
+    if (v !== prev) {
+      let lo = t - STEP, hi = t;
+      for (let k = 0; k < 22; k++) {          // binærsøk ned til ~1 sekund
+        const m = (lo + hi) / 2;
+        if (visible(m) === prev) lo = m; else hi = m;
+      }
+      if (v) open = hi; else { raw.push([open, hi]); open = null; }
+      prev = v;
+    }
+  }
+  if (open !== null) raw.push([open, end]);
+
+  // Slå sammen vinduer med under 2 minutters opphold, og skjul glimt < 1 min.
+  const merged = [];
+  for (const w of raw) {
+    const last = merged[merged.length - 1];
+    if (last && w[0] - last[1] < 120000) last[1] = w[1];
+    else merged.push([w[0], w[1]]);
+  }
+  const total = merged.reduce((a, w) => a + (w[1] - w[0]), 0);
+  const shown = merged.filter(w => w[1] - w[0] >= 60000);
+  return {
+    windows: merged, shown, total,
+    first: merged.length ? merged[0][0] : null,
+    last:  merged.length ? merged[merged.length - 1][1] : null,
+  };
+}
+
+/** Sola sin bane gjennom døgnet, til panorama-tegningen. */
+function sunPath(startMs, lat, lng, stepMin = 3) {
+  const pts = [];
+  for (let t = startMs; t <= startMs + 86400000; t += stepMin * 60000) {
+    const s = solarPosition(t, lat, lng);
+    if (s.refracted > -1.5) pts.push({ t, az: s.azimuth, el: s.refracted });
+  }
+  return pts;
+}
+
+// ════════════════════════════════════════════════════════
+//  HORISONT – TILSTAND, LAGRING OG UI
+// ════════════════════════════════════════════════════════
+let hzProfile   = null;   // ferdig beregnet profil
+let hzSunResult = null;   // solvinduer for valgt dato
+let hzPin       = { ...HZ_HOME_DEFAULT };
+let hzEye       = 1.7;
+
+const hzCacheKey = (lat, lng, eye) =>
+  `solmelding_hz_v1_${lat.toFixed(5)}_${lng.toFixed(5)}_${eye.toFixed(1)}`;
+
+function hzLoadCached(lat, lng, eye) {
+  try {
+    const raw = localStorage.getItem(hzCacheKey(lat, lng, eye));
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    return (p && p.rays && p.rays.length === HZ_BINS) ? p : null;
+  } catch { return null; }
+}
+function hzSaveCached(profile) {
+  const key = hzCacheKey(profile.lat, profile.lng, profile.eye);
+  const body = JSON.stringify(profile);
+  const readIdx = () => {
+    try { return JSON.parse(localStorage.getItem('solmelding_hz_index') || '[]'); }
+    catch { return []; }
+  };
+  const write = () => {
+    localStorage.setItem(key, body);
+    const idx = readIdx().filter(k => k !== key);
+    idx.push(key);
+    while (idx.length > 6) { try { localStorage.removeItem(idx.shift()); } catch {} }
+    localStorage.setItem('solmelding_hz_index', JSON.stringify(idx));
+  };
+  try {
+    write();
+  } catch {
+    // Sannsynligvis full lagringskvote – kast alt gammelt og prøv én gang til.
+    try {
+      for (const k of readIdx()) { try { localStorage.removeItem(k); } catch {} }
+      localStorage.removeItem('solmelding_hz_index');
+      write();
+    } catch {}
+  }
+}
+function hzSaveSettings() {
+  try {
+    localStorage.setItem('solmelding_hz_settings', JSON.stringify({
+      enabled: document.getElementById('hzEnable').checked,
+      pin: hzPin, eye: hzEye,
+    }));
+  } catch {}
+}
+function hzLoadSettings() {
+  try { return JSON.parse(localStorage.getItem('solmelding_hz_settings') || 'null'); }
+  catch { return null; }
+}
+
+const hzEnabled = () => document.getElementById('hzEnable').checked;
+const hzIsFresh = () => !!hzProfile
+  && Math.abs(hzProfile.lat - hzPin.lat) < 1e-6
+  && Math.abs(hzProfile.lng - hzPin.lng) < 1e-6
+  && Math.abs(hzProfile.eye - hzEye) < 1e-6;
+
+function hzFloorLabel(m) {
+  if (m < 2.6) return '(bakkeplan)';
+  return `(ca. ${Math.max(2, Math.round((m - 1.5) / 3) + 1)}. etasje)`;
+}
+
+function hzUpdateEyeUI() {
+  document.getElementById('hzEyeVal').textContent = hzEye.toFixed(1).replace('.', ',') + ' m';
+  document.getElementById('hzFloor').textContent  = hzFloorLabel(hzEye);
+}
+function hzUpdateCoordUI() {
+  document.getElementById('hzCoords').innerHTML =
+    `📍 <b>${hzPin.lat.toFixed(5)}° N, ${hzPin.lng.toFixed(5)}° Ø</b>`
+    + (hzProfile && hzIsFresh() ? ` · bakkenivå <b>${hzProfile.ground.toFixed(1)} moh</b>` : '');
+}
+function hzSetWarn(html) {
+  const el = document.getElementById('hzWarn');
+  if (!html) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+  el.innerHTML = html; el.classList.remove('hidden');
+}
+
+function hzUseHome() {
+  const s = hzLoadSettings();
+  hzPin = (s && s.pin) ? { ...s.pin } : { ...HZ_HOME_DEFAULT };
+  if (s && typeof s.eye === 'number') {
+    hzEye = s.eye;
+    document.getElementById('hzEye').value = hzEye;
+    hzUpdateEyeUI();
+  }
+  hzMap.center = { ...hzPin };
+  hzMap.draw();
+  hzUpdateCoordUI();
+}
+
+async function runHorizon() {
+  const btn = document.getElementById('hzRunBtn');
+  const prog = document.getElementById('hzProgress');
+  const bar = document.getElementById('hzBar');
+  const txt = document.getElementById('hzProgTxt');
+  btn.disabled = true;
+  hzSetWarn('');
+
+  const cached = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  try {
+    if (cached) {
+      hzProfile = cached;
+    } else {
+      prog.classList.remove('hidden');
+      txt.textContent = 'Leser høydedata fra Kartverket …';
+      hzProfile = await buildHorizonProfile(hzPin.lat, hzPin.lng, hzEye, (done, total) => {
+        const pct = Math.min(100, done / total * 100);
+        bar.style.width = pct.toFixed(1) + '%';
+        txt.textContent = `Leser høydedata fra Kartverket … ${Math.round(pct)} %`;
+      });
+      hzSaveCached(hzProfile);
+    }
+    prog.classList.add('hidden');
+    bar.style.width = '0%';
+
+    coords = { lat: hzPin.lat, lng: hzPin.lng, name: coords ? coords.name : 'Min posisjon' };
+    try {
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${hzPin.lat}&lon=${hzPin.lng}`
+                + `&format=json&zoom=18&accept-language=no`;
+      const d = await (await fetch(url)).json();
+      const a = d.address || {};
+      const name = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.city]
+        .filter(Boolean).join(', ');
+      if (name) coords.name = name;
+    } catch {}
+    document.getElementById('locationInput').value = coords.name;
+    saveLocation(coords);
+    hzSaveSettings();
+    hzUpdateCoordUI();
+    hzCheckPlacement();
+    updateSolarData();
+  } catch (e) {
+    prog.classList.add('hidden');
+    hzProfile = null;
+    hzSetWarn(e && e.message === 'no-coverage'
+      ? '❌ Fant ingen høydedata her. Kartverkets modell dekker bare Norge – prøv et punkt på land i Norge.'
+      : '❌ Fikk ikke kontakt med Kartverkets høydetjeneste. Sjekk nettforbindelsen og prøv igjen.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/** Advarer hvis pinnen står klemt inntil en vegg eller oppå et tak. */
+function hzCheckPlacement() {
+  if (!hzProfile) return;
+  const msgs = [];
+  if (hzProfile.nearest < 6) {
+    msgs.push(`Punktet står bare <b>${hzProfile.nearest.toFixed(1)} m</b> fra en vegg eller et tak, `
+      + 'så nesten alt lys blir sperret. Flytt pinnen ut i gata eller gårdsrommet – '
+      + 'eller sett høyden til den etasjen du bor i.');
+  }
+  const blocked = hzProfile.rays.filter(r => r.alt > 25).length;
+  if (blocked > 300) {
+    msgs.push('Horisonten er sperret i nesten alle retninger. Ligger pinnen inne i et bygg?');
+  }
+  hzSetWarn(msgs.length ? '⚠️ ' + msgs.join('<br>') : '');
+}
+
+// ── Kartvelger (Kartverkets flisetjeneste, ingen bibliotek) ──
+const hzMap = {
+  zoom: 18,
+  center: { ...HZ_HOME_DEFAULT },
+  tiles: new Map(),
+  drag: null,
+  moved: 0,
+
+  world(lat, lng, z) {
+    const n = 256 * Math.pow(2, z);
+    const s = Math.min(0.9999, Math.max(-0.9999, Math.sin(lat * D2R)));
+    return {
+      x: (lng + 180) / 360 * n,
+      y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n,
+    };
+  },
+  unworld(x, y, z) {
+    const n = 256 * Math.pow(2, z);
+    return {
+      lat: Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) / D2R,
+      lng: x / n * 360 - 180,
+    };
+  },
+  tile(z, x, y) {
+    const key = `${z}/${x}/${y}`;
+    let img = this.tiles.get(key);
+    if (!img) {
+      img = new Image();
+      img.crossOrigin = 'anonymous'; // Kartverket sender CORS-header, så lerretet holdes rent
+      img.onload = () => this.draw();
+      img.onerror = () => { img.failed = true; };
+      img.src = `https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/${z}/${y}/${x}.png`;
+      this.tiles.set(key, img);
+      if (this.tiles.size > 400) this.tiles.delete(this.tiles.keys().next().value);
+    }
+    return img;
+  },
+
+  /** Lerretets bufferstørrelse må følge visningsstørrelsen, ellers blir kartet uskarpt. */
+  resize() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || !cv.clientWidth) return false;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    if (cv.width === w && cv.height === h) return false;
+    cv.width = w; cv.height = h;
+    return true;
+  },
+
+  draw() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || cv.offsetParent === null) return;
+    this.resize();
+    const ctx = cv.getContext('2d');
+    const dpr = cv.width / (cv.clientWidth || cv.width);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // tegn i CSS-piksler
+    const W = cv.clientWidth, H = cv.clientHeight, z = this.zoom;
+    ctx.fillStyle = '#0d1b2a'; ctx.fillRect(0, 0, W, H);
+
+    const c = this.world(this.center.lat, this.center.lng, z);
+    const x0 = c.x - W / 2, y0 = c.y - H / 2;
+    const n = Math.pow(2, z);
+    for (let tx = Math.floor(x0 / 256); tx <= Math.floor((x0 + W) / 256); tx++) {
+      for (let ty = Math.floor(y0 / 256); ty <= Math.floor((y0 + H) / 256); ty++) {
+        if (ty < 0 || ty >= n) continue;
+        const img = this.tile(z, ((tx % n) + n) % n, ty);
+        if (img.complete && !img.failed && img.naturalWidth) {
+          ctx.drawImage(img, Math.round(tx * 256 - x0), Math.round(ty * 256 - y0));
+        }
+      }
+    }
+
+    // Pin
+    const p = this.world(hzPin.lat, hzPin.lng, z);
+    const px = p.x - x0, py = p.y - y0;
+    ctx.beginPath();
+    ctx.moveTo(px, py); ctx.lineTo(px - 8, py - 17); ctx.lineTo(px + 8, py - 17);
+    ctx.closePath();
+    ctx.fillStyle = '#ff7f2a'; ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py - 24, 11, 0, Math.PI * 2);
+    ctx.fillStyle = '#f4a429'; ctx.fill();
+    ctx.strokeStyle = '#0d1b2a'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#0d1b2a'; ctx.fill();
+
+    ctx.font = 'bold 11px -apple-system,sans-serif';
+    ctx.fillStyle = '#0d1b2a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('☀', px, py - 24);
+    ctx.textBaseline = 'alphabetic';
+  },
+
+  init() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || cv.dataset.ready) return;
+    cv.dataset.ready = '1';
+    const at = e => {
+      const r = cv.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    cv.addEventListener('pointerdown', e => {
+      cv.setPointerCapture(e.pointerId);
+      this.drag = at(e); this.moved = 0;
+    });
+    cv.addEventListener('pointermove', e => {
+      if (!this.drag) return;
+      const p = at(e), dx = p.x - this.drag.x, dy = p.y - this.drag.y;
+      this.moved += Math.abs(dx) + Math.abs(dy);
+      const c = this.world(this.center.lat, this.center.lng, this.zoom);
+      this.center = this.unworld(c.x - dx, c.y - dy, this.zoom);
+      this.drag = p;
+      this.draw();
+    });
+    cv.addEventListener('pointerup', e => {
+      const wasDragging = this.drag;
+      this.drag = null;
+      if (!wasDragging || this.moved > 6) return;
+      const p = at(e);
+      const c = this.world(this.center.lat, this.center.lng, this.zoom);
+      const ll = this.unworld(c.x - cv.clientWidth / 2 + p.x, c.y - cv.clientHeight / 2 + p.y, this.zoom);
+      hzPin = { lat: +ll.lat.toFixed(6), lng: +ll.lng.toFixed(6) };
+      hzSaveSettings();
+      hzUpdateCoordUI();
+      hzSetWarn('ℹ️ Punktet er flyttet. Trykk «Beregn horisont her» for å oppdatere tallene.');
+      this.draw();
+    });
+    cv.addEventListener('wheel', e => { e.preventDefault(); hzZoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
+    window.addEventListener('resize', () => this.draw());
+  },
+};
+
+function hzZoom(delta) {
+  hzMap.zoom = Math.max(12, Math.min(19, hzMap.zoom + delta));
+  hzMap.draw();
+}
+
+// ════════════════════════════════════════════════════════
+//  HORISONT – RESULTATKORT OG PANORAMA
+// ════════════════════════════════════════════════════════
+function renderHorizonResults(d) {
+  const box = document.getElementById('hzResults');
+  if (!hzSunResult || !hzProfile) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+
+  const r = hzSunResult;
+  document.getElementById('hzTotal').textContent = r.total > 0 ? fmtHMS(r.total) : 'Ingen direkte sol';
+
+  const lost = Math.max(0, r.flatTotal - r.total);
+  document.getElementById('hzSub').innerHTML = r.total > 0
+    ? `Første sol <b>${fmtTimeHM(new Date(r.first))}</b> · siste sol <b>${fmtTimeHM(new Date(r.last))}</b>`
+      + ` · ${fmtHM(lost)} skjult bak bygninger og terreng`
+    : `Sola er over den astronomiske horisonten i ${fmtHMS(r.flatTotal)}, men når aldri over hindringene rundt punktet.`;
+
+  const wins = document.getElementById('hzWindows');
+  wins.innerHTML = r.shown.length
+    ? r.shown.map(w => `<span class="hz-win">☀️ ${fmtTimeHM(new Date(w[0]))} – ${fmtTimeHM(new Date(w[1]))}</span>`).join('')
+    : '<span class="hz-win none">Ingen sammenhengende solvindu</span>';
+
+  drawPanorama(d);
+}
+
+/** Panorama: horisontlinje rundt hele kompasset + sola sin bane. */
+function drawPanorama(d) {
+  const cv = document.getElementById('hzPano');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const L = 34, Rr = 12, T = 12, B = 26;
+  ctx.clearRect(0, 0, W, H);
+
+  const startMs = new Date(d.year, d.month - 1, d.day).getTime();
+  const paths = {
+    today:  sunPath(startMs, coords.lat, coords.lng),
+    summer: sunPath(new Date(d.summerSolstice.getUTCFullYear(), 5, 21).getTime(), coords.lat, coords.lng, 6),
+    winter: sunPath(new Date(d.solstice.getUTCFullYear(), 11, 21).getTime(), coords.lat, coords.lng, 6),
+  };
+  const sunMax = Math.max(1, ...paths.summer.map(p => p.el), ...paths.today.map(p => p.el));
+  const yMax = Math.max(30, Math.min(90, Math.ceil((sunMax + 7) / 5) * 5));
+
+  const X = az => L + (az / 360) * (W - L - Rr);
+  const Y = el => H - B - (Math.max(0, el) / yMax) * (H - T - B);
+
+  // Himmel
+  const sky = ctx.createLinearGradient(0, T, 0, H - B);
+  sky.addColorStop(0, '#0b2038'); sky.addColorStop(1, '#16324d');
+  ctx.fillStyle = sky; ctx.fillRect(L, T, W - L - Rr, H - T - B);
+
+  // Rutenett
+  ctx.font = '9px -apple-system,sans-serif';
+  ctx.strokeStyle = 'rgba(122,155,181,.18)'; ctx.lineWidth = 1;
+  const elStep = yMax > 60 ? 20 : (yMax > 30 ? 10 : 5);
+  for (let e = 0; e <= yMax; e += elStep) {
+    ctx.beginPath(); ctx.moveTo(L, Y(e)); ctx.lineTo(W - Rr, Y(e)); ctx.stroke();
+    ctx.fillStyle = '#7a9bb5'; ctx.textAlign = 'right';
+    ctx.fillText(e + '°', L - 5, Y(e) + 3);
+  }
+  const COMPASS = ['N', 'NØ', 'Ø', 'SØ', 'S', 'SV', 'V', 'NV', 'N'];
+  ctx.textAlign = 'center';
+  COMPASS.forEach((c, i) => {
+    const x = X(i * 45);
+    ctx.strokeStyle = 'rgba(122,155,181,.18)';
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, H - B); ctx.stroke();
+    ctx.fillStyle = (c === 'S') ? '#f4a429' : '#7a9bb5';
+    ctx.fillText(c, x, H - B + 13);
+  });
+
+  // Referansebaner (solverv)
+  const drawPath = (pts, style, width, dash) => {
+    ctx.save();
+    ctx.setLineDash(dash || []); ctx.strokeStyle = style; ctx.lineWidth = width;
+    ctx.beginPath();
+    let started = false, prevAz = null;
+    for (const p of pts) {
+      if (prevAz !== null && Math.abs(p.az - prevAz) > 180) started = false;
+      prevAz = p.az;
+      if (!started) { ctx.moveTo(X(p.az), Y(p.el)); started = true; }
+      else ctx.lineTo(X(p.az), Y(p.el));
+    }
+    ctx.stroke(); ctx.restore();
+  };
+  drawPath(paths.summer, 'rgba(251,191,36,.35)', 1.2, [4, 4]);
+  drawPath(paths.winter, 'rgba(147,197,253,.35)', 1.2, [4, 4]);
+
+  // Sola sin bane i dag – lys der sola er synlig, matt der den er sperret
+  const today = paths.today;
+  for (let i = 1; i < today.length; i++) {
+    const a = today[i - 1], b = today[i];
+    if (Math.abs(b.az - a.az) > 180) continue;
+    const seen = (a.el + SUN_RADIUS) > horizonAt(hzProfile, a.az);
+    ctx.beginPath();
+    ctx.moveTo(X(a.az), Y(a.el)); ctx.lineTo(X(b.az), Y(b.el));
+    ctx.strokeStyle = seen ? '#f4a429' : 'rgba(244,164,41,.22)';
+    ctx.lineWidth = seen ? 3 : 1.6;
+    ctx.stroke();
+  }
+
+  // Horisont-silhuett
+  ctx.beginPath();
+  ctx.moveTo(L, H - B);
+  for (let a = 0; a <= 360; a++) ctx.lineTo(X(a), Y(horizonAt(hzProfile, a)));
+  ctx.lineTo(W - Rr, H - B); ctx.closePath();
+  const gr = ctx.createLinearGradient(0, T, 0, H - B);
+  gr.addColorStop(0, '#24405c'); gr.addColorStop(1, '#0f2135');
+  ctx.fillStyle = gr; ctx.fill();
+  ctx.strokeStyle = '#4c7ba6'; ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  for (let a = 0; a <= 360; a++) { const x = X(a), y = Y(horizonAt(hzProfile, a)); a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+  ctx.stroke();
+
+  // Timemerker langs dagens bane
+  ctx.font = '9px -apple-system,sans-serif'; ctx.textAlign = 'center';
+  for (const p of today) {
+    const dt = new Date(p.t);
+    if (dt.getMinutes() !== 0 || dt.getHours() % 3 !== 0) continue;
+    if (p.el < horizonAt(hzProfile, p.az)) continue;
+    ctx.beginPath(); ctx.arc(X(p.az), Y(p.el), 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffe6b0'; ctx.fill();
+    ctx.fillText(pad(dt.getHours()), X(p.az), Y(p.el) - 6);
+  }
+
+  // Første og siste sol
+  if (hzSunResult && hzSunResult.first !== null) {
+    [[hzSunResult.first, '#fbbf24', '▲'], [hzSunResult.last, '#fb923c', '▼']].forEach(([t, col, ch]) => {
+      const s = solarPosition(t, coords.lat, coords.lng);
+      const x = X(s.azimuth), y = Y(s.refracted);
+      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+      ctx.fillStyle = col; ctx.font = 'bold 10px -apple-system,sans-serif';
+      ctx.fillText(`${ch} ${fmtTimeHM(new Date(t))}`, Math.max(L + 24, Math.min(W - Rr - 24, x)), y - 9);
+    });
+  }
+
+  document.getElementById('hzPanoSub').textContent =
+    `Horisont sett fra punktet: mørkt felt er terreng, bygninger og trær fra Kartverkets `
+    + `1 m overflatemodell. Stiplet: solbanen ved sommer- og vintersolverv.`;
 }
 
 function roundRect(ctx, x, y, w, h, r) {
