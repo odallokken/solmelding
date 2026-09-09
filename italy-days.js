@@ -14,7 +14,7 @@ const ITALY_DAYS = {
   },
   "01-03": {
     "year": 1929,
-    "text": "Komponisten Sergio Leone ble født.",
+    "text": "Filmregissøren Sergio Leone ble født.",
     "source": "https://www.wikidata.org/wiki/Q164562"
   },
   "01-04": {
@@ -29,7 +29,7 @@ const ITALY_DAYS = {
   },
   "01-06": {
     "year": 1938,
-    "text": "Komponisten Adriano Celentano ble født.",
+    "text": "Sangeren og låtskriveren Adriano Celentano ble født.",
     "source": "https://www.wikidata.org/wiki/Q199943"
   },
   "01-07": {
@@ -54,7 +54,7 @@ const ITALY_DAYS = {
   },
   "01-11": {
     "year": 1975,
-    "text": "Historikeren Matteo Renzi ble født.",
+    "text": "Politikeren Matteo Renzi ble født.",
     "source": "https://www.wikidata.org/wiki/Q47563"
   },
   "01-12": {
@@ -69,7 +69,7 @@ const ITALY_DAYS = {
   },
   "01-14": {
     "year": 1919,
-    "text": "Forfatteren Giulio Andreotti ble født.",
+    "text": "Politikeren Giulio Andreotti ble født.",
     "source": "https://www.wikidata.org/wiki/Q50005"
   },
   "01-15": {
@@ -79,12 +79,12 @@ const ITALY_DAYS = {
   },
   "01-16": {
     "year": 1948,
-    "text": "Biskopen Giorgio Demetrio Gallaro ble født.",
+    "text": "Presten Giorgio Demetrio Gallaro ble født.",
     "source": "https://www.wikidata.org/wiki/Q19723463"
   },
   "01-17": {
     "year": 1955,
-    "text": "Biskopen Pietro Parolin ble født.",
+    "text": "Presten Pietro Parolin ble født.",
     "source": "https://www.wikidata.org/wiki/Q574058"
   },
   "01-18": {
@@ -114,7 +114,7 @@ const ITALY_DAYS = {
   },
   "01-23": {
     "year": 1970,
-    "text": "Fotballtreneren Moreno Torricelli ble født.",
+    "text": "Fotballspilleren Moreno Torricelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q371904"
   },
   "01-24": {
@@ -149,7 +149,7 @@ const ITALY_DAYS = {
   },
   "01-30": {
     "year": 1934,
-    "text": "Biskopen Giovanni Battista Re ble født.",
+    "text": "Presten Giovanni Battista Re ble født.",
     "source": "https://www.wikidata.org/wiki/Q44842"
   },
   "01-31": {
@@ -179,7 +179,7 @@ const ITALY_DAYS = {
   },
   "02-05": {
     "year": 1932,
-    "text": "Fotballtreneren Cesare Maldini ble født.",
+    "text": "Fotballspilleren Cesare Maldini ble født.",
     "source": "https://www.wikidata.org/wiki/Q296350"
   },
   "02-06": {
@@ -199,12 +199,12 @@ const ITALY_DAYS = {
   },
   "02-09": {
     "year": 1987,
-    "text": "Fotballtreneren Davide Lanzafame ble født.",
+    "text": "Fotballspilleren Davide Lanzafame ble født.",
     "source": "https://www.wikidata.org/wiki/Q367433"
   },
   "02-10": {
     "year": 1981,
-    "text": "Fotballtreneren Enzo Maresca ble født.",
+    "text": "Fotballspilleren Enzo Maresca ble født.",
     "source": "https://www.wikidata.org/wiki/Q317282"
   },
   "02-11": {
@@ -219,7 +219,7 @@ const ITALY_DAYS = {
   },
   "02-13": {
     "year": 1960,
-    "text": "Økonomen Pierluigi Collina ble født.",
+    "text": "Fotballdommeren Pierluigi Collina ble født.",
     "source": "https://www.wikidata.org/wiki/Q485885"
   },
   "02-14": {
@@ -234,7 +234,7 @@ const ITALY_DAYS = {
   },
   "02-16": {
     "year": 1979,
-    "text": "Racerføreren Valentino Rossi ble født.",
+    "text": "Motorsykkelføreren Valentino Rossi ble født.",
     "source": "https://www.wikidata.org/wiki/Q169814"
   },
   "02-17": {
@@ -249,7 +249,7 @@ const ITALY_DAYS = {
   },
   "02-19": {
     "year": 1977,
-    "text": "Fotballtreneren Gianluca Zambrotta ble født.",
+    "text": "Fotballspilleren Gianluca Zambrotta ble født.",
     "source": "https://www.wikidata.org/wiki/Q182907"
   },
   "02-20": {
@@ -259,12 +259,12 @@ const ITALY_DAYS = {
   },
   "02-21": {
     "year": 1980,
-    "text": "Komponisten Tiziano Ferro ble født.",
+    "text": "Sangeren Tiziano Ferro ble født.",
     "source": "https://www.wikidata.org/wiki/Q492029"
   },
   "02-22": {
     "year": 1921,
-    "text": "Filmskuespilleren Giulietta Masina ble født.",
+    "text": "Teaterskuespilleren Giulietta Masina ble født.",
     "source": "https://www.wikidata.org/wiki/Q106907"
   },
   "02-23": {
@@ -294,7 +294,7 @@ const ITALY_DAYS = {
   },
   "02-28": {
     "year": 1942,
-    "text": "Fotballtreneren Dino Zoff ble født.",
+    "text": "Fotballspilleren Dino Zoff ble født.",
     "source": "https://www.wikidata.org/wiki/Q180661"
   },
   "02-29": {
@@ -319,7 +319,7 @@ const ITALY_DAYS = {
   },
   "03-04": {
     "year": 1943,
-    "text": "Komponisten Lucio Dalla ble født.",
+    "text": "Sangeren og låtskriveren Lucio Dalla ble født.",
     "source": "https://www.wikidata.org/wiki/Q167546"
   },
   "03-05": {
@@ -329,7 +329,7 @@ const ITALY_DAYS = {
   },
   "03-06": {
     "year": 1938,
-    "text": "Biskopen Francesco Coccopalmerio ble født.",
+    "text": "Presten Francesco Coccopalmerio ble født.",
     "source": "https://www.wikidata.org/wiki/Q720642"
   },
   "03-07": {
@@ -339,7 +339,7 @@ const ITALY_DAYS = {
   },
   "03-08": {
     "year": 1943,
-    "text": "Historikeren Valerio Massimo Manfredi ble født.",
+    "text": "Forfatteren Valerio Massimo Manfredi ble født.",
     "source": "https://www.wikidata.org/wiki/Q467817"
   },
   "03-09": {
@@ -364,7 +364,7 @@ const ITALY_DAYS = {
   },
   "03-13": {
     "year": 1955,
-    "text": "Fotballtreneren Bruno Conti ble født.",
+    "text": "Fotballspilleren Bruno Conti ble født.",
     "source": "https://www.wikidata.org/wiki/Q355923"
   },
   "03-14": {
@@ -374,7 +374,7 @@ const ITALY_DAYS = {
   },
   "03-15": {
     "year": 1968,
-    "text": "Komponisten Sabrina Salerno ble født.",
+    "text": "Sangeren Sabrina Salerno ble født.",
     "source": "https://www.wikidata.org/wiki/Q232479"
   },
   "03-16": {
@@ -389,7 +389,7 @@ const ITALY_DAYS = {
   },
   "03-18": {
     "year": 1984,
-    "text": "Fotballtreneren Simone Padoin ble født.",
+    "text": "Fotballspilleren Simone Padoin ble født.",
     "source": "https://www.wikidata.org/wiki/Q350988"
   },
   "03-19": {
@@ -404,7 +404,7 @@ const ITALY_DAYS = {
   },
   "03-21": {
     "year": 1941,
-    "text": "Forfatteren Fausto Cercignani ble født.",
+    "text": "Dikteren Fausto Cercignani ble født.",
     "source": "https://www.wikidata.org/wiki/Q465664"
   },
   "03-22": {
@@ -419,7 +419,7 @@ const ITALY_DAYS = {
   },
   "03-24": {
     "year": 1926,
-    "text": "Komponisten Dario Fo ble født.",
+    "text": "Dramatikeren Dario Fo ble født.",
     "source": "https://www.wikidata.org/wiki/Q765"
   },
   "03-25": {
@@ -434,7 +434,7 @@ const ITALY_DAYS = {
   },
   "03-27": {
     "year": 1970,
-    "text": "Forfatteren Gaia Zucchi ble født.",
+    "text": "Skuespilleren Gaia Zucchi ble født.",
     "source": "https://www.wikidata.org/wiki/Q52159059"
   },
   "03-28": {
@@ -464,17 +464,17 @@ const ITALY_DAYS = {
   },
   "04-02": {
     "year": 1982,
-    "text": "Fotballtreneren Marco Amelia ble født.",
+    "text": "Fotballspilleren Marco Amelia ble født.",
     "source": "https://www.wikidata.org/wiki/Q234866"
   },
   "04-03": {
     "year": 1972,
-    "text": "Skuespilleren Lola Pagnani ble født.",
+    "text": "Teaterskuespilleren Lola Pagnani ble født.",
     "source": "https://www.wikidata.org/wiki/Q131665"
   },
   "04-04": {
     "year": 1915,
-    "text": "Fotballtreneren Amedeo Biavati ble født.",
+    "text": "Fotballspilleren Amedeo Biavati ble født.",
     "source": "https://www.wikidata.org/wiki/Q460580"
   },
   "04-05": {
@@ -484,7 +484,7 @@ const ITALY_DAYS = {
   },
   "04-06": {
     "year": 1959,
-    "text": "Fotballtreneren Pietro Vierchowod ble født.",
+    "text": "Fotballspilleren Pietro Vierchowod ble født.",
     "source": "https://www.wikidata.org/wiki/Q351990"
   },
   "04-07": {
@@ -499,12 +499,12 @@ const ITALY_DAYS = {
   },
   "04-09": {
     "year": 1985,
-    "text": "Fotballtreneren Antonio Nocerino ble født.",
+    "text": "Fotballspilleren Antonio Nocerino ble født.",
     "source": "https://www.wikidata.org/wiki/Q213546"
   },
   "04-10": {
     "year": 1939,
-    "text": "Romanforfatteren Claudio Magris ble født.",
+    "text": "Forfatteren Claudio Magris ble født.",
     "source": "https://www.wikidata.org/wiki/Q274404"
   },
   "04-11": {
@@ -514,7 +514,7 @@ const ITALY_DAYS = {
   },
   "04-12": {
     "year": 1948,
-    "text": "Fotballtreneren Marcello Lippi ble født.",
+    "text": "Fotballspilleren Marcello Lippi ble født.",
     "source": "https://www.wikidata.org/wiki/Q43304"
   },
   "04-13": {
@@ -534,7 +534,7 @@ const ITALY_DAYS = {
   },
   "04-16": {
     "year": 1972,
-    "text": "Fotballtreneren Paolo Negro ble født.",
+    "text": "Fotballspilleren Paolo Negro ble født.",
     "source": "https://www.wikidata.org/wiki/Q561227"
   },
   "04-17": {
@@ -544,7 +544,7 @@ const ITALY_DAYS = {
   },
   "04-18": {
     "year": 1902,
-    "text": "Økonomen Giuseppe Pella ble født.",
+    "text": "Politikeren Giuseppe Pella ble født.",
     "source": "https://www.wikidata.org/wiki/Q320963"
   },
   "04-19": {
@@ -574,12 +574,12 @@ const ITALY_DAYS = {
   },
   "04-24": {
     "year": 1966,
-    "text": "Fotballtreneren Alessandro Costacurta ble født.",
+    "text": "Fotballspilleren Alessandro Costacurta ble født.",
     "source": "https://www.wikidata.org/wiki/Q213828"
   },
   "04-25": {
     "year": 1939,
-    "text": "Fotballtreneren Tarcisio Burgnich ble født.",
+    "text": "Fotballspilleren Tarcisio Burgnich ble født.",
     "source": "https://www.wikidata.org/wiki/Q503297"
   },
   "04-26": {
@@ -604,12 +604,12 @@ const ITALY_DAYS = {
   },
   "04-30": {
     "year": 1978,
-    "text": "Fotballtreneren Simone Barone ble født.",
+    "text": "Fotballspilleren Simone Barone ble født.",
     "source": "https://www.wikidata.org/wiki/Q299105"
   },
   "05-01": {
     "year": 1987,
-    "text": "Fotballtreneren Leonardo Bonucci ble født.",
+    "text": "Fotballspilleren Leonardo Bonucci ble født.",
     "source": "https://www.wikidata.org/wiki/Q208050"
   },
   "05-02": {
@@ -624,7 +624,7 @@ const ITALY_DAYS = {
   },
   "05-04": {
     "year": 1973,
-    "text": "Fotballtreneren Giuseppe Zappella ble født.",
+    "text": "Fotballspilleren Giuseppe Zappella ble født.",
     "source": "https://www.wikidata.org/wiki/Q1092098"
   },
   "05-05": {
@@ -679,7 +679,7 @@ const ITALY_DAYS = {
   },
   "05-15": {
     "year": 1953,
-    "text": "Fotballtreneren Franco Selvaggi ble født.",
+    "text": "Fotballspilleren Franco Selvaggi ble født.",
     "source": "https://www.wikidata.org/wiki/Q533052"
   },
   "05-16": {
@@ -689,7 +689,7 @@ const ITALY_DAYS = {
   },
   "05-17": {
     "year": 1974,
-    "text": "Politikeren Damiano Tommasi ble født.",
+    "text": "Fotballspilleren Damiano Tommasi ble født.",
     "source": "https://www.wikidata.org/wiki/Q350271"
   },
   "05-18": {
@@ -699,12 +699,12 @@ const ITALY_DAYS = {
   },
   "05-19": {
     "year": 1979,
-    "text": "Fotballtreneren Andrea Pirlo ble født.",
+    "text": "Fotballspilleren Andrea Pirlo ble født.",
     "source": "https://www.wikidata.org/wiki/Q43926"
   },
   "05-20": {
     "year": 1912,
-    "text": "Fotballtreneren Nereo Rocco ble født.",
+    "text": "Fotballspilleren Nereo Rocco ble født.",
     "source": "https://www.wikidata.org/wiki/Q354475"
   },
   "05-21": {
@@ -729,7 +729,7 @@ const ITALY_DAYS = {
   },
   "05-25": {
     "year": 1953,
-    "text": "Fotballtreneren Gaetano Scirea ble født.",
+    "text": "Fotballspilleren Gaetano Scirea ble født.",
     "source": "https://www.wikidata.org/wiki/Q299608"
   },
   "05-26": {
@@ -744,7 +744,7 @@ const ITALY_DAYS = {
   },
   "05-28": {
     "year": 1934,
-    "text": "Biskopen Francesco Monterisi ble født.",
+    "text": "Presten Francesco Monterisi ble født.",
     "source": "https://www.wikidata.org/wiki/Q721621"
   },
   "05-29": {
@@ -774,7 +774,7 @@ const ITALY_DAYS = {
   },
   "06-03": {
     "year": 1971,
-    "text": "Fotballtreneren Luigi Di Biagio ble født.",
+    "text": "Fotballspilleren Luigi Di Biagio ble født.",
     "source": "https://www.wikidata.org/wiki/Q314053"
   },
   "06-04": {
@@ -789,17 +789,17 @@ const ITALY_DAYS = {
   },
   "06-06": {
     "year": 1979,
-    "text": "Fotballtreneren Roberto De Zerbi ble født.",
+    "text": "Fotballspilleren Roberto De Zerbi ble født.",
     "source": "https://www.wikidata.org/wiki/Q2032119"
   },
   "06-07": {
     "year": 1974,
-    "text": "Biskopen Giorgio Marengo ble født.",
+    "text": "Presten Giorgio Marengo ble født.",
     "source": "https://www.wikidata.org/wiki/Q89274820"
   },
   "06-08": {
     "year": 1938,
-    "text": "Biskopen Angelo Amato ble født.",
+    "text": "Presten Angelo Amato ble født.",
     "source": "https://www.wikidata.org/wiki/Q535546"
   },
   "06-09": {
@@ -809,7 +809,7 @@ const ITALY_DAYS = {
   },
   "06-10": {
     "year": 1959,
-    "text": "Filmskuespilleren Carlo Ancelotti ble født.",
+    "text": "Fotballtreneren Carlo Ancelotti ble født.",
     "source": "https://www.wikidata.org/wiki/Q174614"
   },
   "06-11": {
@@ -824,17 +824,17 @@ const ITALY_DAYS = {
   },
   "06-13": {
     "year": 1928,
-    "text": "Biskopen Giacomo Biffi ble født.",
+    "text": "Presten Giacomo Biffi ble født.",
     "source": "https://www.wikidata.org/wiki/Q81156"
   },
   "06-14": {
     "year": 1976,
-    "text": "Fotballtreneren Massimo Oddo ble født.",
+    "text": "Fotballspilleren Massimo Oddo ble født.",
     "source": "https://www.wikidata.org/wiki/Q125438"
   },
   "06-15": {
     "year": 1920,
-    "text": "Komponisten Alberto Sordi ble født.",
+    "text": "Skuespilleren Alberto Sordi ble født.",
     "source": "https://www.wikidata.org/wiki/Q50003"
   },
   "06-16": {
@@ -849,7 +849,7 @@ const ITALY_DAYS = {
   },
   "06-18": {
     "year": 1946,
-    "text": "Fotballtreneren Fabio Capello ble født.",
+    "text": "Fotballspilleren Fabio Capello ble født.",
     "source": "https://www.wikidata.org/wiki/Q183108"
   },
   "06-19": {
@@ -869,7 +869,7 @@ const ITALY_DAYS = {
   },
   "06-22": {
     "year": 1930,
-    "text": "Forfatteren Walter Bonatti ble født.",
+    "text": "Fjellklatreren Walter Bonatti ble født.",
     "source": "https://www.wikidata.org/wiki/Q53729"
   },
   "06-23": {
@@ -889,7 +889,7 @@ const ITALY_DAYS = {
   },
   "06-26": {
     "year": 1968,
-    "text": "Tennisspilleren Paolo Maldini ble født.",
+    "text": "Fotballspilleren Paolo Maldini ble født.",
     "source": "https://www.wikidata.org/wiki/Q483027"
   },
   "06-27": {
@@ -924,17 +924,17 @@ const ITALY_DAYS = {
   },
   "07-03": {
     "year": 1955,
-    "text": "Filmregissøren Walter Veltroni ble født.",
+    "text": "Politikeren Walter Veltroni ble født.",
     "source": "https://www.wikidata.org/wiki/Q319547"
   },
   "07-04": {
     "year": 1927,
-    "text": "Filmregissøren Gina Lollobrigida ble født.",
+    "text": "Skuespilleren Gina Lollobrigida ble født.",
     "source": "https://www.wikidata.org/wiki/Q56009"
   },
   "07-05": {
     "year": 1982,
-    "text": "Fotballtreneren Alberto Gilardino ble født.",
+    "text": "Fotballspilleren Alberto Gilardino ble født.",
     "source": "https://www.wikidata.org/wiki/Q182451"
   },
   "07-06": {
@@ -944,7 +944,7 @@ const ITALY_DAYS = {
   },
   "07-07": {
     "year": 1943,
-    "text": "Komponisten Toto Cutugno ble født.",
+    "text": "Sangeren Toto Cutugno ble født.",
     "source": "https://www.wikidata.org/wiki/Q487473"
   },
   "07-08": {
@@ -954,7 +954,7 @@ const ITALY_DAYS = {
   },
   "07-09": {
     "year": 1964,
-    "text": "Fotballtreneren Gianluca Vialli ble født.",
+    "text": "Fotballspilleren Gianluca Vialli ble født.",
     "source": "https://www.wikidata.org/wiki/Q239688"
   },
   "07-10": {
@@ -989,7 +989,7 @@ const ITALY_DAYS = {
   },
   "07-16": {
     "year": 1939,
-    "text": "Fotballtreneren Lido Vieri ble født.",
+    "text": "Fotballspilleren Lido Vieri ble født.",
     "source": "https://www.wikidata.org/wiki/Q717675"
   },
   "07-17": {
@@ -1004,22 +1004,22 @@ const ITALY_DAYS = {
   },
   "07-19": {
     "year": 1975,
-    "text": "Fotballtreneren Luca Castellazzi ble født.",
+    "text": "Fotballspilleren Luca Castellazzi ble født.",
     "source": "https://www.wikidata.org/wiki/Q320513"
   },
   "07-20": {
     "year": 1955,
-    "text": "Biskopen Egidio Miragoli ble født.",
+    "text": "Presten Egidio Miragoli ble født.",
     "source": "https://www.wikidata.org/wiki/Q41320755"
   },
   "07-21": {
     "year": 1948,
-    "text": "Forfatteren Beppe Grillo ble født.",
+    "text": "Skuespilleren Beppe Grillo ble født.",
     "source": "https://www.wikidata.org/wiki/Q47683"
   },
   "07-22": {
     "year": 1934,
-    "text": "Historikeren Raniero Cantalamessa ble født.",
+    "text": "Presten Raniero Cantalamessa ble født.",
     "source": "https://www.wikidata.org/wiki/Q1233583"
   },
   "07-23": {
@@ -1029,7 +1029,7 @@ const ITALY_DAYS = {
   },
   "07-24": {
     "year": 1983,
-    "text": "Fotballtreneren Daniele De Rossi ble født.",
+    "text": "Fotballspilleren Daniele De Rossi ble født.",
     "source": "https://www.wikidata.org/wiki/Q168497"
   },
   "07-25": {
@@ -1039,12 +1039,12 @@ const ITALY_DAYS = {
   },
   "07-26": {
     "year": 1966,
-    "text": "Sangeren Anna Rita Del Piano ble født.",
+    "text": "Teaterskuespilleren Anna Rita Del Piano ble født.",
     "source": "https://www.wikidata.org/wiki/Q3617810"
   },
   "07-27": {
     "year": 1968,
-    "text": "Filmregissøren Maria Grazia Cucinotta ble født.",
+    "text": "Skuespilleren Maria Grazia Cucinotta ble født.",
     "source": "https://www.wikidata.org/wiki/Q234775"
   },
   "07-28": {
@@ -1059,12 +1059,12 @@ const ITALY_DAYS = {
   },
   "07-30": {
     "year": 1943,
-    "text": "Økonomen Giovanni Goria ble født.",
+    "text": "Politikeren Giovanni Goria ble født.",
     "source": "https://www.wikidata.org/wiki/Q336259"
   },
   "07-31": {
     "year": 1969,
-    "text": "Fotballtreneren Antonio Conte ble født.",
+    "text": "Fotballspilleren Antonio Conte ble født.",
     "source": "https://www.wikidata.org/wiki/Q26580"
   },
   "08-01": {
@@ -1119,12 +1119,12 @@ const ITALY_DAYS = {
   },
   "08-11": {
     "year": 1967,
-    "text": "Fotballtreneren Massimiliano Allegri ble født.",
+    "text": "Fotballspilleren Massimiliano Allegri ble født.",
     "source": "https://www.wikidata.org/wiki/Q354529"
   },
   "08-12": {
     "year": 1973,
-    "text": "Fotballtreneren Mark Iuliano ble født.",
+    "text": "Fotballspilleren Mark Iuliano ble født.",
     "source": "https://www.wikidata.org/wiki/Q353046"
   },
   "08-13": {
@@ -1134,12 +1134,12 @@ const ITALY_DAYS = {
   },
   "08-14": {
     "year": 1984,
-    "text": "Fotballtreneren Giorgio Chiellini ble født.",
+    "text": "Fotballspilleren Giorgio Chiellini ble født.",
     "source": "https://www.wikidata.org/wiki/Q80306"
   },
   "08-15": {
     "year": 1922,
-    "text": "Historikeren Carlo M. Cipolla ble født.",
+    "text": "Økonomen Carlo M. Cipolla ble født.",
     "source": "https://www.wikidata.org/wiki/Q454036"
   },
   "08-16": {
@@ -1154,17 +1154,17 @@ const ITALY_DAYS = {
   },
   "08-18": {
     "year": 1943,
-    "text": "Politikeren Gianni Rivera ble født.",
+    "text": "Fotballspilleren Gianni Rivera ble født.",
     "source": "https://www.wikidata.org/wiki/Q230046"
   },
   "08-19": {
     "year": 1973,
-    "text": "Fotballtreneren Marco Materazzi ble født.",
+    "text": "Fotballspilleren Marco Materazzi ble født.",
     "source": "https://www.wikidata.org/wiki/Q185081"
   },
   "08-20": {
     "year": 1901,
-    "text": "Forfatteren Salvatore Quasimodo ble født.",
+    "text": "Dikteren Salvatore Quasimodo ble født.",
     "source": "https://www.wikidata.org/wiki/Q83038"
   },
   "08-21": {
@@ -1179,22 +1179,22 @@ const ITALY_DAYS = {
   },
   "08-23": {
     "year": 1910,
-    "text": "Fotballtreneren Giuseppe Meazza ble født.",
+    "text": "Fotballspilleren Giuseppe Meazza ble født.",
     "source": "https://www.wikidata.org/wiki/Q192131"
   },
   "08-24": {
     "year": 1973,
-    "text": "Fotballtreneren Fabio Pecchia ble født.",
+    "text": "Fotballspilleren Fabio Pecchia ble født.",
     "source": "https://www.wikidata.org/wiki/Q1087530"
   },
   "08-25": {
     "year": 1953,
-    "text": "Biskopen Maurizio Malvestiti ble født.",
+    "text": "Presten Maurizio Malvestiti ble født.",
     "source": "https://www.wikidata.org/wiki/Q17617264"
   },
   "08-26": {
     "year": 1958,
-    "text": "Forfatteren Nichi Vendola ble født.",
+    "text": "Politikeren Nichi Vendola ble født.",
     "source": "https://www.wikidata.org/wiki/Q507595"
   },
   "08-27": {
@@ -1219,7 +1219,7 @@ const ITALY_DAYS = {
   },
   "08-31": {
     "year": 1907,
-    "text": "Forfatteren Altiero Spinelli ble født.",
+    "text": "Politikeren Altiero Spinelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q441294"
   },
   "09-01": {
@@ -1229,7 +1229,7 @@ const ITALY_DAYS = {
   },
   "09-02": {
     "year": 1938,
-    "text": "Skuespilleren Giuliano Gemma ble født.",
+    "text": "Filmskuespilleren Giuliano Gemma ble født.",
     "source": "https://www.wikidata.org/wiki/Q463944"
   },
   "09-03": {
@@ -1249,12 +1249,12 @@ const ITALY_DAYS = {
   },
   "09-06": {
     "year": 1925,
-    "text": "Filmregissøren Andrea Camilleri ble født.",
+    "text": "Forfatteren Andrea Camilleri ble født.",
     "source": "https://www.wikidata.org/wiki/Q334219"
   },
   "09-07": {
     "year": 1940,
-    "text": "Komponisten Dario Argento ble født.",
+    "text": "Filmregissøren Dario Argento ble født.",
     "source": "https://www.wikidata.org/wiki/Q53011"
   },
   "09-08": {
@@ -1284,7 +1284,7 @@ const ITALY_DAYS = {
   },
   "09-13": {
     "year": 1973,
-    "text": "Fotballtreneren Fabio Cannavaro ble født.",
+    "text": "Fotballspilleren Fabio Cannavaro ble født.",
     "source": "https://www.wikidata.org/wiki/Q102027"
   },
   "09-14": {
@@ -1304,7 +1304,7 @@ const ITALY_DAYS = {
   },
   "09-17": {
     "year": 1944,
-    "text": "Filmregissøren Reinhold Messner ble født.",
+    "text": "Fjellklatreren Reinhold Messner ble født.",
     "source": "https://www.wikidata.org/wiki/Q189307"
   },
   "09-18": {
@@ -1329,7 +1329,7 @@ const ITALY_DAYS = {
   },
   "09-22": {
     "year": 1958,
-    "text": "Komponisten Andrea Bocelli ble født.",
+    "text": "Sangeren og låtskriveren Andrea Bocelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q42402"
   },
   "09-23": {
@@ -1339,17 +1339,17 @@ const ITALY_DAYS = {
   },
   "09-24": {
     "year": 1954,
-    "text": "Fotballtreneren Marco Tardelli ble født.",
+    "text": "Fotballspilleren Marco Tardelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q312626"
   },
   "09-25": {
     "year": 1955,
-    "text": "Komponisten Zucchero ble født.",
+    "text": "Sangeren Zucchero ble født.",
     "source": "https://www.wikidata.org/wiki/Q125948"
   },
   "09-26": {
     "year": 1927,
-    "text": "Fotballtreneren Enzo Bearzot ble født.",
+    "text": "Fotballspilleren Enzo Bearzot ble født.",
     "source": "https://www.wikidata.org/wiki/Q313457"
   },
   "09-27": {
@@ -1369,7 +1369,7 @@ const ITALY_DAYS = {
   },
   "09-30": {
     "year": 1964,
-    "text": "Skuespilleren Monica Bellucci ble født.",
+    "text": "Filmskuespilleren Monica Bellucci ble født.",
     "source": "https://www.wikidata.org/wiki/Q81819"
   },
   "10-01": {
@@ -1379,22 +1379,22 @@ const ITALY_DAYS = {
   },
   "10-02": {
     "year": 1910,
-    "text": "Fotballtreneren Aldo Olivieri ble født.",
+    "text": "Fotballspilleren Aldo Olivieri ble født.",
     "source": "https://www.wikidata.org/wiki/Q967005"
   },
   "10-03": {
     "year": 1990,
-    "text": "Sangeren Michele Morrone ble født.",
+    "text": "Skuespilleren Michele Morrone ble født.",
     "source": "https://www.wikidata.org/wiki/Q96106282"
   },
   "10-04": {
     "year": 1975,
-    "text": "Fotballtreneren Cristiano Lucarelli ble født.",
+    "text": "Fotballspilleren Cristiano Lucarelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q310034"
   },
   "10-05": {
     "year": 1971,
-    "text": "Arkitekten Nicola Rizzoli ble født.",
+    "text": "Fotballdommeren Nicola Rizzoli ble født.",
     "source": "https://www.wikidata.org/wiki/Q315234"
   },
   "10-06": {
@@ -1409,22 +1409,22 @@ const ITALY_DAYS = {
   },
   "10-08": {
     "year": 1957,
-    "text": "Fotballtreneren Antonio Cabrini ble født.",
+    "text": "Fotballspilleren Antonio Cabrini ble født.",
     "source": "https://www.wikidata.org/wiki/Q68064"
   },
   "10-09": {
     "year": 1949,
-    "text": "Skuespilleren Ottavia Piccolo ble født.",
+    "text": "Teaterskuespilleren Ottavia Piccolo ble født.",
     "source": "https://www.wikidata.org/wiki/Q271293"
   },
   "10-10": {
     "year": 1945,
-    "text": "Fotballtreneren Edoardo Reja ble født.",
+    "text": "Fotballspilleren Edoardo Reja ble født.",
     "source": "https://www.wikidata.org/wiki/Q2327467"
   },
   "10-11": {
     "year": 1955,
-    "text": "Biskopen Matteo Maria Zuppi ble født.",
+    "text": "Presten Matteo Maria Zuppi ble født.",
     "source": "https://www.wikidata.org/wiki/Q600191"
   },
   "10-12": {
@@ -1434,22 +1434,22 @@ const ITALY_DAYS = {
   },
   "10-13": {
     "year": 1977,
-    "text": "Fotballtreneren Antonio Di Natale ble født.",
+    "text": "Fotballspilleren Antonio Di Natale ble født.",
     "source": "https://www.wikidata.org/wiki/Q167281"
   },
   "10-14": {
     "year": 1915,
-    "text": "Biskopen Loris Francesco Capovilla ble født.",
+    "text": "Presten Loris Francesco Capovilla ble født.",
     "source": "https://www.wikidata.org/wiki/Q697159"
   },
   "10-15": {
     "year": 1923,
-    "text": "Romanforfatteren Italo Calvino ble født.",
+    "text": "Forfatteren Italo Calvino ble født.",
     "source": "https://www.wikidata.org/wiki/Q154756"
   },
   "10-16": {
     "year": 1906,
-    "text": "Romanforfatteren Dino Buzzati ble født.",
+    "text": "Forfatteren Dino Buzzati ble født.",
     "source": "https://www.wikidata.org/wiki/Q242095"
   },
   "10-17": {
@@ -1469,7 +1469,7 @@ const ITALY_DAYS = {
   },
   "10-20": {
     "year": 1951,
-    "text": "Fotballtreneren Claudio Ranieri ble født.",
+    "text": "Fotballspilleren Claudio Ranieri ble født.",
     "source": "https://www.wikidata.org/wiki/Q235068"
   },
   "10-21": {
@@ -1479,7 +1479,7 @@ const ITALY_DAYS = {
   },
   "10-22": {
     "year": 1966,
-    "text": "Filmregissøren Valeria Golino ble født.",
+    "text": "Skuespilleren Valeria Golino ble født.",
     "source": "https://www.wikidata.org/wiki/Q230710"
   },
   "10-23": {
@@ -1504,12 +1504,12 @@ const ITALY_DAYS = {
   },
   "10-27": {
     "year": 1952,
-    "text": "Komponisten Roberto Benigni ble født.",
+    "text": "Filmregissøren Roberto Benigni ble født.",
     "source": "https://www.wikidata.org/wiki/Q23301"
   },
   "10-28": {
     "year": 1963,
-    "text": "Komponisten Eros Ramazzotti ble født.",
+    "text": "Sangeren og låtskriveren Eros Ramazzotti ble født.",
     "source": "https://www.wikidata.org/wiki/Q153708"
   },
   "10-29": {
@@ -1524,7 +1524,7 @@ const ITALY_DAYS = {
   },
   "10-31": {
     "year": 1929,
-    "text": "Komponisten Bud Spencer ble født.",
+    "text": "Skuespilleren Bud Spencer ble født.",
     "source": "https://www.wikidata.org/wiki/Q221074"
   },
   "11-01": {
@@ -1554,7 +1554,7 @@ const ITALY_DAYS = {
   },
   "11-06": {
     "year": 1954,
-    "text": "Dikteren Mango ble født.",
+    "text": "Sangeren og låtskriveren Mango ble født.",
     "source": "https://www.wikidata.org/wiki/Q1054564"
   },
   "11-07": {
@@ -1584,12 +1584,12 @@ const ITALY_DAYS = {
   },
   "11-12": {
     "year": 1986,
-    "text": "Fotballtreneren Ignazio Abate ble født.",
+    "text": "Fotballspilleren Ignazio Abate ble født.",
     "source": "https://www.wikidata.org/wiki/Q213007"
   },
   "11-13": {
     "year": 1936,
-    "text": "Filmregissøren Dacia Maraini ble født.",
+    "text": "Dikteren Dacia Maraini ble født.",
     "source": "https://www.wikidata.org/wiki/Q286600"
   },
   "11-14": {
@@ -1614,12 +1614,12 @@ const ITALY_DAYS = {
   },
   "11-18": {
     "year": 1936,
-    "text": "Biskopen Ennio Antonelli ble født.",
+    "text": "Presten Ennio Antonelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q82692"
   },
   "11-19": {
     "year": 1919,
-    "text": "Komponisten Gillo Pontecorvo ble født.",
+    "text": "Filmregissøren Gillo Pontecorvo ble født.",
     "source": "https://www.wikidata.org/wiki/Q53031"
   },
   "11-20": {
@@ -1639,7 +1639,7 @@ const ITALY_DAYS = {
   },
   "11-23": {
     "year": 1941,
-    "text": "Filmregissøren Franco Nero ble født.",
+    "text": "Filmskuespilleren Franco Nero ble født.",
     "source": "https://www.wikidata.org/wiki/Q311716"
   },
   "11-24": {
@@ -1659,22 +1659,22 @@ const ITALY_DAYS = {
   },
   "11-27": {
     "year": 1964,
-    "text": "Fotballtreneren Roberto Mancini ble født.",
+    "text": "Fotballspilleren Roberto Mancini ble født.",
     "source": "https://www.wikidata.org/wiki/Q48330"
   },
   "11-28": {
     "year": 1977,
-    "text": "Fotballtreneren Fabio Grosso ble født.",
+    "text": "Fotballspilleren Fabio Grosso ble født.",
     "source": "https://www.wikidata.org/wiki/Q230529"
   },
   "11-29": {
     "year": 1902,
-    "text": "Legen Carlo Levi ble født.",
+    "text": "Maleren Carlo Levi ble født.",
     "source": "https://www.wikidata.org/wiki/Q312628"
   },
   "11-30": {
     "year": 1986,
-    "text": "Fotballtreneren Salvatore Bocchetti ble født.",
+    "text": "Fotballspilleren Salvatore Bocchetti ble født.",
     "source": "https://www.wikidata.org/wiki/Q314744"
   },
   "12-01": {
@@ -1709,7 +1709,7 @@ const ITALY_DAYS = {
   },
   "12-07": {
     "year": 1909,
-    "text": "Fotballtreneren Mario Pizziolo ble født.",
+    "text": "Fotballspilleren Mario Pizziolo ble født.",
     "source": "https://www.wikidata.org/wiki/Q277395"
   },
   "12-08": {
@@ -1754,17 +1754,17 @@ const ITALY_DAYS = {
   },
   "12-16": {
     "year": 1952,
-    "text": "Fotballtreneren Francesco Graziani ble født.",
+    "text": "Fotballspilleren Francesco Graziani ble født.",
     "source": "https://www.wikidata.org/wiki/Q355897"
   },
   "12-17": {
     "year": 1967,
-    "text": "Komponisten Gigi D'Agostino ble født.",
+    "text": "DJ-en Gigi D'Agostino ble født.",
     "source": "https://www.wikidata.org/wiki/Q311748"
   },
   "12-18": {
     "year": 1933,
-    "text": "Historikeren Laura Mancinelli ble født.",
+    "text": "Forfatteren Laura Mancinelli ble født.",
     "source": "https://www.wikidata.org/wiki/Q3827806"
   },
   "12-19": {
@@ -1784,7 +1784,7 @@ const ITALY_DAYS = {
   },
   "12-22": {
     "year": 1963,
-    "text": "Fotballtreneren Giuseppe Bergomi ble født.",
+    "text": "Fotballspilleren Giuseppe Bergomi ble født.",
     "source": "https://www.wikidata.org/wiki/Q235159"
   },
   "12-23": {
@@ -1814,17 +1814,17 @@ const ITALY_DAYS = {
   },
   "12-28": {
     "year": 1905,
-    "text": "Fotballtreneren Fulvio Bernardini ble født.",
+    "text": "Fotballspilleren Fulvio Bernardini ble født.",
     "source": "https://www.wikidata.org/wiki/Q963445"
   },
   "12-29": {
     "year": 1970,
-    "text": "Fotballtreneren Enrico Chiesa ble født.",
+    "text": "Fotballspilleren Enrico Chiesa ble født.",
     "source": "https://www.wikidata.org/wiki/Q345026"
   },
   "12-30": {
     "year": 1986,
-    "text": "Fotballtreneren Domenico Criscito ble født.",
+    "text": "Fotballspilleren Domenico Criscito ble født.",
     "source": "https://www.wikidata.org/wiki/Q215527"
   },
   "12-31": {
