@@ -65,9 +65,17 @@ med italiensk sommerstemning:
   ned fra Kartverket med en framdriftsvisning.
 - **Musikk** – «Tarantella Napoletana», altså Luigi Riccis *Tarantella di Piedigrotta*
   fra 1852 – melodien folk flest kjenner som selve Italia-låta. Ricci døde i 1859,
-  så den falt i det fri i 1930. Den spilles som 8-bits chiptune: to pulskanaler
-  (melodi og arpeggio), gående trekantbass og støykanal med tamburin, alt syntetisert
-  i nettleseren med Web Audio. Ingen lydfiler lastes ned. Kan slås av og på.
+  så den falt i det fri i 1930. Melodien er transkribert direkte fra notekilden:
+  åtte takter i 6/8, a-moll, punktert firedel = 140.
+
+  Den spilles på et syntetisk trekkspill. Fritungene er egne bølgeformer med
+  formanttopper, og hver tone klinger på flere tungerekker som er stemt noen cent
+  fra hverandre – det er musette-svevingen som gjør at et trekkspill høres ut som
+  et trekkspill. Melodien har i tillegg en oktavtunge, bassen en 16-fots under.
+  Venstre hånd spiller stradella: bass på slaget og korte akkordstøt imellom,
+  «oom-pah-pah». Alt er kort og avkortet, slik en tarantella faktisk spilles, med
+  tamburin på åttendedelene. Ingen lydfiler lastes ned – alt lages i nettleseren
+  med Web Audio. Kan slås av og på.
 - Lukkes med **← Tilbake** eller **Esc**.
 
 ## Nøyaktighet

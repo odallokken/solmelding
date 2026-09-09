@@ -2393,41 +2393,43 @@ function exitSolMode() {
 //  slyngen går rundt i hele takter.
 // ════════════════════════════════════════════════════════
 const SOL_BEATS = 6;                 // åttendedeler per takt
-const SOL_UNIT  = 60 / 152 / 3;      // 152 BPM punktert firedel
+const SOL_UNIT  = 60 / 140 / 3;      // 140 BPM punktert firedel, som i kilden
 
+// Kilden har opptakt på 3 åttendedeler og sju hele takter, og
+// slutttakten på 3 åttendedeler blir opptakt neste gang rundt.
+// Her er den rullet slik at slyngen starter på taktslag 1 og går
+// sømløst rundt: åtte hele takter, 48 åttendedeler.
 const SOL_LEAD = [
-  ['A5',2],['A5',1],['E5',2],['E5',1],
-  ['A5',2],['A5',1],['E5',2],['E5',1],
-  ['E5',2],['E5',1],['F5',2],['F5',1],
-  ['F5',1],['G5',1],['F5',1],['E5',2],[null,1],
+  ['E5',2],['E5',1],['A5',2],['A5',1],
+  ['E5',2],['E5',1],['E5',2],['E5',1],
+  ['F5',2],['F5',1],['F5',1],['G5',1],['F5',1],
+  ['E5',2],[null,1],['E5',2],['E5',1],
   ['E5',2],['D5',1],['D5',2],['D5',1],
   ['D5',2],['C5',1],['C5',2],['C5',1],
   ['C5',2],['B4',1],['B4',1],['C5',1],['B4',1],
   ['A4',2],[null,1],['A5',2],['A5',1],
-  ['E5',2],['E5',1],['A5',2],['A5',1],
-  ['E5',2],['E5',1],['E5',2],['E5',1],
-  ['F5',2],['F5',1],['F5',1],['G5',1],['F5',1],
-  ['E5',2],[null,1],['E5',2],['D5',1],
-  ['D5',2],['D5',1],['D5',2],['C5',1],
-  ['C5',2],['C5',1],['C5',2],['B4',1],
-  ['B4',1],['C5',1],['B4',1],['A4',2],[null,1],
 ];
 
 // Akkorder: én per punktert firedel (to per takt).
+// «chord» er venstrehåndens stradella-akkord – trange treklanger i
+// samme leie, slik ekte trekkspillbass gjør det. «bass» er grunntone og kvint.
 const SOL_CHORD_LIB = {
-  Am: { arp: ['A3','C4','E4'],        bass: ['A2','E3'] },
-  Dm: { arp: ['D3','F3','A3'],        bass: ['D2','A2'] },
-  E7: { arp: ['E3','G#3','B3','D4'],  bass: ['E2','B2'] },
+  Am: { chord: ['A3','C4','E4'],  bass: ['A2','E2'] },
+  Dm: { chord: ['A3','D4','F4'],  bass: ['D2','A2'] },
+  E7: { chord: ['G#3','B3','E4'], bass: ['E2','B2'] },
 };
 const SOL_PROG = [
-  'Am','Am', 'Am','Am', 'Dm','Dm', 'Dm','Dm',
+  'Am','Am', 'Am','Am', 'Dm','Dm', 'Am','Am',
   'E7','E7', 'Am','Am', 'E7','E7', 'Am','Am',
-  'Am','Am', 'Am','Am', 'Dm','Dm', 'Dm','Dm',
-  'E7','E7', 'Am','Am', 'E7','E7',
 ];
 
 // ════════════════════════════════════════════════════════
-//  CHIPTUNE-MOTOR (NES-aktig: to pulskanaler, trekant og støy)
+//  TREKKSPILL-MOTOR
+//  Fritungene etterlignes med sagtannoscillatorer gjennom et
+//  formantfilter. Flere tunger per tone stemmes noen cent fra
+//  hverandre – det er musette-svevingen som gjør at et trekkspill
+//  høres ut som et trekkspill. Venstrehånden spiller stradella:
+//  bass på slaget, korte akkordstøt imellom.
 // ════════════════════════════════════════════════════════
 const SOL_SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
 function solFreq(name) {
@@ -2436,117 +2438,214 @@ function solFreq(name) {
   return 440 * Math.pow(2, (semi - 9 + (+m[3] - 4) * 12) / 12);
 }
 
-let solCtx = null, solGain = null, solCh = null;
+let solCtx = null, solGain = null, solBus = null, solCh = null, solNoiseBuf = null;
 let solLoopTimer = null, solNextAt = 0, solMusicOn = false;
 
-/** Firkantbølge med valgfri pulsbredde – 12,5 % og 25 % gir den typiske NES-klangen. */
-function chipPulse(duty, harmonics = 28) {
-  const real = new Float32Array(harmonics + 1), imag = new Float32Array(harmonics + 1);
-  for (let n = 1; n <= harmonics; n++) imag[n] = (2 / (n * Math.PI)) * Math.sin(Math.PI * n * duty);
+/** Kort romklang, laget av avtagende støy – gir instrumentet luft rundt seg. */
+function accRoom(dur, decay) {
+  const sr = solCtx.sampleRate, len = Math.ceil(dur * sr);
+  const buf = solCtx.createBuffer(2, len, sr);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+  }
+  return buf;
+}
+
+/**
+ * Bølgeform for en fritunge. En trekkspilltunge er en asymmetrisk
+ * ventil, så spekteret er tett og rikt, men med en tydelig formanttopp
+ * lavt i overtonerekka og et mykt fall øverst. Fasene spres for å ta
+ * bort den skarpe sagtannkanten.
+ */
+function accReedWave(bright) {
+  const N = 26;
+  const real = new Float32Array(N + 1), imag = new Float32Array(N + 1);
+  for (let n = 1; n <= N; n++) {
+    const a = Math.pow(n, -1.15) * (1 + .45 * Math.cos(n * 1.7)) * Math.exp(-Math.pow(n / bright, 2));
+    const ph = (n * n * 1.13) % (Math.PI * 2);
+    real[n] = a * Math.cos(ph);
+    imag[n] = a * Math.sin(ph);
+  }
   return solCtx.createPeriodicWave(real, imag);
 }
 
-function chipChannel(wave, vol) {
-  const osc = solCtx.createOscillator();
-  if (wave === 'triangle') osc.type = 'triangle'; else osc.setPeriodicWave(wave);
-  const gain = solCtx.createGain();
-  gain.gain.value = 0;
-  osc.connect(gain); gain.connect(solGain);
-  osc.start();
-  return { osc, gain, vol };
+/**
+ * Én trekkspillstemme. «reeds» er tungerekkene i cent med hver sin
+ * styrke: flere tunger noen cent fra hverandre gir musette-svevingen,
+ * og en rekke en oktav over eller under er registeret som gjør at det
+ * høres ut som et trekkspill og ikke en synth.
+ */
+function accChannel(vol, o) {
+  const inn = solCtx.createGain(); inn.gain.value = 1;
+  const hp = solCtx.createBiquadFilter();
+  hp.type = 'highpass'; hp.frequency.value = o.hp; hp.Q.value = .7;
+  const f1 = solCtx.createBiquadFilter();
+  f1.type = 'peaking'; f1.frequency.value = o.f1; f1.Q.value = 1.4; f1.gain.value = 4;
+  const f2 = solCtx.createBiquadFilter();
+  f2.type = 'peaking'; f2.frequency.value = o.f2; f2.Q.value = 1.1; f2.gain.value = 5.5;
+  const lp = solCtx.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = o.lp; lp.Q.value = .6;
+  const gain = solCtx.createGain(); gain.gain.value = vol;
+  inn.connect(hp); hp.connect(f1); f1.connect(f2); f2.connect(lp); lp.connect(gain); gain.connect(solBus);
+  return { inn, gain, vol, reeds: o.reeds, wave: accReedWave(o.bright), chiff: o.chiff };
 }
 
-function chipInit() {
+function accInit() {
   const AC = window.AudioContext || window.webkitAudioContext;
   if (!AC) return false;
   solCtx = new AC();
+
   solGain = solCtx.createGain();
-  solGain.gain.value = .17;
+  solGain.gain.value = .38;
   solGain.connect(solCtx.destination);
 
+  const comp = solCtx.createDynamicsCompressor();
+  comp.threshold.value = -15; comp.knee.value = 24; comp.ratio.value = 3.5;
+  comp.attack.value = .006; comp.release.value = .16;
+  comp.connect(solGain);
+
+  solBus = solCtx.createGain(); solBus.gain.value = 1;
+  solBus.connect(comp);
+
+  // Kort, dempet rom – bare nok til at det ikke klinger knusktørt.
+  const conv = solCtx.createConvolver();
+  conv.buffer = accRoom(.65, 3.4);
+  const damp = solCtx.createBiquadFilter();
+  damp.type = 'lowpass'; damp.frequency.value = 3200;
+  const wet = solCtx.createGain(); wet.gain.value = .14;
+  solBus.connect(conv); conv.connect(damp); damp.connect(wet); wet.connect(comp);
+
+  const n = Math.floor(solCtx.sampleRate * .5);
+  solNoiseBuf = solCtx.createBuffer(1, n, solCtx.sampleRate);
+  const d = solNoiseBuf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+
   solCh = {
-    lead: chipChannel(chipPulse(.5), .26),
-    harm: chipChannel(chipPulse(.125), .11),
-    bass: chipChannel('triangle', .45),
+    // Høyre hånd: tre tunger i musette pluss en svak oktavtunge.
+    lead: accChannel(.46, {
+      reeds: [[-14, 1], [0, 1], [13, 1], [1200, .3]],
+      hp: 175, f1: 480, f2: 1450, lp: 4400, bright: 15, chiff: .05,
+    }),
+    // Venstre hånd, akkordknappene: trangt leie, 8' og 4'.
+    harm: accChannel(.24, {
+      reeds: [[-6, 1], [5, 1], [1200, .2]],
+      hp: 250, f1: 520, f2: 1150, lp: 2900, bright: 10, chiff: .035,
+    }),
+    // Bassknappene: 16' under 8' – det gir tyngden.
+    bass: accChannel(.4, {
+      reeds: [[-1200, .65], [0, 1], [4, .7]],
+      hp: 42, f1: 180, f2: 620, lp: 1250, bright: 8, chiff: .05,
+    }),
   };
 
-  // Lett vibrato på melodien.
-  const lfo = solCtx.createOscillator(), lfoAmt = solCtx.createGain();
-  lfo.frequency.value = 5.5; lfoAmt.gain.value = 8;
-  lfo.connect(lfoAmt); lfoAmt.connect(solCh.lead.osc.detune); lfo.start();
+  // Belgen puster litt – svak, langsom bevegelse i styrken.
+  const lfo = solCtx.createOscillator(), amt = solCtx.createGain();
+  lfo.frequency.value = .27; amt.gain.value = .04;
+  lfo.connect(amt); amt.connect(solBus.gain); lfo.start();
 
-  // Støykanal for tamburin og skarptromme.
-  const n = Math.floor(solCtx.sampleRate);
-  const buf = solCtx.createBuffer(1, n, solCtx.sampleRate);
-  const data = buf.getChannelData(0);
-  for (let i = 0; i < n; i++) data[i] = Math.random() * 2 - 1;
-  const src = solCtx.createBufferSource();
-  src.buffer = buf; src.loop = true;
-  const hp = solCtx.createBiquadFilter();
-  hp.type = 'highpass'; hp.frequency.value = 5000; hp.Q.value = .4;
-  const ng = solCtx.createGain(); ng.gain.value = 0;
-  src.connect(hp); hp.connect(ng); ng.connect(solGain); src.start();
-  solCh.noise = { gain: ng, filter: hp };
+  const tg = solCtx.createGain(); tg.gain.value = .17;
+  tg.connect(solBus);
+  solCh.noise = { gain: tg };
   return true;
 }
 
-/** Én tone med hard, trappetrinnsformet 8-bits envelope. */
-function chipNote(ch, freq, t, dur, vol) {
-  const v = vol === undefined ? ch.vol : vol;
-  ch.osc.frequency.setValueAtTime(freq, t);
-  ch.gain.gain.setValueAtTime(v, t);
-  ch.gain.gain.setValueAtTime(v * .6, t + Math.min(dur * .4, .07));
-  ch.gain.gain.setValueAtTime(0, t + dur * .86);
+/** Kort luftpust i anslaget – ventilen og lufta som slipper forbi tunga. */
+function accChiff(ch, t, vol) {
+  const src = solCtx.createBufferSource();
+  src.buffer = solNoiseBuf;
+  src.playbackRate.value = .8 + Math.random() * .4;
+  const bp = solCtx.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = 1900; bp.Q.value = .8;
+  const g = solCtx.createGain();
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0005, t + .035);
+  src.connect(bp); bp.connect(g); g.connect(ch.inn);
+  src.start(t, Math.random() * .3); src.stop(t + .05);
 }
 
-/** Akkord «spilt» på én kanal ved å hoppe raskt mellom tonene – klassisk arpeggio. */
-function chipArp(ch, freqs, t, dur) {
-  const step = .0333;
-  ch.gain.gain.setValueAtTime(ch.vol, t);
-  let i = 0;
-  for (let s = 0; s < dur - .004; s += step, i++) {
-    ch.osc.frequency.setValueAtTime(freqs[i % freqs.length], t + s);
+/**
+ * Én tone. Trekkspill har ikke anslag som en streng: tonen settes med
+ * belgtrykk. I en tarantella spilles den kort og bestemt – rask
+ * oppbygging, flat topp, og så kuttes den av mens neste tone venter.
+ */
+function accNote(ch, freq, t, dur, vol) {
+  const total = ch.reeds.reduce((a, r) => a + r[1], 0);
+  const v = (vol === undefined ? 1 : vol) / total;
+  const hold = Math.max(dur, .035);
+  const atk = Math.min(.011, hold * .3);
+  const rel = Math.min(.03, hold * .45);
+  const g = solCtx.createGain();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(v * 1.14, t + atk);
+  g.gain.linearRampToValueAtTime(v, t + Math.min(atk + .035, hold));
+  g.gain.setValueAtTime(v, t + hold);
+  g.gain.linearRampToValueAtTime(0, t + hold + rel);
+  g.connect(ch.inn);
+  for (const [cents, lvl] of ch.reeds) {
+    const osc = solCtx.createOscillator();
+    osc.setPeriodicWave(ch.wave);
+    osc.frequency.value = freq;
+    osc.detune.value = cents;
+    const rg = solCtx.createGain(); rg.gain.value = lvl;
+    osc.connect(rg); rg.connect(g);
+    osc.start(t); osc.stop(t + hold + rel + .02);
   }
-  ch.gain.gain.setValueAtTime(0, t + dur * .9);
+  if (ch.chiff) accChiff(ch, t, ch.chiff * (vol === undefined ? 1 : vol));
 }
 
-function chipDrum(t, snare) {
-  const n = solCh.noise;
-  n.filter.frequency.setValueAtTime(snare ? 1400 : 7000, t);
-  n.gain.gain.setValueAtTime(snare ? .16 : .05, t);
-  n.gain.gain.setValueAtTime(0, t + (snare ? .085 : .028));
+/** Venstrehåndens akkordstøt – alle tonene samtidig og kort. */
+function accChord(ch, names, t, dur, vol) {
+  for (const nm of names) accNote(ch, solFreq(nm), t, dur, vol);
+}
+
+/** Tamburin. Filtrert støy med rask utklang. */
+function accTamb(t, vol, open) {
+  const src = solCtx.createBufferSource();
+  src.buffer = solNoiseBuf;
+  src.playbackRate.value = .9 + Math.random() * .25;
+  const bp = solCtx.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = open ? 7200 : 8600; bp.Q.value = 1.1;
+  const g = solCtx.createGain();
+  const dur = open ? .16 : .055;
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+  src.connect(bp); bp.connect(g); g.connect(solCh.noise.gain);
+  src.start(t, Math.random() * .3); src.stop(t + dur + .02);
 }
 
 /** Legg ut hele slyngen fra t0. Returnerer lengden i sekunder. */
 function solScheduleTune(t0) {
   const U = SOL_UNIT, BAR = SOL_BEATS * U, HALF = BAR / 2;
 
-  // Melodi. Toner som lander på et hovedslag spilles litt hardere,
-  // det er den karakteristiske tarantella-pulsen.
+  // Melodi. Tarantellaen spilles kort og bestemt: hver tone kuttes
+  // godt før neste, og tonene på hovedslagene får mer belg.
   let t = t0, pos = 0;
   for (const [note, len] of SOL_LEAD) {
     if (note) {
       const onBeat = pos % 3 === 0;
-      chipNote(solCh.lead, solFreq(note), t, len * U, solCh.lead.vol * (onBeat ? 1 : .72));
+      const dur = len === 1 ? U * .42 : U * 1.05;
+      accNote(solCh.lead, solFreq(note), t, dur, solCh.lead.vol * (onBeat ? 1 : .8));
     }
     t += len * U; pos += len;
   }
   const total = t - t0;
 
+  // Venstre hånd: bass på slaget, to korte akkordstøt etter – «oom-pah-pah».
   SOL_PROG.forEach((name, i) => {
     const c = SOL_CHORD_LIB[name], at = t0 + i * HALF;
-    chipArp(solCh.harm, c.arp.map(solFreq), at, HALF);
-    // Gående åttendedelsbass som veksler mellom grunntone og kvint.
-    for (let k = 0; k < 3; k++) {
-      const f = solFreq(c.bass[(i + k) % 2]);
-      chipNote(solCh.bass, f, at + k * U, U, solCh.bass.vol * (k === 0 ? 1 : .8));
-    }
+    accNote(solCh.bass, solFreq(c.bass[i % 2]), at, U * .5, solCh.bass.vol);
+    accChord(solCh.harm, c.chord, at + U,      U * .26, solCh.harm.vol);
+    accChord(solCh.harm, c.chord, at + U * 2,  U * .26, solCh.harm.vol * .82);
   });
 
-  // Tamburin på hver åttendedel, skarptromme på andre hovedslag – tarantella-puls.
+  // Tamburin på hver åttendedel, med aksent på de to hovedslagene.
   const bars = Math.round(total / BAR);
   for (let b = 0; b < bars; b++) {
-    for (let u = 0; u < SOL_BEATS; u++) chipDrum(t0 + (b * SOL_BEATS + u) * U, u === 3);
+    for (let u = 0; u < SOL_BEATS; u++) {
+      const main = u === 0 || u === 3;
+      accTamb(t0 + (b * SOL_BEATS + u) * U, main ? .5 : .22, main);
+    }
   }
   return total;
 }
@@ -2561,7 +2660,7 @@ function solLoopTune() {
 
 function solStartMusic() {
   try {
-    if (!solCtx && !chipInit()) return;
+    if (!solCtx && !accInit()) return;
     if (solCtx.state === 'suspended') solCtx.resume();
     solMusicOn = true;
     solNextAt = solCtx.currentTime + .12;
@@ -2574,7 +2673,7 @@ function solStartMusic() {
 function solStopMusic() {
   solMusicOn = false;
   clearTimeout(solLoopTimer); solLoopTimer = null;
-  if (solCtx) { try { solCtx.close(); } catch {} solCtx = null; solGain = null; solCh = null; }
+  if (solCtx) { try { solCtx.close(); } catch {} solCtx = null; solGain = null; solBus = null; solCh = null; solNoiseBuf = null; }
   const b = solEl('solMusicBtn');
   if (b) { b.classList.remove('on'); b.textContent = '🎵 Musikk'; }
 }
