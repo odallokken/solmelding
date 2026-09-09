@@ -45,9 +45,13 @@ panoramabilde av horisonten sett fra punktet ditt.
 Profilen mellomlagres, så samme punkt og høyde beregnes bare én gang.
 Beregningen tar 5–10 sekunder første gang og dekker bare Norge.
 
-**Merk at plasseringen betyr mye.** Står pinnen inntil en vegg, blir svaret at du nesten
-ikke får sol – noe som er helt riktig for akkurat det punktet. Flytt pinnen ut i gata
-eller gårdsrommet, og sett høyden til den etasjen du faktisk bor i.
+**Merk at plasseringen betyr mye.** Står pinnen tett inntil en vegg får du naturlig nok
+mindre sol – det er et helt riktig svar for akkurat det punktet, og et solhjørne er
+nettopp et sted der veggen står nær. Vil du se hva som skjer lenger ut i gata eller
+høyere opp i gården, flytt pinnen eller endre høyden.
+
+Knappen **⛱️ Solhjørnet** setter pinnen tilbake på det faste utepunktet og regner ut
+på nytt.
 
 ## Nøyaktighet
 

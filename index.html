@@ -318,7 +318,7 @@
       </div>
       <div class="btn-row">
         <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
-        <button class="btn-secondary" onclick="hzUseHome()" title="Hopp til lagret hjemmeposisjon">🏠 Hjemme</button>
+        <button class="btn-secondary" onclick="hzUseSolhjornet()" title="Sett pinnen på Solhjørnet og regn ut på nytt">⛱️ Solhjørnet</button>
       </div>
       <div class="hz-progress hidden" id="hzProgress">
         <div class="bar"><i id="hzBar"></i></div>
@@ -1492,7 +1492,9 @@ const R_EARTH   = 6371000;   // m
 const REFR_K    = 0.13;      // atmosfærisk refraksjonskoeffisient (standard)
 const SUN_RADIUS = 0.2667;   // sola sin halve diameter i grader (øvre rand)
 const HZ_BINS   = 360;       // 1° oppløsning i horisontprofilen
-const HZ_HOME_DEFAULT = { lat: 59.9341, lng: 10.7677, name: 'Torshov' };
+const HZ_HOME_DEFAULT = { lat: 59.9341, lng: 10.7677, name: 'Solhjørnet' };
+/** Så nær hjemmepunktet at det fortsatt regnes som Solhjørnet (meter). */
+const HZ_HOME_RADIUS = 12;
 
 /**
  * Sola sin posisjon på et vilkårlig tidspunkt (NOAA-algoritmen).
@@ -1841,17 +1843,33 @@ function hzSetWarn(html) {
   el.innerHTML = html; el.classList.remove('hidden');
 }
 
-function hzUseHome() {
+/** Omtrentlig avstand i meter mellom to koordinater. */
+function hzMetersBetween(aLat, aLng, bLat, bLng) {
+  const dLat = (bLat - aLat) * D2R, dLng = (bLng - aLng) * D2R;
+  const x = dLng * Math.cos((aLat + bLat) / 2 * D2R);
+  return Math.hypot(dLat, x) * R_EARTH;
+}
+
+/** Er pinnen på Solhjørnet? */
+function hzAtHome(pin) {
+  return hzMetersBetween(pin.lat, pin.lng, HZ_HOME_DEFAULT.lat, HZ_HOME_DEFAULT.lng) <= HZ_HOME_RADIUS;
+}
+
+/** Sett pinnen tilbake på Solhjørnet og regn ut på nytt. */
+function hzUseSolhjornet() {
+  hzPin = { ...HZ_HOME_DEFAULT };
   const s = hzLoadSettings();
-  hzPin = (s && s.pin) ? { ...s.pin } : { ...HZ_HOME_DEFAULT };
   if (s && typeof s.eye === 'number') {
     hzEye = s.eye;
     document.getElementById('hzEye').value = hzEye;
     hzUpdateEyeUI();
   }
   hzMap.center = { ...hzPin };
+  hzMap.zoom = Math.max(hzMap.zoom, 18);
   hzMap.draw();
   hzUpdateCoordUI();
+  hzSaveSettings();
+  runHorizon();
 }
 
 async function runHorizon() {
@@ -1880,15 +1898,19 @@ async function runHorizon() {
     bar.style.width = '0%';
 
     coords = { lat: hzPin.lat, lng: hzPin.lng, name: coords ? coords.name : 'Min posisjon' };
-    try {
-      const url = `https://nominatim.openstreetmap.org/reverse?lat=${hzPin.lat}&lon=${hzPin.lng}`
-                + `&format=json&zoom=18&accept-language=no`;
-      const d = await (await fetch(url)).json();
-      const a = d.address || {};
-      const name = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.city]
-        .filter(Boolean).join(', ');
-      if (name) coords.name = name;
-    } catch {}
+    if (hzAtHome(hzPin)) {
+      coords.name = HZ_HOME_DEFAULT.name;
+    } else {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${hzPin.lat}&lon=${hzPin.lng}`
+                  + `&format=json&zoom=18&accept-language=no`;
+        const d = await (await fetch(url)).json();
+        const a = d.address || {};
+        const name = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.city]
+          .filter(Boolean).join(', ');
+        if (name) coords.name = name;
+      } catch {}
+    }
     document.getElementById('locationInput').value = coords.name;
     saveLocation(coords);
     hzSaveSettings();
@@ -1906,20 +1928,16 @@ async function runHorizon() {
   }
 }
 
-/** Advarer hvis pinnen står klemt inntil en vegg eller oppå et tak. */
+/** Advarer bare hvis pinnen ser ut til å ligge inne i et bygg. */
 function hzCheckPlacement() {
   if (!hzProfile) return;
-  const msgs = [];
-  if (hzProfile.nearest < 6) {
-    msgs.push(`Punktet står bare <b>${hzProfile.nearest.toFixed(1)} m</b> fra en vegg eller et tak, `
-      + 'så nesten alt lys blir sperret. Flytt pinnen ut i gata eller gårdsrommet – '
-      + 'eller sett høyden til den etasjen du bor i.');
-  }
-  const blocked = hzProfile.rays.filter(r => r.alt > 25).length;
-  if (blocked > 300) {
-    msgs.push('Horisonten er sperret i nesten alle retninger. Ligger pinnen inne i et bygg?');
-  }
-  hzSetWarn(msgs.length ? '⚠️ ' + msgs.join('<br>') : '');
+  // Å stå tett inntil en vegg er helt legitimt – et solhjørne er nettopp det –
+  // så nærhet til bygg er ingen feil. Vi sier bare fra hvis himmelen er borte
+  // i praktisk talt alle retninger, som tyder på at punktet havnet inni et hus.
+  const walled = hzProfile.rays.filter(r => r.alt > 60).length;
+  hzSetWarn(walled > 330
+    ? '⚠️ Horisonten er sperret i nesten alle retninger. Ligger pinnen inne i et bygg?'
+    : '');
 }
 
 // ── Kartvelger (Kartverkets flisetjeneste, ingen bibliotek) ──
