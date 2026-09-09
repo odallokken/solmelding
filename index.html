@@ -2384,62 +2384,46 @@ function exitSolMode() {
 }
 
 // ════════════════════════════════════════════════════════
-//  «Tarantella Napoletana» – tradisjonell napolitansk folketone.
-//  Anonym, falt i det fri. Transkribert fra ABC-noter i
-//  John Chambers' samling (trillian.mit.edu/~jc/music/abc).
-//  E-moll, 6/8. Alle tall er antall åttendedeler.
-//  Opptakten i kilden er flyttet til slutten av forrige takt,
-//  slik at slyngen går rundt i hele takter.
+//  «Tarantella di Piedigrotta» – Luigi Ricci (1805–1859),
+//  fra operaen «La festa di Piedigrotta» (Napoli, 1852).
+//  Dette er tarantellaen folk flest kjenner som selve
+//  Italia-melodien. Falt i det fri i 1930.
+//  A-moll, 6/8. Alle tall er antall åttendedeler.
+//  Opptakten i kilden er flyttet inn i taktene, slik at
+//  slyngen går rundt i hele takter.
 // ════════════════════════════════════════════════════════
 const SOL_BEATS = 6;                 // åttendedeler per takt
-const SOL_UNIT  = 60 / 132 / 3;      // 132 BPM punktert firedel
+const SOL_UNIT  = 60 / 152 / 3;      // 152 BPM punktert firedel
 
 const SOL_LEAD = [
-  // A-del
-  ['B4',2],['B4',1],['E5',2],['E5',1],
-  ['B4',2],['B4',1],['B4',2],['B4',1],
-  ['C5',2],['C5',1],['C5',1],['D5',1],['C5',1],
+  ['A5',2],['A5',1],['E5',2],['E5',1],
+  ['A5',2],['A5',1],['E5',2],['E5',1],
+  ['E5',2],['E5',1],['F5',2],['F5',1],
+  ['F5',1],['G5',1],['F5',1],['E5',2],[null,1],
+  ['E5',2],['D5',1],['D5',2],['D5',1],
+  ['D5',2],['C5',1],['C5',2],['C5',1],
   ['C5',2],['B4',1],['B4',1],['C5',1],['B4',1],
-  ['B4',2],['A4',1],['A4',1],['B4',1],['A4',1],
-  ['A4',2],['G4',1],['G4',1],['A4',1],['G4',1],
-  ['G4',2],['F#4',1],['G4',2],['F#4',1],
-  ['E4',2],[null,1],['E4',2],['F#4',1],
-  // B-del
-  ['G4',1],['F#4',1],['G4',1],['A4',1],['G4',1],['F#4',1],
-  ['G4',1],['F#4',1],['G4',1],['A4',1],['G4',1],['F#4',1],
-  ['G4',1],['F#4',1],['E4',1],['D#4',1],['E4',1],['F#4',1],
-  ['E4',2],[null,1],['E4',2],['F#4',1],
-  ['G4',1],['F#4',1],['G4',1],['A4',1],['G4',1],['A4',1],
-  ['B4',1],['A4',1],['B4',1],['C5',1],['B4',1],['A4',1],
-  ['G4',1],['F#4',1],['E4',1],['D#4',1],['E4',1],['F#4',1],
-  ['E4',2],[null,1],['D4',1],['E4',1],['F#4',1],
-  // C-del
-  ['G4',1],['F#4',1],['G4',1],['B4',1],['G4',1],['B4',1],
-  ['D5',2],['D5',1],['D5',1],['E5',1],['D5',1],
-  ['D5',2],['C5',1],['C5',1],['D5',1],['C5',1],
-  ['C5',2],['B4',1],['D4',1],['E4',1],['F#4',1],
-  ['G4',1],['F#4',1],['G4',1],['B4',1],['G4',1],['B4',1],
-  ['D5',2],['D5',1],['D5',1],['C#5',1],['D5',1],
-  ['F#5',1],['E5',1],['D5',1],['C5',1],['B4',1],['A4',1],
-  ['G4',2],[null,1],['E5',2],['E5',1],
+  ['A4',2],[null,1],['A5',2],['A5',1],
+  ['E5',2],['E5',1],['A5',2],['A5',1],
+  ['E5',2],['E5',1],['E5',2],['E5',1],
+  ['F5',2],['F5',1],['F5',1],['G5',1],['F5',1],
+  ['E5',2],[null,1],['E5',2],['D5',1],
+  ['D5',2],['D5',1],['D5',2],['C5',1],
+  ['C5',2],['C5',1],['C5',2],['B4',1],
+  ['B4',1],['C5',1],['B4',1],['A4',2],[null,1],
 ];
 
 // Akkorder: én per punktert firedel (to per takt).
 const SOL_CHORD_LIB = {
-  Em: { arp: ['E3','G3','B3'],        bass: ['E2','B2']  },
-  Am: { arp: ['A3','C4','E4'],        bass: ['A2','E3']  },
-  G:  { arp: ['G3','B3','D4'],        bass: ['G2','D3']  },
-  C:  { arp: ['C4','E4','G4'],        bass: ['C3','G3']  },
-  B7: { arp: ['B2','D#3','F#3','A3'], bass: ['B2','F#3'] },
-  D7: { arp: ['D3','F#3','A3','C4'],  bass: ['D3','A3']  },
+  Am: { arp: ['A3','C4','E4'],        bass: ['A2','E3'] },
+  Dm: { arp: ['D3','F3','A3'],        bass: ['D2','A2'] },
+  E7: { arp: ['E3','G#3','B3','D4'],  bass: ['E2','B2'] },
 };
 const SOL_PROG = [
-  'Em','Em', 'Em','Em', 'Am','Am', 'G','G',
-  'B7','B7', 'Em','Em', 'B7','B7', 'Em','Em',
-  'Em','Am', 'Em','Am', 'Em','B7', 'Em','Em',
-  'G','Am',  'G','C',   'Em','B7', 'Em','D7',
-  'G','G',   'G','G',   'D7','D7', 'G','D7',
-  'G','G',   'G','G',   'D7','D7', 'G','Em',
+  'Am','Am', 'Am','Am', 'Dm','Dm', 'Dm','Dm',
+  'E7','E7', 'Am','Am', 'E7','E7', 'Am','Am',
+  'Am','Am', 'Am','Am', 'Dm','Dm', 'Dm','Dm',
+  'E7','E7', 'Am','Am', 'E7','E7',
 ];
 
 // ════════════════════════════════════════════════════════
@@ -2537,18 +2521,26 @@ function chipDrum(t, snare) {
 function solScheduleTune(t0) {
   const U = SOL_UNIT, BAR = SOL_BEATS * U, HALF = BAR / 2;
 
-  let t = t0;
+  // Melodi. Toner som lander på et hovedslag spilles litt hardere,
+  // det er den karakteristiske tarantella-pulsen.
+  let t = t0, pos = 0;
   for (const [note, len] of SOL_LEAD) {
-    if (note) chipNote(solCh.lead, solFreq(note), t, len * U);
-    t += len * U;
+    if (note) {
+      const onBeat = pos % 3 === 0;
+      chipNote(solCh.lead, solFreq(note), t, len * U, solCh.lead.vol * (onBeat ? 1 : .72));
+    }
+    t += len * U; pos += len;
   }
   const total = t - t0;
 
-  // Akkord og bass skifter på hver punkterte firedel.
   SOL_PROG.forEach((name, i) => {
     const c = SOL_CHORD_LIB[name], at = t0 + i * HALF;
     chipArp(solCh.harm, c.arp.map(solFreq), at, HALF);
-    chipNote(solCh.bass, solFreq(c.bass[i % 2]), at, HALF);
+    // Gående åttendedelsbass som veksler mellom grunntone og kvint.
+    for (let k = 0; k < 3; k++) {
+      const f = solFreq(c.bass[(i + k) % 2]);
+      chipNote(solCh.bass, f, at + k * U, U, solCh.bass.vol * (k === 0 ? 1 : .8));
+    }
   });
 
   // Tamburin på hver åttendedel, skarptromme på andre hovedslag – tarantella-puls.
