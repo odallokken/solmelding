@@ -270,6 +270,7 @@
     /* ── Solhjørnet: italiensk modus ── */
     #solMode { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
       padding: 22px; text-align: center; overflow-y: auto;
+      --nn-beat: .4286s; --nn-bar: .857s;
       background:
         radial-gradient(circle at 50% 16%, rgba(255,236,180,.95) 0%, rgba(255,193,110,.92) 32%, rgba(233,124,72,.95) 62%, rgba(150,58,50,.97) 100%),
         #963a32;
@@ -298,6 +299,85 @@
     .sol-btn:hover { background: #fff; transform: translateY(-1px); }
     .sol-btn.on { background: #2f7a4a; color: #fff; }
     .sol-spinner { font-size: .9rem; color: #6b2618; font-weight: 700; }
+
+    /* ── To nonnaer som danser tarantella ── */
+    /* Takten følger musikken: 140 punktert firedel gir 0,857 s per takt. */
+    .sol-nonnas { position: absolute; left: 0; right: 0; bottom: 0; height: 265px;
+      overflow: hidden; pointer-events: none; z-index: 2; }
+    .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px; }
+    .nonna .shadow { position: absolute; bottom: 2px; left: 50%; width: 76px; height: 11px;
+      margin-left: -38px; border-radius: 50%; background: rgba(90,25,15,.22);
+      animation: nnShadow var(--nn-beat) infinite ease-in-out; }
+    .nonna-a { animation: nnCrossA 17s linear infinite; }
+    .nonna-b { bottom: 34px; width: 114px; height: 149px;
+      animation: nnCrossB 19.4s linear infinite; animation-delay: -9s; }
+    @keyframes nnCrossA { from { transform: translateX(-150px); }
+                          to   { transform: translateX(calc(100vw + 20px)); } }
+    @keyframes nnCrossB { from { transform: translateX(calc(100vw + 20px)) scaleX(-1); }
+                          to   { transform: translateX(-150px) scaleX(-1); } }
+
+    /* Hoppet: ett per punktert firedel, med litt slark i kroppen. */
+    .nn-hop { width: 100%; height: 100%; animation: nnHop var(--nn-beat) infinite; }    @keyframes nnHop {
+      0%   { transform: translateY(0)     scale(1.06, .94); }
+      30%  { transform: translateY(-24px) scale(.95, 1.06); }
+      60%  { transform: translateY(-6px)  scale(1, 1); }
+      100% { transform: translateY(0)     scale(1.06, .94); }
+    }
+    @keyframes nnShadow { 0%, 100% { transform: scale(1); opacity: .22; }
+                          30%      { transform: scale(.6); opacity: .1; } }
+
+    .nonna svg { width: 100%; height: 100%; overflow: visible; }
+    .nonna svg g { transform-box: fill-box; }
+
+    /* Skjørtet slenger, beina spreller, kjevla vifter. */
+    .nn-skirt { transform-origin: 50% 4%;   animation: nnSway var(--nn-bar) infinite ease-in-out; }
+    .nn-head  { transform-origin: 45% 100%; animation: nnNod  var(--nn-bar) infinite ease-in-out; }
+    .nn-armL  { transform-origin: 92% 94%;  animation: nnArmL var(--nn-bar) infinite ease-in-out; }
+    .nn-armR  { transform-origin: 18% 10%;  animation: nnArmR var(--nn-bar) infinite ease-in-out; }
+    .nn-legL  { transform-origin: 80% 10%;  animation: nnKickL var(--nn-beat) infinite ease-in-out; }
+    .nn-legR  { transform-origin: 20% 10%;  animation: nnKickR var(--nn-beat) infinite ease-in-out; }
+    @keyframes nnSway  { 0%, 100% { transform: rotate(-9deg) skewX(4deg); }
+                         50%      { transform: rotate(9deg)  skewX(-4deg); } }
+    @keyframes nnNod   { 0%, 100% { transform: rotate(7deg); }  50% { transform: rotate(-7deg); } }
+    @keyframes nnArmL  { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(12deg); } }
+    @keyframes nnArmR  { 0%, 100% { transform: rotate(14deg); }  50% { transform: rotate(-10deg); } }
+    @keyframes nnKickL { 0%, 100% { transform: rotate(24deg); }  50% { transform: rotate(-30deg); } }
+    @keyframes nnKickR { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(24deg); } }
+
+    /* Snakkeboble */
+    .nn-say { position: absolute; top: -58px; left: 50%; transform: translateX(-50%);
+      z-index: 3;
+      background: #fffaf0; color: #6b2618; font-weight: 900; font-size: .74rem;
+      padding: 7px 12px; border-radius: 14px; white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,.18); opacity: 0;
+      animation: nnSay 6.4s infinite; }
+    .nonna-b .nn-say { transform: translateX(-50%) scaleX(-1); animation-delay: 3.2s; }
+    .nn-say::after { content: ''; position: absolute; bottom: -6px; left: 50%; margin-left: -5px;
+      border: 5px solid transparent; border-top-color: #fffaf0; border-bottom: 0; }
+    @keyframes nnSay { 0%, 6% { opacity: 0; transform: translateX(-50%) scale(.7); }
+                       12%, 42% { opacity: 1; transform: translateX(-50%) scale(1); }
+                       52%, 100% { opacity: 0; transform: translateX(-50%) scale(.9); } }
+    .nonna-b .nn-say { animation-name: nnSayB; }
+    @keyframes nnSayB { 0%, 6% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.7); }
+                        12%, 42% { opacity: 1; transform: translateX(-50%) scaleX(-1) scale(1); }
+                        52%, 100% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.9); } }
+
+    /* Italienske omgivelser: vimpler i toppen, stilleben langs bakken. */
+    .sol-bunting { position: absolute; top: 0; left: 0; right: 0; height: 50px;
+      pointer-events: none; z-index: 2; opacity: .92;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='50'%3E%3Cpath d='M0 5 H120' stroke='%238a4a33' stroke-width='2'/%3E%3Cpath d='M3 6 H37 L20 40 Z' fill='%231f8a4c'/%3E%3Cpath d='M43 6 H77 L60 40 Z' fill='%23f7f3ea'/%3E%3Cpath d='M83 6 H117 L100 40 Z' fill='%23cf2b2b'/%3E%3C/svg%3E") repeat-x;
+      animation: nnFlag 3.4s ease-in-out infinite; }
+    @keyframes nnFlag { 0%, 100% { transform: translateY(0); }
+                        50%      { transform: translateY(4px); } }
+    .nn-still { position: absolute; bottom: 4px; z-index: 0; display: flex;
+      align-items: flex-end; gap: 6px; opacity: .95; }
+    .nn-still-l { left: 3%; }
+    .nn-still-r { right: 3%; }
+
+    @media (max-width: 480px) { .sol-nonnas { height: 215px; } .nonna { width: 100px; height: 132px; }
+      .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; }
+      .nn-still { transform: scale(.72); transform-origin: bottom; } }
+    @media (prefers-reduced-motion: reduce) { .sol-nonnas { display: none; } }
   </style>
 </head>
 <body>
@@ -499,6 +579,157 @@
       <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()">🎵 Musikk</button>
       <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
     </div>
+  </div>
+
+  <!-- To nonnaer på vei over skjermen. Rent dekor. -->
+  <div class="sol-bunting" aria-hidden="true"></div>
+  <div class="sol-nonnas" aria-hidden="true">
+
+    <div class="nn-still nn-still-l">
+      <svg viewBox="0 0 60 92" width="46" height="70">
+        <ellipse cx="30" cy="88" rx="19" ry="4" fill="rgba(90,25,15,.18)"/>
+        <rect x="25" y="2" width="10" height="7" rx="2" fill="#b3823f"/>
+        <path d="M26 8 h8 v22 q12 7 14 22 v22 q0 10 -18 10 q-18 0 -18 -10 v-22 q2 -15 14 -22 z" fill="#2f5d3a"/>
+        <path d="M12 56 q0 -6 1 -10 q17 -5 34 0 q1 4 1 10 v18 q0 10 -18 10 q-18 0 -18 -10 z" fill="#d9b871"/>
+        <path d="M13 60 h34 M13 68 h34 M13 76 h33" stroke="#b8925a" stroke-width="1.4" fill="none"/>
+        <rect x="22" y="34" width="16" height="14" rx="2" fill="#f2e8d5"/>
+        <rect x="22" y="34" width="16" height="4" fill="#a5232b"/>
+      </svg>
+      <svg viewBox="0 0 40 64" width="26" height="42">
+        <path d="M9 7 h22 v9 q0 13 -11 15 q-11 -2 -11 -15 z" fill="#7a1220"/>
+        <path d="M8 4 h24 v12 q0 14 -12 17 q-12 -3 -12 -17 z" fill="none" stroke="#efe9dc" stroke-width="2"/>
+        <path d="M20 33 v20" stroke="#efe9dc" stroke-width="2.4"/>
+        <path d="M9 55 h22" stroke="#efe9dc" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="nn-still nn-still-r">
+      <svg viewBox="0 0 96 62" width="76" height="49">
+        <ellipse cx="48" cy="58" rx="36" ry="4" fill="rgba(90,25,15,.18)"/>
+        <path d="M14 56 q-7 0 -7 -9 q0 -9 7 -13 q7 4 7 13 q0 9 -7 9 z" fill="#f3ece2"/>
+        <path d="M14 34 v-6" stroke="#c9bda9" stroke-width="2"/>
+        <path d="M9 53 q2 -12 5 -19 M19 53 q-2 -12 -5 -19" stroke="#ddd3c4" stroke-width="1.2" fill="none"/>
+        <circle cx="42" cy="44" r="12" fill="#d8342c"/>
+        <circle cx="38" cy="40" r="3.5" fill="#fff" opacity=".3"/>
+        <path d="M42 32 l-5 -3 M42 32 l5 -3 M42 32 v-4" stroke="#3f8b3f" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="64" cy="48" r="9" fill="#c22a24"/>
+        <path d="M64 39 l-4 -2 M64 39 l4 -2" stroke="#3f8b3f" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M82 54 q0 -10 4 -14 q4 4 4 14 z" fill="#2f7d3e"/>
+        <ellipse cx="80" cy="42" rx="6" ry="4" fill="#3f9b4e" transform="rotate(-25 80 42)"/>
+        <ellipse cx="90" cy="43" rx="6" ry="4" fill="#358a44" transform="rotate(25 90 43)"/>
+      </svg>
+    </div>
+
+    <div class="nonna nonna-a" style="--nn-dress:#23222a; --nn-scarf:#1a1a21; --nn-dot:#6d6d78">
+      <div class="nn-say" id="nnSayA">Mamma mia!</div>
+      <div class="nn-hop">
+        <svg viewBox="0 0 120 170">
+          <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
+          <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
+          <g class="nn-skirt">
+            <path d="M40 60 H80 Q94 96 106 134 Q96 142 88 134 Q78 143 68 135 Q60 143 50 135 Q40 143 32 134 Q24 142 14 134 Q26 96 40 60 Z" fill="var(--nn-dress)"/>
+            <path d="M52 66 H68 Q76 100 82 130 Q60 137 38 130 Q44 100 52 66 Z" fill="#fdf5e6"/>
+            <circle cx="55" cy="92" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <circle cx="67" cy="104" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <circle cx="53" cy="116" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <path d="M50 61 Q60 73 70 61" stroke="#d4af37" stroke-width="1.6" fill="none"/>
+            <rect x="59" y="71" width="2.4" height="9" fill="#d4af37"/>
+            <rect x="56" y="73.5" width="8.4" height="2.4" fill="#d4af37"/>
+          </g>
+          <g class="nn-armR">
+            <path d="M76 70 Q94 76 90 96" stroke="#d9a97c" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="90" cy="99" r="7" fill="#e3b183"/>
+          </g>
+          <g class="nn-armL">
+            <path d="M44 70 Q26 58 18 34" stroke="#d9a97c" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="17" cy="31" r="7" fill="#e3b183"/>
+            <g transform="translate(17,29) rotate(-28)">
+              <rect x="-21" y="-5.5" width="42" height="11" rx="5.5" fill="#d8a866"/>
+              <rect x="-30" y="-3" width="10" height="6" rx="3" fill="#b3823f"/>
+              <rect x="20" y="-3" width="10" height="6" rx="3" fill="#b3823f"/>
+            </g>
+          </g>
+          <g class="nn-head">
+            <path d="M54 50 h12 v14 h-12 z" fill="#c9955f"/>
+            <circle cx="82" cy="30" r="10" fill="#9a9188"/>
+            <path d="M75 26 Q82 22 89 26" stroke="#cfc7be" stroke-width="1.5" fill="none"/>
+            <path d="M76 33 Q82 37 88 33" stroke="#7e766e" stroke-width="1.3" fill="none"/>
+            <circle cx="60" cy="34" r="19" fill="#e3b183"/>
+            <circle cx="41" cy="41" r="3.4" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <circle cx="79" cy="41" r="3.4" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <path d="M41 34 Q41 12 60 12 Q79 12 79 34 Q77 23 71 20 Q66 25 60 25 Q54 25 49 20 Q43 23 41 34 Z" fill="#9a9188"/>
+            <path d="M46 21 Q53 15 60 15 Q67 15 74 21" stroke="#cfc7be" stroke-width="1.8" fill="none"/>
+            <path d="M43 30 Q45 22 51 18" stroke="#cfc7be" stroke-width="1.4" fill="none"/>
+            <path d="M77 30 Q75 22 69 18" stroke="#cfc7be" stroke-width="1.4" fill="none"/>
+            <circle cx="52" cy="36" r="7.5" fill="#fff" fill-opacity=".45" stroke="#4a3b2a" stroke-width="2.2"/>
+            <circle cx="69" cy="36" r="7.5" fill="#fff" fill-opacity=".45" stroke="#4a3b2a" stroke-width="2.2"/>
+            <path d="M59.5 36 h2" stroke="#4a3b2a" stroke-width="2.2"/>
+            <circle cx="52" cy="36" r="2.4" fill="#4a2f1c"/>
+            <circle cx="69" cy="36" r="2.4" fill="#4a2f1c"/>
+            <ellipse cx="47" cy="45" rx="4.6" ry="3.2" fill="#d4735e" opacity=".45"/>
+            <ellipse cx="74" cy="45" rx="4.6" ry="3.2" fill="#d4735e" opacity=".45"/>
+            <ellipse cx="60" cy="45" rx="5.2" ry="3.8" fill="#7d3232"/>
+          </g>
+        </svg>
+      </div>
+      <div class="shadow"></div>
+    </div>
+
+    <div class="nonna nonna-b" style="--nn-dress:#4a2530; --nn-scarf:#6d3238; --nn-dot:#8a5a60">
+      <div class="nn-say" id="nnSayB">Bellissimo!</div>
+      <div class="nn-hop">
+        <svg viewBox="0 0 120 170">
+          <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
+          <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
+          <g class="nn-skirt">
+            <path d="M42 60 H78 Q92 96 104 134 Q94 143 86 134 Q76 142 66 135 Q58 143 48 135 Q38 142 30 134 Q22 143 16 134 Q28 96 42 60 Z" fill="var(--nn-dress)"/>
+            <path d="M52 66 H68 Q76 100 82 130 Q60 137 38 130 Q44 100 52 66 Z" fill="#fdf5e6"/>
+            <path d="M46 98 h28" stroke="var(--nn-dot)" stroke-width="2.6" opacity=".38"/>
+            <path d="M44 114 h32" stroke="var(--nn-dot)" stroke-width="2.6" opacity=".38"/>
+            <path d="M51 61 Q60 72 69 61" stroke="#d4af37" stroke-width="1.6" fill="none"/>
+            <rect x="59" y="70" width="2.4" height="9" fill="#d4af37"/>
+            <rect x="56" y="72.5" width="8.4" height="2.4" fill="#d4af37"/>
+          </g>
+          <g class="nn-armR">
+            <path d="M76 70 Q96 74 94 92" stroke="#d2a071" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="94" cy="95" r="7" fill="#dba877"/>
+          </g>
+          <g class="nn-armL">
+            <path d="M44 70 Q24 62 16 38" stroke="#d2a071" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="15" cy="35" r="7" fill="#dba877"/>
+            <g transform="translate(15,33) rotate(-38)">
+              <rect x="-2" y="-2.8" width="34" height="5.6" rx="2.8" fill="#d8a866"/>
+              <ellipse cx="-9" cy="0" rx="9" ry="6.5" fill="#c9954f"/>
+            </g>
+          </g>
+          <g class="nn-head">
+            <path d="M54 50 h12 v14 h-12 z" fill="#c08a55"/>
+            <circle cx="83" cy="32" r="11" fill="#8a827a"/>
+            <path d="M76 27 Q83 23 90 27" stroke="#b8b0a7" stroke-width="1.5" fill="none"/>
+            <path d="M77 35 Q83 39 89 35" stroke="#6f6860" stroke-width="1.3" fill="none"/>
+            <circle cx="60" cy="34" r="19" fill="#dba877"/>
+            <circle cx="41" cy="41" r="3.6" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <circle cx="79" cy="41" r="3.6" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <path d="M41 34 Q41 11 60 11 Q79 11 79 34 Q77 22 71 19 Q66 24 60 24 Q54 24 49 19 Q43 22 41 34 Z" fill="#8a827a"/>
+            <path d="M46 20 Q53 14 60 14 Q67 14 74 20" stroke="#b8b0a7" stroke-width="1.8" fill="none"/>
+            <path d="M43 29 Q45 21 51 17" stroke="#b8b0a7" stroke-width="1.4" fill="none"/>
+            <path d="M77 29 Q75 21 69 17" stroke="#b8b0a7" stroke-width="1.4" fill="none"/>
+            <ellipse cx="52" cy="36" rx="3.4" ry="4" fill="#fff"/>
+            <ellipse cx="69" cy="36" rx="3.4" ry="4" fill="#fff"/>
+            <circle cx="52.6" cy="36.6" r="2.3" fill="#4a2f1c"/>
+            <circle cx="69.6" cy="36.6" r="2.3" fill="#4a2f1c"/>
+            <path d="M47 30 Q52 27 57 30" stroke="#6b5f55" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M64 30 Q69 27 74 30" stroke="#6b5f55" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <ellipse cx="47" cy="45" rx="4.6" ry="3.2" fill="#cc6a56" opacity=".45"/>
+            <ellipse cx="74" cy="45" rx="4.6" ry="3.2" fill="#cc6a56" opacity=".45"/>
+            <ellipse cx="60" cy="45" rx="6" ry="4.2" fill="#7d3232"/>
+            <circle cx="70" cy="43" r="1.5" fill="#8a6a52"/>
+          </g>
+        </svg>
+      </div>
+      <div class="shadow"></div>
+    </div>
+
   </div>
 </div>
 
@@ -2347,6 +2578,7 @@ async function enterSolMode() {
   const box = solEl('solMode');
   box.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
+  solStartSaying();
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';
   solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
@@ -2380,7 +2612,36 @@ function exitSolMode() {
   solEl('solMode').classList.add('hidden');
   document.body.style.overflow = '';
   clearInterval(solTimer); solTimer = null;
+  clearInterval(solSayTimer); solSayTimer = null;
   solStopMusic();
+}
+
+// Nonnaene kjefter på hverandre, maser om mat og drikke. Bare italiensk.
+const NN_SAY_A = ['Mamma mia!', 'Mangia, mangia!', 'Che sole!', 'Balla, balla!',
+                  'Andiamo!', 'Porca miseria!', 'Ma che cavolo!', 'Testa dura!',
+                  'Zitta, tu!', 'Accidenti!', 'Che palle!', 'Madonna santa!',
+                  'Una birra?', 'Vino rosso!', 'Ancora vino!', 'Salute!',
+                  'Spaghetti!', 'Lasagne al forno!', 'Parmigiana!',
+                  'Carbonara, no panna!', 'Cannoli!', 'Ragù della nonna!'];
+const NN_SAY_B = ['Bellissimo!', 'Tarantella!', 'Sole mio!', 'Ancora!', 'Vino?',
+                  'Presto, presto!', 'Mannaggia!', 'Sei matta!', "Ma va'!",
+                  'Uffa!', 'Cretina!', 'Basta, basta!',
+                  'Birra fredda!', "Dov'è il vino?", 'Un bicchiere?', 'Prosecco!',
+                  'Chi paga? Tu!', 'Pizza margherita!', 'Gnocchi!', 'Tiramisù!',
+                  'Polpette!', 'Melanzane alla parmigiana!'];
+let solSayTimer = null, solSayIx = 0;
+
+function solStartSaying() {
+  clearInterval(solSayTimer);
+  const step = () => {
+    const a = solEl('nnSayA'), b = solEl('nnSayB');
+    if (a) a.textContent = NN_SAY_A[solSayIx % NN_SAY_A.length];
+    if (b) b.textContent = NN_SAY_B[(solSayIx + 3) % NN_SAY_B.length];
+    solSayIx++;
+  };
+  step();
+  // Boblene vises annenhver gang, én runde er 6,4 s.
+  solSayTimer = setInterval(step, 6400);
 }
 
 // ════════════════════════════════════════════════════════

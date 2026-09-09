@@ -76,6 +76,14 @@ med italiensk sommerstemning:
   «oom-pah-pah». Alt er kort og avkortet, slik en tarantella faktisk spilles, med
   tamburin på åttendedelene. Ingen lydfiler lastes ned – alt lages i nettleseren
   med Web Audio. Kan slås av og på.
+- **To dansende nonnaer** krysser skjermen i takt med musikken. De er tegnet som
+  ren SVG: sølvgrått hår samlet i nakkeknute, briller, svart enkekjole med forkle,
+  gullringer og kors – den ene med kjevle, den andre med tresleiv. Hoppet følger
+  den punkterte firedelen (0,857 s), og armer, bein, skjørt og hode har hver sin
+  animasjon på takten. Underveis kjefter de på hverandre og maser om mat og drikke
+  i snakkebobler. Kulissene er italienske: tricolore-vimpler langs toppen og et
+  stilleben med chianti-flaske, vinglass, tomater, hvitløk og basilikum.
+  Hele laget er `pointer-events: none` og skjules ved `prefers-reduced-motion`.
 - Lukkes med **← Tilbake** eller **Esc**.
 
 ## Nøyaktighet
