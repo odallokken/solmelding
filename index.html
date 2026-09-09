@@ -445,7 +445,6 @@
       </div>
       <div class="btn-row">
         <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
-        <button class="btn-secondary" onclick="hzUseSolhjornet()" title="Sett pinnen på Solhjørnet og regn ut på nytt">⛱️ Solhjørnet</button>
       </div>
       <div class="hz-progress hidden" id="hzProgress">
         <div class="bar"><i id="hzBar"></i></div>
@@ -2147,23 +2146,6 @@ function hzMetersBetween(aLat, aLng, bLat, bLng) {
 /** Er pinnen på Solhjørnet? */
 function hzAtHome(pin) {
   return hzMetersBetween(pin.lat, pin.lng, HZ_HOME_DEFAULT.lat, HZ_HOME_DEFAULT.lng) <= HZ_HOME_RADIUS;
-}
-
-/** Sett pinnen tilbake på Solhjørnet og regn ut på nytt. */
-function hzUseSolhjornet() {
-  hzPin = { ...HZ_HOME_DEFAULT };
-  const s = hzLoadSettings();
-  if (s && typeof s.eye === 'number') {
-    hzEye = s.eye;
-    document.getElementById('hzEye').value = hzEye;
-    hzUpdateEyeUI();
-  }
-  hzMap.center = { ...hzPin };
-  hzMap.zoom = Math.max(hzMap.zoom, 18);
-  hzMap.draw();
-  hzUpdateCoordUI();
-  hzSaveSettings();
-  runHorizon();
 }
 
 async function runHorizon() {
