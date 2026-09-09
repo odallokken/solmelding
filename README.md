@@ -2,6 +2,8 @@
 
 En enkel webapp som viser solstatistikk for valgfritt sted og dato i Norge.
 
+**👉 Prøv den her: [odallokken.github.io/solmelding](https://odallokken.github.io/solmelding/)**
+
 ## Funksjoner
 
 - **Dagslys i dag** (tt:mm:ss) for valgfritt sted og dato
@@ -104,9 +106,11 @@ faktiske høyden, så «første sol» kan avvike med et halvt minutt ved helt fr
 
 ## Bruk
 
-Åpne `index.html` i en nettleser – ingen installasjon eller server nødvendig. Kan lagres på hjemskjem på iPhone e.l.
+**Publisert versjon:** [odallokken.github.io/solmelding](https://odallokken.github.io/solmelding/) –
+serveres av GitHub Pages fra `main`, så hver push til `main` oppdaterer siden automatisk.
 
-Eller besøk den publiserte versjonen via GitHub Pages.
+Alternativt kan du åpne `index.html` rett i en nettleser – ingen installasjon eller server
+nødvendig. Kan lagres på hjemskjerm på iPhone e.l.
 
 ## Teknisk
 
