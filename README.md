@@ -63,9 +63,10 @@ med italiensk sommerstemning:
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
   ned fra Kartverket med en framdriftsvisning.
-- **Musikk** – «Funiculì, Funiculà» (Denza/Turco, 1880) syntetiseres direkte i
-  nettleseren med Web Audio, med mandolin-tremolo på de lange tonene. Melodien er
-  falt i det fri, og ingen lydfiler lastes ned. Kan slås av og på.
+- **Musikk** – «Tarantella Napoletana», den tradisjonelle napolitanske folketonen,
+  spilt som 8-bits chiptune: to pulskanaler (melodi og arpeggio), trekantbass og
+  støykanal med tamburin, alt syntetisert direkte i nettleseren med Web Audio.
+  Melodien er anonym og falt i det fri, og ingen lydfiler lastes ned. Kan slås av og på.
 - Lukkes med **← Tilbake** eller **Esc**.
 
 ## Nøyaktighet
