@@ -51,7 +51,7 @@
     #app { max-width: 700px; margin: 0 auto; width: 100%; }
 
     /* ── Header ── */
-    header { text-align: center; padding: 28px 0 22px; }
+    header { text-align: center; padding: 16px 0 14px; }
     header h1 {
       font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px;
       background: linear-gradient(135deg, #f4a429, #ff7f2a);
@@ -171,9 +171,9 @@
 
     /* ── Sol-ansikt i header ── */
     .sun-face-wrap {
-      position: relative; display: inline-block; margin-bottom: 10px;
+      position: relative; display: inline-block; margin-bottom: 6px;
     }
-    #sunFaceCanvas { display: block; border-radius: 50%; }
+    #sunFaceCanvas { display: block; border-radius: 50%; width: 104px; height: 104px; }
     /* face-pick-btn fjernet – bilde lastes fra face.png */
 
     /* ── Export ── */
@@ -210,10 +210,174 @@
     .source-badge.noaa   { background: rgba(251,191,36,.12); color: #fbbf24; border: 1px solid rgba(251,191,36,.3); }
     .source-badge.loading{ background: rgba(122,155,181,.1); color: var(--muted); border: 1px solid rgba(122,155,181,.2); }
 
+    /* ── Horisont / nøyaktig sted ── */
+    .hz-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .hz-title { font-size: .72rem; text-transform: uppercase; letter-spacing: .07em; color: #b8d0e8; font-weight: 600; }
+    .hz-switch { display: flex; align-items: center; gap: 7px; font-size: .8rem; color: var(--muted); cursor: pointer; user-select: none; }
+    .hz-switch input { accent-color: var(--accent); width: 16px; height: 16px; cursor: pointer; }
+    .hz-help { font-size: .76rem; color: var(--muted); line-height: 1.5; margin: 11px 0; }
+    .map-wrap { position: relative; border-radius: 12px; overflow: hidden; border: 1px solid #2a4a6e; background: #0d1b2a; }
+    #hzMap { display: block; width: 100%; height: auto; cursor: crosshair; touch-action: none; }
+    .map-zoom { position: absolute; top: 8px; left: 8px; display: flex; flex-direction: column; gap: 4px; }
+    .map-zoom button {
+      width: 30px; height: 30px; padding: 0; font-size: 1.05rem; line-height: 1;
+      background: rgba(13,27,42,.82); color: var(--text); border: 1px solid #2a4a6e;
+    }
+    .map-attr {
+      position: absolute; right: 5px; bottom: 4px; font-size: .58rem; color: #cfe3f3;
+      background: rgba(13,27,42,.62); padding: 1px 6px; border-radius: 5px;
+    }
+    .hz-coords { font-size: .74rem; color: var(--muted); margin-top: 8px; text-align: center; }
+    .hz-coords b { color: var(--text); font-weight: 600; }
+    .hz-slider-row { margin-top: 12px; }
+    .hz-slider-row label { font-size: .74rem; color: #b8d0e8; display: flex; justify-content: space-between; gap: 8px; }
+    .hz-slider-row label b { color: var(--accent); }
+    .hz-floor { color: var(--muted); font-weight: 400; }
+    input[type="range"] { width: 100%; accent-color: var(--accent); margin-top: 7px; }
+    .hz-progress { margin-top: 11px; font-size: .74rem; color: var(--muted); }
+    .hz-progress .bar { height: 5px; background: #0d1b2a; border-radius: 4px; overflow: hidden; border: 1px solid #2a4a6e; margin-bottom: 5px; }
+    .hz-progress .bar i { display: block; height: 100%; width: 0; background: linear-gradient(90deg,var(--accent),var(--accent2)); transition: width .18s; }
+    .hz-warn {
+      margin-top: 11px; font-size: .75rem; line-height: 1.5; border-radius: 10px; padding: 9px 12px;
+      background: rgba(251,191,36,.1); border: 1px solid rgba(251,191,36,.35); color: #fcd34d;
+    }
+    .hz-card::before { background: linear-gradient(90deg,#38bdf8,#818cf8); opacity: .55; }
+    .hz-windows { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .hz-win {
+      font-size: .76rem; font-weight: 600; padding: 3px 10px; border-radius: 20px;
+      background: rgba(244,164,41,.14); border: 1px solid rgba(244,164,41,.34); color: var(--accent);
+    }
+    .hz-win.none { background: rgba(122,155,181,.1); border-color: rgba(122,155,181,.25); color: var(--muted); }
+    #hzPano { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .source-badge.dom { background: rgba(56,189,248,.14); color: #38bdf8; border: 1px solid rgba(56,189,248,.35); }
+
     .hidden { display: none !important; }
     footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; color: #9ab8d0; font-size: .72rem; padding: 16px 0 28px; opacity: .85; }
     footer a { color: #9ab8d0; }
     .footer-ig { white-space: nowrap; font-weight: 800; color: #c8dff0; font-size: .78rem; }
+
+    /* ── Solhjørnet: hero-knapp ── */
+    .sol-hero { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
+      margin: 0 0 14px; padding: 17px 20px; border: 0; border-radius: 18px; cursor: pointer;
+      font-family: inherit; font-size: 1.16rem; font-weight: 900; letter-spacing: .3px; color: #2b1a0d;
+      background: linear-gradient(135deg, #ffd27a 0%, #ffb347 45%, #ff8a3d 100%);
+      box-shadow: 0 8px 26px rgba(255,150,60,.34); transition: transform .12s, box-shadow .12s; }
+    .sol-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,150,60,.44); }
+    .sol-hero:active { transform: translateY(0); }
+    .sol-hero .um { font-size: 1.5em; line-height: 1; }
+    .sol-hero small { display: block; font-size: .66rem; font-weight: 700; opacity: .72; letter-spacing: .2px; }
+
+    /* ── Solhjørnet: italiensk modus ── */
+    #solMode { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center;
+      padding: 22px; text-align: center; overflow-y: auto;
+      --nn-beat: .4286s; --nn-bar: .857s;
+      background:
+        radial-gradient(circle at 50% 16%, rgba(255,236,180,.95) 0%, rgba(255,193,110,.92) 32%, rgba(233,124,72,.95) 62%, rgba(150,58,50,.97) 100%),
+        #963a32;
+      animation: solIn .45s ease both; }
+    @keyframes solIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
+    /* Parasoll-striper i toppen */
+    #solMode::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 190px; opacity: .5;
+      background: repeating-linear-gradient(105deg, rgba(200,40,45,.85) 0 26px, rgba(255,255,255,.9) 26px 52px);
+      -webkit-mask-image: linear-gradient(#000, transparent); mask-image: linear-gradient(#000, transparent); }
+    .sol-inner { position: relative; z-index: 1; max-width: 460px; width: 100%; }
+    .sol-flag { width: 74px; height: 7px; border-radius: 4px; margin: 0 auto 18px;
+      background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
+      box-shadow: 0 2px 8px rgba(0,0,0,.22); }
+    .sol-place { font-size: 2.1rem; font-weight: 900; color: #5a1f14; letter-spacing: .5px; line-height: 1.05; }
+    .sol-place .um { display: block; font-size: 2.4rem; margin-bottom: 2px; }
+    .sol-state { margin-top: 16px; font-size: .82rem; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 2.4px; color: #7a2d1c; opacity: .9; }
+    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 900;
+      line-height: 1; margin: 6px 0 4px; color: #40130c; text-shadow: 0 3px 0 rgba(255,255,255,.28); }
+    .sol-note { font-size: .95rem; font-weight: 700; color: #6b2618; min-height: 1.3em; }
+    .sol-sub { margin-top: 8px; font-size: .78rem; color: #7a3222; opacity: .85; }
+    .sol-actions { margin-top: 26px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sol-btn { border: 0; cursor: pointer; font-family: inherit; font-weight: 800; font-size: .86rem;
+      padding: 11px 18px; border-radius: 12px; background: rgba(255,255,255,.72); color: #6b2618;
+      box-shadow: 0 3px 12px rgba(0,0,0,.14); transition: background .15s, transform .1s; }
+    .sol-btn:hover { background: #fff; transform: translateY(-1px); }
+    .sol-btn.on { background: #2f7a4a; color: #fff; }
+    .sol-spinner { font-size: .9rem; color: #6b2618; font-weight: 700; }
+
+    /* ── To nonnaer som danser tarantella ── */
+    /* Takten følger musikken: 140 punktert firedel gir 0,857 s per takt. */
+    .sol-nonnas { position: absolute; left: 0; right: 0; bottom: 0; height: 265px;
+      overflow: hidden; pointer-events: none; z-index: 2; }
+    .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px; }
+    .nonna .shadow { position: absolute; bottom: 2px; left: 50%; width: 76px; height: 11px;
+      margin-left: -38px; border-radius: 50%; background: rgba(90,25,15,.22);
+      animation: nnShadow var(--nn-beat) infinite ease-in-out; }
+    .nonna-a { animation: nnCrossA 17s linear infinite; }
+    .nonna-b { bottom: 34px; width: 114px; height: 149px;
+      animation: nnCrossB 19.4s linear infinite; animation-delay: -9s; }
+    @keyframes nnCrossA { from { transform: translateX(-150px); }
+                          to   { transform: translateX(calc(100vw + 20px)); } }
+    @keyframes nnCrossB { from { transform: translateX(calc(100vw + 20px)) scaleX(-1); }
+                          to   { transform: translateX(-150px) scaleX(-1); } }
+
+    /* Hoppet: ett per punktert firedel, med litt slark i kroppen. */
+    .nn-hop { width: 100%; height: 100%; animation: nnHop var(--nn-beat) infinite; }    @keyframes nnHop {
+      0%   { transform: translateY(0)     scale(1.06, .94); }
+      30%  { transform: translateY(-24px) scale(.95, 1.06); }
+      60%  { transform: translateY(-6px)  scale(1, 1); }
+      100% { transform: translateY(0)     scale(1.06, .94); }
+    }
+    @keyframes nnShadow { 0%, 100% { transform: scale(1); opacity: .22; }
+                          30%      { transform: scale(.6); opacity: .1; } }
+
+    .nonna svg { width: 100%; height: 100%; overflow: visible; }
+    .nonna svg g { transform-box: fill-box; }
+
+    /* Skjørtet slenger, beina spreller, kjevla vifter. */
+    .nn-skirt { transform-origin: 50% 4%;   animation: nnSway var(--nn-bar) infinite ease-in-out; }
+    .nn-head  { transform-origin: 45% 100%; animation: nnNod  var(--nn-bar) infinite ease-in-out; }
+    .nn-armL  { transform-origin: 92% 94%;  animation: nnArmL var(--nn-bar) infinite ease-in-out; }
+    .nn-armR  { transform-origin: 18% 10%;  animation: nnArmR var(--nn-bar) infinite ease-in-out; }
+    .nn-legL  { transform-origin: 80% 10%;  animation: nnKickL var(--nn-beat) infinite ease-in-out; }
+    .nn-legR  { transform-origin: 20% 10%;  animation: nnKickR var(--nn-beat) infinite ease-in-out; }
+    @keyframes nnSway  { 0%, 100% { transform: rotate(-9deg) skewX(4deg); }
+                         50%      { transform: rotate(9deg)  skewX(-4deg); } }
+    @keyframes nnNod   { 0%, 100% { transform: rotate(7deg); }  50% { transform: rotate(-7deg); } }
+    @keyframes nnArmL  { 0%, 100% { transform: rotate(-16deg); } 50% { transform: rotate(12deg); } }
+    @keyframes nnArmR  { 0%, 100% { transform: rotate(14deg); }  50% { transform: rotate(-10deg); } }
+    @keyframes nnKickL { 0%, 100% { transform: rotate(24deg); }  50% { transform: rotate(-30deg); } }
+    @keyframes nnKickR { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(24deg); } }
+
+    /* Snakkeboble */
+    .nn-say { position: absolute; top: -58px; left: 50%; transform: translateX(-50%);
+      z-index: 3;
+      background: #fffaf0; color: #6b2618; font-weight: 900; font-size: .74rem;
+      padding: 7px 12px; border-radius: 14px; white-space: nowrap;
+      box-shadow: 0 3px 10px rgba(0,0,0,.18); opacity: 0;
+      animation: nnSay 6.4s infinite; }
+    .nonna-b .nn-say { transform: translateX(-50%) scaleX(-1); animation-delay: 3.2s; }
+    .nn-say::after { content: ''; position: absolute; bottom: -6px; left: 50%; margin-left: -5px;
+      border: 5px solid transparent; border-top-color: #fffaf0; border-bottom: 0; }
+    @keyframes nnSay { 0%, 6% { opacity: 0; transform: translateX(-50%) scale(.7); }
+                       12%, 42% { opacity: 1; transform: translateX(-50%) scale(1); }
+                       52%, 100% { opacity: 0; transform: translateX(-50%) scale(.9); } }
+    .nonna-b .nn-say { animation-name: nnSayB; }
+    @keyframes nnSayB { 0%, 6% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.7); }
+                        12%, 42% { opacity: 1; transform: translateX(-50%) scaleX(-1) scale(1); }
+                        52%, 100% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.9); } }
+
+    /* Italienske omgivelser: vimpler i toppen, stilleben langs bakken. */
+    .sol-bunting { position: absolute; top: 0; left: 0; right: 0; height: 50px;
+      pointer-events: none; z-index: 2; opacity: .92;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='50'%3E%3Cpath d='M0 5 H120' stroke='%238a4a33' stroke-width='2'/%3E%3Cpath d='M3 6 H37 L20 40 Z' fill='%231f8a4c'/%3E%3Cpath d='M43 6 H77 L60 40 Z' fill='%23f7f3ea'/%3E%3Cpath d='M83 6 H117 L100 40 Z' fill='%23cf2b2b'/%3E%3C/svg%3E") repeat-x;
+      animation: nnFlag 3.4s ease-in-out infinite; }
+    @keyframes nnFlag { 0%, 100% { transform: translateY(0); }
+                        50%      { transform: translateY(4px); } }
+    .nn-still { position: absolute; bottom: 4px; z-index: 0; display: flex;
+      align-items: flex-end; gap: 6px; opacity: .95; }
+    .nn-still-l { left: 3%; }
+    .nn-still-r { right: 3%; }
+
+    @media (max-width: 480px) { .sol-nonnas { height: 215px; } .nonna { width: 100px; height: 132px; }
+      .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; }
+      .nn-still { transform: scale(.72); transform-origin: bottom; } }
+    @media (prefers-reduced-motion: reduce) { .sol-nonnas { display: none; } }
   </style>
 </head>
 <body>
@@ -226,6 +390,11 @@
     <h1>Arntes solservice</h1>
     <p>Dagslys, solstatistikk og merkedager i mørketida</p>
   </header>
+
+  <button class="sol-hero" onclick="enterSolMode()">
+    <span class="um">⛱️</span>
+    <span>Solhjørnet<small>Sol i hjørnet – akkurat nå</small></span>
+  </button>
 
   <!-- Input -->
   <div class="input-panel">
@@ -247,6 +416,45 @@
 
   <div class="status-msg" id="statusMsg"></div>
 
+  <!-- Nøyaktig sted: horisont fra terreng + bygninger -->
+  <div class="input-panel">
+    <div class="hz-head">
+      <div class="hz-title">🏙️ Nøyaktig sol der du bor</div>
+      <label class="hz-switch"><input type="checkbox" id="hzEnable"> Terreng + bygninger</label>
+    </div>
+    <div id="hzBody" class="hidden">
+      <p class="hz-help">
+        Klikk i kartet for å sette punktet. Horisonten regnes ut fra Kartverkets 1-meters
+        overflatemodell – terreng, bygninger og trær inkludert.
+      </p>
+      <div class="map-wrap">
+        <canvas id="hzMap" width="640" height="380"></canvas>
+        <div class="map-zoom">
+          <button type="button" onclick="hzZoom(1)" title="Zoom inn">+</button>
+          <button type="button" onclick="hzZoom(-1)" title="Zoom ut">−</button>
+        </div>
+        <div class="map-attr">© Kartverket</div>
+      </div>
+      <div class="hz-coords" id="hzCoords">–</div>
+      <div class="hz-slider-row">
+        <label>
+          <span>👁 Høyde over bakken</span>
+          <span><b id="hzEyeVal">1,7 m</b> <span class="hz-floor" id="hzFloor">(bakkeplan)</span></span>
+        </label>
+        <input type="range" id="hzEye" min="0" max="40" step="0.1" value="1.7">
+      </div>
+      <div class="btn-row">
+        <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
+        <button class="btn-secondary" onclick="hzUseSolhjornet()" title="Sett pinnen på Solhjørnet og regn ut på nytt">⛱️ Solhjørnet</button>
+      </div>
+      <div class="hz-progress hidden" id="hzProgress">
+        <div class="bar"><i id="hzBar"></i></div>
+        <span id="hzProgTxt"></span>
+      </div>
+      <div class="hz-warn hidden" id="hzWarn"></div>
+    </div>
+  </div>
+
   <!-- Milestone -->
   <div id="milestoneBanner" class="hidden"></div>
   <div id="solvervMilestoneBanner" class="hidden"></div>
@@ -258,6 +466,20 @@
     <!-- Sun arc -->
     <div class="card full-width arc-card" style="margin-bottom:11px">
       <canvas id="sunArcCanvas" width="660" height="110"></canvas>
+    </div>
+
+    <!-- Direkte sol på stedet (terreng + bygninger) -->
+    <div id="hzResults" class="hidden">
+      <div class="card full-width hz-card" style="margin-bottom:11px">
+        <div class="card-label"><span>🏙️</span> Direkte sol på stedet (terreng + bygninger)</div>
+        <div class="card-value orange" id="hzTotal">–</div>
+        <div class="card-sub" id="hzSub"></div>
+        <div class="hz-windows" id="hzWindows"></div>
+      </div>
+      <div class="card full-width arc-card" style="margin-bottom:11px">
+        <canvas id="hzPano" width="660" height="300"></canvas>
+        <div class="card-sub" id="hzPanoSub" style="padding:6px 6px 2px"></div>
+      </div>
     </div>
 
     <div class="results-grid">
@@ -336,12 +558,180 @@
   </div>
 
   <footer>
-    <span>Beregninger: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA Solar Calculator</a> (nøyaktighet ±30 sek) ·
-    Geokoding: <a href="https://nominatim.openstreetmap.org/" target="_blank">OSM Nominatim</a></span>
+    <span>Data: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA</a> ·
+    <a href="https://hoydedata.no/" target="_blank" rel="noopener">Kartverket</a> ·
+    <a href="https://nominatim.openstreetmap.org/" target="_blank">OSM</a></span>
     <a class="footer-ig" href="https://www.instagram.com/arntessolservice/" target="_blank" rel="noopener">Følg @arntessolservice</a>
   </footer>
 
 </div><!-- /app -->
+
+<!-- ── Solhjørnet: italiensk modus ── -->
+<div id="solMode" class="hidden">
+  <div class="sol-inner">
+    <div class="sol-flag"></div>
+    <div class="sol-place"><span class="um">⛱️</span>Solhjørnet</div>
+    <div class="sol-state" id="solState">Regner ut …</div>
+    <div class="sol-count" id="solCount">–</div>
+    <div class="sol-note" id="solNote"></div>
+    <div class="sol-sub" id="solSub"></div>
+    <div class="sol-actions">
+      <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()">🎵 Musikk</button>
+      <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
+    </div>
+  </div>
+
+  <!-- To nonnaer på vei over skjermen. Rent dekor. -->
+  <div class="sol-bunting" aria-hidden="true"></div>
+  <div class="sol-nonnas" aria-hidden="true">
+
+    <div class="nn-still nn-still-l">
+      <svg viewBox="0 0 60 92" width="46" height="70">
+        <ellipse cx="30" cy="88" rx="19" ry="4" fill="rgba(90,25,15,.18)"/>
+        <rect x="25" y="2" width="10" height="7" rx="2" fill="#b3823f"/>
+        <path d="M26 8 h8 v22 q12 7 14 22 v22 q0 10 -18 10 q-18 0 -18 -10 v-22 q2 -15 14 -22 z" fill="#2f5d3a"/>
+        <path d="M12 56 q0 -6 1 -10 q17 -5 34 0 q1 4 1 10 v18 q0 10 -18 10 q-18 0 -18 -10 z" fill="#d9b871"/>
+        <path d="M13 60 h34 M13 68 h34 M13 76 h33" stroke="#b8925a" stroke-width="1.4" fill="none"/>
+        <rect x="22" y="34" width="16" height="14" rx="2" fill="#f2e8d5"/>
+        <rect x="22" y="34" width="16" height="4" fill="#a5232b"/>
+      </svg>
+      <svg viewBox="0 0 40 64" width="26" height="42">
+        <path d="M9 7 h22 v9 q0 13 -11 15 q-11 -2 -11 -15 z" fill="#7a1220"/>
+        <path d="M8 4 h24 v12 q0 14 -12 17 q-12 -3 -12 -17 z" fill="none" stroke="#efe9dc" stroke-width="2"/>
+        <path d="M20 33 v20" stroke="#efe9dc" stroke-width="2.4"/>
+        <path d="M9 55 h22" stroke="#efe9dc" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <div class="nn-still nn-still-r">
+      <svg viewBox="0 0 96 62" width="76" height="49">
+        <ellipse cx="48" cy="58" rx="36" ry="4" fill="rgba(90,25,15,.18)"/>
+        <path d="M14 56 q-7 0 -7 -9 q0 -9 7 -13 q7 4 7 13 q0 9 -7 9 z" fill="#f3ece2"/>
+        <path d="M14 34 v-6" stroke="#c9bda9" stroke-width="2"/>
+        <path d="M9 53 q2 -12 5 -19 M19 53 q-2 -12 -5 -19" stroke="#ddd3c4" stroke-width="1.2" fill="none"/>
+        <circle cx="42" cy="44" r="12" fill="#d8342c"/>
+        <circle cx="38" cy="40" r="3.5" fill="#fff" opacity=".3"/>
+        <path d="M42 32 l-5 -3 M42 32 l5 -3 M42 32 v-4" stroke="#3f8b3f" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="64" cy="48" r="9" fill="#c22a24"/>
+        <path d="M64 39 l-4 -2 M64 39 l4 -2" stroke="#3f8b3f" stroke-width="1.8" stroke-linecap="round"/>
+        <path d="M82 54 q0 -10 4 -14 q4 4 4 14 z" fill="#2f7d3e"/>
+        <ellipse cx="80" cy="42" rx="6" ry="4" fill="#3f9b4e" transform="rotate(-25 80 42)"/>
+        <ellipse cx="90" cy="43" rx="6" ry="4" fill="#358a44" transform="rotate(25 90 43)"/>
+      </svg>
+    </div>
+
+    <div class="nonna nonna-a" style="--nn-dress:#23222a; --nn-scarf:#1a1a21; --nn-dot:#6d6d78">
+      <div class="nn-say" id="nnSayA">Mamma mia!</div>
+      <div class="nn-hop">
+        <svg viewBox="0 0 120 170">
+          <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
+          <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d9a97c" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#2e2a2c"/></g>
+          <g class="nn-skirt">
+            <path d="M40 60 H80 Q94 96 106 134 Q96 142 88 134 Q78 143 68 135 Q60 143 50 135 Q40 143 32 134 Q24 142 14 134 Q26 96 40 60 Z" fill="var(--nn-dress)"/>
+            <path d="M52 66 H68 Q76 100 82 130 Q60 137 38 130 Q44 100 52 66 Z" fill="#fdf5e6"/>
+            <circle cx="55" cy="92" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <circle cx="67" cy="104" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <circle cx="53" cy="116" r="2.3" fill="var(--nn-dot)" opacity=".4"/>
+            <path d="M50 61 Q60 73 70 61" stroke="#d4af37" stroke-width="1.6" fill="none"/>
+            <rect x="59" y="71" width="2.4" height="9" fill="#d4af37"/>
+            <rect x="56" y="73.5" width="8.4" height="2.4" fill="#d4af37"/>
+          </g>
+          <g class="nn-armR">
+            <path d="M76 70 Q94 76 90 96" stroke="#d9a97c" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="90" cy="99" r="7" fill="#e3b183"/>
+          </g>
+          <g class="nn-armL">
+            <path d="M44 70 Q26 58 18 34" stroke="#d9a97c" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="17" cy="31" r="7" fill="#e3b183"/>
+            <g transform="translate(17,29) rotate(-28)">
+              <rect x="-21" y="-5.5" width="42" height="11" rx="5.5" fill="#d8a866"/>
+              <rect x="-30" y="-3" width="10" height="6" rx="3" fill="#b3823f"/>
+              <rect x="20" y="-3" width="10" height="6" rx="3" fill="#b3823f"/>
+            </g>
+          </g>
+          <g class="nn-head">
+            <path d="M54 50 h12 v14 h-12 z" fill="#c9955f"/>
+            <circle cx="82" cy="30" r="10" fill="#9a9188"/>
+            <path d="M75 26 Q82 22 89 26" stroke="#cfc7be" stroke-width="1.5" fill="none"/>
+            <path d="M76 33 Q82 37 88 33" stroke="#7e766e" stroke-width="1.3" fill="none"/>
+            <circle cx="60" cy="34" r="19" fill="#e3b183"/>
+            <circle cx="41" cy="41" r="3.4" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <circle cx="79" cy="41" r="3.4" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <path d="M41 34 Q41 12 60 12 Q79 12 79 34 Q77 23 71 20 Q66 25 60 25 Q54 25 49 20 Q43 23 41 34 Z" fill="#9a9188"/>
+            <path d="M46 21 Q53 15 60 15 Q67 15 74 21" stroke="#cfc7be" stroke-width="1.8" fill="none"/>
+            <path d="M43 30 Q45 22 51 18" stroke="#cfc7be" stroke-width="1.4" fill="none"/>
+            <path d="M77 30 Q75 22 69 18" stroke="#cfc7be" stroke-width="1.4" fill="none"/>
+            <circle cx="52" cy="36" r="7.5" fill="#fff" fill-opacity=".45" stroke="#4a3b2a" stroke-width="2.2"/>
+            <circle cx="69" cy="36" r="7.5" fill="#fff" fill-opacity=".45" stroke="#4a3b2a" stroke-width="2.2"/>
+            <path d="M59.5 36 h2" stroke="#4a3b2a" stroke-width="2.2"/>
+            <circle cx="52" cy="36" r="2.4" fill="#4a2f1c"/>
+            <circle cx="69" cy="36" r="2.4" fill="#4a2f1c"/>
+            <ellipse cx="47" cy="45" rx="4.6" ry="3.2" fill="#d4735e" opacity=".45"/>
+            <ellipse cx="74" cy="45" rx="4.6" ry="3.2" fill="#d4735e" opacity=".45"/>
+            <ellipse cx="60" cy="45" rx="5.2" ry="3.8" fill="#7d3232"/>
+          </g>
+        </svg>
+      </div>
+      <div class="shadow"></div>
+    </div>
+
+    <div class="nonna nonna-b" style="--nn-dress:#4a2530; --nn-scarf:#6d3238; --nn-dot:#8a5a60">
+      <div class="nn-say" id="nnSayB">Bellissimo!</div>
+      <div class="nn-hop">
+        <svg viewBox="0 0 120 170">
+          <g class="nn-legL"><path d="M52 118 L46 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="43" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
+          <g class="nn-legR"><path d="M68 118 L74 146" stroke="#d2a071" stroke-width="10" stroke-linecap="round" fill="none"/><ellipse cx="77" cy="150" rx="11" ry="5.5" fill="#3a2f31"/></g>
+          <g class="nn-skirt">
+            <path d="M42 60 H78 Q92 96 104 134 Q94 143 86 134 Q76 142 66 135 Q58 143 48 135 Q38 142 30 134 Q22 143 16 134 Q28 96 42 60 Z" fill="var(--nn-dress)"/>
+            <path d="M52 66 H68 Q76 100 82 130 Q60 137 38 130 Q44 100 52 66 Z" fill="#fdf5e6"/>
+            <path d="M46 98 h28" stroke="var(--nn-dot)" stroke-width="2.6" opacity=".38"/>
+            <path d="M44 114 h32" stroke="var(--nn-dot)" stroke-width="2.6" opacity=".38"/>
+            <path d="M51 61 Q60 72 69 61" stroke="#d4af37" stroke-width="1.6" fill="none"/>
+            <rect x="59" y="70" width="2.4" height="9" fill="#d4af37"/>
+            <rect x="56" y="72.5" width="8.4" height="2.4" fill="#d4af37"/>
+          </g>
+          <g class="nn-armR">
+            <path d="M76 70 Q96 74 94 92" stroke="#d2a071" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="94" cy="95" r="7" fill="#dba877"/>
+          </g>
+          <g class="nn-armL">
+            <path d="M44 70 Q24 62 16 38" stroke="#d2a071" stroke-width="10" fill="none" stroke-linecap="round"/>
+            <circle cx="15" cy="35" r="7" fill="#dba877"/>
+            <g transform="translate(15,33) rotate(-38)">
+              <rect x="-2" y="-2.8" width="34" height="5.6" rx="2.8" fill="#d8a866"/>
+              <ellipse cx="-9" cy="0" rx="9" ry="6.5" fill="#c9954f"/>
+            </g>
+          </g>
+          <g class="nn-head">
+            <path d="M54 50 h12 v14 h-12 z" fill="#c08a55"/>
+            <circle cx="83" cy="32" r="11" fill="#8a827a"/>
+            <path d="M76 27 Q83 23 90 27" stroke="#b8b0a7" stroke-width="1.5" fill="none"/>
+            <path d="M77 35 Q83 39 89 35" stroke="#6f6860" stroke-width="1.3" fill="none"/>
+            <circle cx="60" cy="34" r="19" fill="#dba877"/>
+            <circle cx="41" cy="41" r="3.6" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <circle cx="79" cy="41" r="3.6" fill="none" stroke="#d4af37" stroke-width="1.8"/>
+            <path d="M41 34 Q41 11 60 11 Q79 11 79 34 Q77 22 71 19 Q66 24 60 24 Q54 24 49 19 Q43 22 41 34 Z" fill="#8a827a"/>
+            <path d="M46 20 Q53 14 60 14 Q67 14 74 20" stroke="#b8b0a7" stroke-width="1.8" fill="none"/>
+            <path d="M43 29 Q45 21 51 17" stroke="#b8b0a7" stroke-width="1.4" fill="none"/>
+            <path d="M77 29 Q75 21 69 17" stroke="#b8b0a7" stroke-width="1.4" fill="none"/>
+            <ellipse cx="52" cy="36" rx="3.4" ry="4" fill="#fff"/>
+            <ellipse cx="69" cy="36" rx="3.4" ry="4" fill="#fff"/>
+            <circle cx="52.6" cy="36.6" r="2.3" fill="#4a2f1c"/>
+            <circle cx="69.6" cy="36.6" r="2.3" fill="#4a2f1c"/>
+            <path d="M47 30 Q52 27 57 30" stroke="#6b5f55" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <path d="M64 30 Q69 27 74 30" stroke="#6b5f55" stroke-width="2" fill="none" stroke-linecap="round"/>
+            <ellipse cx="47" cy="45" rx="4.6" ry="3.2" fill="#cc6a56" opacity=".45"/>
+            <ellipse cx="74" cy="45" rx="4.6" ry="3.2" fill="#cc6a56" opacity=".45"/>
+            <ellipse cx="60" cy="45" rx="6" ry="4.2" fill="#7d3232"/>
+            <circle cx="70" cy="43" r="1.5" fill="#8a6a52"/>
+          </g>
+        </svg>
+      </div>
+      <div class="shadow"></div>
+    </div>
+
+  </div>
+</div>
 
 <canvas id="instagramCanvas" style="display:none" width="1080" height="1920"></canvas>
 
@@ -362,13 +752,10 @@ function toJulianDay(y, mo, d) {
 }
 
 /**
- * noaaSolar(year, month, day, lat, lng)
- * Returns { type, sunrise, sunset, dawn, dusk, noon, daylightMs }
- * All Date objects are UTC moments; display via toLocaleTimeString() for local time.
- * type: 'normal' | 'polar_night' | 'midnight_sun'
+ * Sola sine to grunnstørrelser på et gitt julian day:
+ * deklinasjon (grader) og tidsutjevning (minutter).
  */
-function noaaSolar(year, month, day, lat, lng) {
-  const jd = toJulianDay(year, month, day);
+function solarParams(jd) {
   const jc = (jd - 2451545.0) / 36525.0;
 
   // Geometric mean longitude (deg)
@@ -389,12 +776,10 @@ function noaaSolar(year, month, day, lat, lng) {
 
   // Mean obliquity of ecliptic (deg)
   const moe = 23 + (26 + (21.448 - jc * (46.815 + jc * (0.00059 - jc * 0.001813))) / 60) / 60;
-  const oc   = moe + 0.00256 * Math.cos(omega * D2R); // corrected obliquity
+  const oc  = moe + 0.00256 * Math.cos(omega * D2R); // corrected obliquity
 
-  // Solar declination (deg)
   const decl = Math.asin(Math.sin(oc * D2R) * Math.sin(sal * D2R)) / D2R;
 
-  // Equation of time (minutes)
   const y2 = Math.pow(Math.tan(oc * D2R / 2), 2);
   const eqtime = (4 / D2R) * (
       y2 * Math.sin(2 * gml * D2R)
@@ -404,8 +789,24 @@ function noaaSolar(year, month, day, lat, lng) {
     - 1.25 * eoe * eoe * Math.sin(2 * gma * D2R)
   ); // minutes
 
-  // Hour angle calculator (returns degrees, or null for polar cases)
-  function hourAngle(zenithDeg) {
+  return { decl, eqtime };
+}
+
+/**
+ * noaaSolar(year, month, day, lat, lng)
+ * Returns { type, sunrise, sunset, dawn, dusk, noon, daylightMs }
+ * All Date objects are UTC moments; display via toLocaleTimeString() for local time.
+ * type: 'normal' | 'polar_night' | 'midnight_sun'
+ *
+ * Deklinasjon og tidsutjevning itereres fram til selve hendelsestidspunktet.
+ * Uten den itereringen regnes sola sin posisjon kl. 12 UT, noe som gir opptil
+ * halvannet minutts feil på våre breddegrader vår og høst.
+ */
+function noaaSolar(year, month, day, lat, lng) {
+  const jd0 = toJulianDay(year, month, day); // JD ved 12 UT
+
+  // Hour angle calculator (returns degrees, or a polar marker object)
+  function hourAngle(zenithDeg, decl) {
     const cosHA = Math.cos(zenithDeg * D2R) / (Math.cos(lat * D2R) * Math.cos(decl * D2R))
                 - Math.tan(lat * D2R) * Math.tan(decl * D2R);
     if (cosHA > 1)  return { type: 'polar_night' };
@@ -413,23 +814,36 @@ function noaaSolar(year, month, day, lat, lng) {
     return Math.acos(cosHA) / D2R;
   }
 
-  const ha_sun   = hourAngle(90.833); // standard sunrise/sunset (refraction + limb)
-  const ha_civil = hourAngle(96.0);   // civil twilight (-6°)
-
-  if (typeof ha_sun === 'object') {
-    return ha_sun; // { type: 'polar_night' } or { type: 'midnight_sun' }
+  // Minutter fra midnatt UTC for en hendelse. sign: -1 = før middag, +1 = etter.
+  function solveEvent(zenithDeg, sign) {
+    let p = solarParams(jd0);
+    let minutes = 720 - 4 * lng - p.eqtime;
+    for (let i = 0; i < 3; i++) {
+      const ha = hourAngle(zenithDeg, p.decl);
+      if (typeof ha === 'object') return ha;
+      minutes = 720 - 4 * lng - p.eqtime + sign * ha * 4;
+      p = solarParams(jd0 + (minutes - 720) / 1440);
+    }
+    const ha = hourAngle(zenithDeg, p.decl);
+    if (typeof ha === 'object') return ha;
+    return 720 - 4 * lng - p.eqtime + sign * ha * 4;
   }
 
-  // Solar noon = minutes from midnight UTC
-  const noonMin = 720 - 4 * lng - eqtime;
-  const riseMin = noonMin - ha_sun * 4;
-  const setMin  = noonMin + ha_sun * 4;
+  const riseMin = solveEvent(90.833, -1); // standard sunrise/sunset (refraction + limb)
+  const setMin  = solveEvent(90.833, +1);
+  if (typeof riseMin === 'object') return riseMin;
+  if (typeof setMin  === 'object') return setMin;
 
-  let dawnMin = null, duskMin = null;
-  if (typeof ha_civil === 'number') {
-    dawnMin = noonMin - ha_civil * 4;
-    duskMin = noonMin + ha_civil * 4;
-  }
+  const dawnRaw = solveEvent(96.0, -1);   // civil twilight (-6°)
+  const duskRaw = solveEvent(96.0, +1);
+  const dawnMin = typeof dawnRaw === 'number' ? dawnRaw : null;
+  const duskMin = typeof duskRaw === 'number' ? duskRaw : null;
+
+  // Solar noon, også iterert
+  let pn = solarParams(jd0);
+  let noonMin = 720 - 4 * lng - pn.eqtime;
+  pn = solarParams(jd0 + (noonMin - 720) / 1440);
+  noonMin = 720 - 4 * lng - pn.eqtime;
 
   // Convert to UTC Date objects
   const baseUTC = Date.UTC(year, month - 1, day);
@@ -472,6 +886,53 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('locationInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleCalculate();
   });
+
+  // ── Nøyaktig horisont ──
+  const hzS = hzLoadSettings();
+  if (hzS) {
+    if (hzS.pin) hzPin = { ...hzS.pin };
+    if (typeof hzS.eye === 'number') hzEye = hzS.eye;
+  }
+  hzMap.center = { ...hzPin };
+  document.getElementById('hzEye').value = hzEye;
+  hzUpdateEyeUI();
+  hzUpdateCoordUI();
+
+  const cachedProfile = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  if (cachedProfile) hzProfile = cachedProfile;
+
+  document.getElementById('hzEnable').addEventListener('change', e => {
+    document.getElementById('hzBody').classList.toggle('hidden', !e.target.checked);
+    hzSaveSettings();
+    if (e.target.checked) {
+      hzMap.init();
+      hzMap.draw();
+      hzUpdateCoordUI();
+      if (hzIsFresh()) hzCheckPlacement();
+    }
+    if (coords) updateSolarData();
+  });
+  document.getElementById('hzEye').addEventListener('input', e => {
+    hzEye = parseFloat(e.target.value);
+    hzUpdateEyeUI();
+  });
+  document.getElementById('hzEye').addEventListener('change', () => {
+    hzSaveSettings();
+    if (!hzIsFresh()) {
+      const c = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+      if (c) { hzProfile = c; hzSetWarn(''); hzCheckPlacement(); if (coords) updateSolarData(); }
+      else hzSetWarn('ℹ️ Høyden er endret. Trykk «Beregn horisont her» for å oppdatere tallene.');
+    }
+  });
+
+  if (hzS && hzS.enabled) {
+    document.getElementById('hzEnable').checked = true;
+    document.getElementById('hzBody').classList.remove('hidden');
+    hzMap.init();
+    hzMap.draw();
+    if (hzIsFresh()) hzCheckPlacement();
+    if (coords) updateSolarData();
+  }
 });
 
 // ════════════════════════════════════════════════════════
@@ -680,7 +1141,10 @@ const SOLSTICE_MILESTONES = (() => {
 function setSourceBadge(source) {
   const el = document.getElementById('sourceBadge');
   if (!el) return;
-  if (source === 'noaa') {
+  if (source === 'dom') {
+    el.className = 'source-badge dom';
+    el.textContent = '🔵 NOAA + Kartverket DOM1 (terreng og bygninger)';
+  } else if (source === 'noaa') {
     el.className = 'source-badge noaa';
     el.textContent = '🟡 NOAA Solar Calculator (±30 sek)';
   } else {
@@ -695,6 +1159,7 @@ function setSourceBadge(source) {
 function updateSolarData() {
   if (!coords) return;
   clearStatus();
+  hzSunResult = null;
   setSourceBadge('noaa');
 
   const parts  = document.getElementById('dateInput').value.split('-');
@@ -765,6 +1230,16 @@ function updateSolarData() {
                todayDL, yesterdayDL, solsticeDL, moreThanYesterday, moreSinceSolstice,
                equivalentDate, dgSidenSist, dawnDur, duskDur, milestones, solvervMilestones, dataSource,
                summerSolstice, daysSinceSummerSolstice, equivalentDateSummer, dgSidenSistSommer };
+
+  // Direkte sol på stedet – kun når horisontprofilen gjelder gjeldende punkt
+  hzSunResult = null;
+  if (hzEnabled() && hzIsFresh()) {
+    const startMs = new Date(year, month - 1, day).getTime();
+    const real = computeSunWindows(startMs, coords.lat, coords.lng, hzProfile);
+    const flat = computeSunWindows(startMs, coords.lat, coords.lng, null);
+    hzSunResult = { ...real, flatTotal: flat.total };
+  }
+  setSourceBadge(hzSunResult ? 'dom' : 'noaa');
 
   renderResults(lastData);
 }
@@ -869,6 +1344,7 @@ function renderResults(d) {
   }
 
   drawSunArc(td);
+  renderHorizonResults(d);
   document.getElementById('mainResults').classList.remove('hidden');
   document.getElementById('exportSection').classList.remove('hidden');
 }
@@ -931,6 +1407,29 @@ function drawSunArc(td) {
   ctx.beginPath(); ctx.moveTo(rX, horizY);
   ctx.quadraticCurveTo(nX, arcPeak, sX, horizY);
   ctx.strokeStyle = '#f4a429'; ctx.lineWidth = 2.2; ctx.stroke();
+
+  // Perioder der bygninger/terreng skygger for sola
+  if (hzSunResult) {
+    const gaps = [];
+    let cursor = riseMs;
+    for (const w of hzSunResult.windows) {
+      if (w[0] > cursor) gaps.push([cursor, Math.min(w[0], setMs)]);
+      cursor = Math.max(cursor, w[1]);
+    }
+    if (cursor < setMs) gaps.push([cursor, setMs]);
+    ctx.fillStyle = 'rgba(13,27,42,.58)';
+    for (const g of gaps) {
+      const a = tX(Math.max(g[0], riseMs)), b = tX(Math.min(g[1], setMs));
+      if (b - a > 0.5) ctx.fillRect(a, horizY - 72, b - a, 72);
+    }
+    if (hzSunResult.first !== null) {
+      ctx.strokeStyle = '#38bdf8'; ctx.lineWidth = 1.5;
+      [hzSunResult.first, hzSunResult.last].forEach(t => {
+        const x = tX(t);
+        ctx.beginPath(); ctx.moveTo(x, horizY - 72); ctx.lineTo(x, horizY); ctx.stroke();
+      });
+    }
+  }
 
   // Current time indicator – uses face image if available
   const now = Date.now();
@@ -1279,6 +1778,1174 @@ function exportPNG() {
   a.href = canvas.toDataURL('image/png');
   a.click();
 }
+
+// ════════════════════════════════════════════════════════
+//  NØYAKTIG HORISONT – terreng + bygninger (Kartverket DOM1/DTM1)
+// ════════════════════════════════════════════════════════
+const R_EARTH   = 6371000;   // m
+const REFR_K    = 0.13;      // atmosfærisk refraksjonskoeffisient (standard)
+const SUN_RADIUS = 0.2667;   // sola sin halve diameter i grader (øvre rand)
+const HZ_BINS   = 360;       // 1° oppløsning i horisontprofilen
+const HZ_HOME_DEFAULT = { lat: 59.9341, lng: 10.7677, name: 'Solhjørnet' };
+/** Så nær hjemmepunktet at det fortsatt regnes som Solhjørnet (meter). */
+const HZ_HOME_RADIUS = 12;
+
+/**
+ * Sola sin posisjon på et vilkårlig tidspunkt (NOAA-algoritmen).
+ * Returnerer geometrisk høyde, refraktert (synlig) høyde og asimut (0=N, 90=Ø).
+ */
+function solarPosition(ms, lat, lng) {
+  const jd = ms / 86400000 + 2440587.5;
+  const { decl, eqtime } = solarParams(jd);
+
+  const utcMin = (((ms % 86400000) + 86400000) % 86400000) / 60000;
+  let ha = ((utcMin + eqtime + 4 * lng) / 4) - 180;
+  if (ha < -180) ha += 360;
+  if (ha >  180) ha -= 360;
+
+  const latR = lat * D2R, declR = decl * D2R;
+  const cosZen = Math.sin(latR) * Math.sin(declR) + Math.cos(latR) * Math.cos(declR) * Math.cos(ha * D2R);
+  const zen  = Math.acos(Math.max(-1, Math.min(1, cosZen))) / D2R;
+  const elev = 90 - zen;
+
+  let az;
+  const den = Math.cos(latR) * Math.sin(zen * D2R);
+  if (Math.abs(den) > 1e-9) {
+    const c = Math.max(-1, Math.min(1, ((Math.sin(latR) * Math.cos(zen * D2R)) - Math.sin(declR)) / den));
+    const a = Math.acos(c) / D2R;
+    az = ha > 0 ? (a + 180) % 360 : (540 - a) % 360;
+  } else {
+    az = lat >= 0 ? 180 : 0;
+  }
+  return { elevation: elev, azimuth: az, refracted: elev + atmRefraction(elev) };
+}
+
+/**
+ * Atmosfærisk refraksjon i grader, fra sann (geometrisk) høyde.
+ * Sæmundssons formel — i motsetning til NOAA sitt stykkevise polynom er den
+ * kontinuerlig og fysisk gyldig helt ned til horisonten, som er akkurat der
+ * hustak og åsrygger ligger.
+ */
+function atmRefraction(elev) {
+  if (elev > 85) return 0;
+  const h = Math.max(elev, -1.9);
+  const r = 1.02 / Math.tan((h + 10.3 / (h + 5.11)) * D2R); // bueminutter
+  return Math.min(Math.max(r, 0), 62) / 60;                 // grader
+}
+
+/** Punkt d meter unna i retning az (grader fra nord), på kulejorda. */
+function destPoint(lat, lng, azDeg, d) {
+  const ad = d / R_EARTH, l1 = lat * D2R, b = azDeg * D2R;
+  const l2 = Math.asin(Math.sin(l1) * Math.cos(ad) + Math.cos(l1) * Math.sin(ad) * Math.cos(b));
+  const g2 = lng * D2R + Math.atan2(Math.sin(b) * Math.sin(ad) * Math.cos(l1),
+                                    Math.cos(ad) - Math.sin(l1) * Math.sin(l2));
+  return [l2 / D2R, ((g2 / D2R) + 540) % 360 - 180];
+}
+
+/** Geometrisk fordelte avstander a→b. */
+function geoSpread(a, b, n) {
+  const out = [], r = Math.pow(b / a, 1 / (n - 1));
+  let d = a;
+  for (let i = 0; i < n; i++) { out.push(d); d *= r; }
+  return out;
+}
+
+/**
+ * Henter høyder fra Kartverkets åpne høyde-API. Maks 50 punkter per kall,
+ * så vi deler opp og kjører flere kall i parallell.
+ */
+async function fetchElevations(points, datakilde, onChunk) {
+  const CHUNK = 50, CONCURRENCY = 8;
+  const out = new Array(points.length).fill(null);
+  const queue = [];
+  let failedChunks = 0, okChunks = 0;
+  for (let i = 0; i < points.length; i += CHUNK) queue.push([i, points.slice(i, i + CHUNK)]);
+
+  async function worker() {
+    while (queue.length) {
+      const [start, chunk] = queue.shift();
+      const body = '[' + chunk.map(p => `[${p[1].toFixed(7)},${p[0].toFixed(7)}]`).join(',') + ']';
+      const url = `https://ws.geonorge.no/hoydedata/v1/datakilder/${datakilde}/punkt`
+                + `?koordsys=4258&punkter=${encodeURIComponent(body)}`;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error('http ' + res.status);
+          const json = await res.json();
+          (json.punkter || []).forEach((p, i) => {
+            if (typeof p.z === 'number') out[start + i] = p.z;
+          });
+          okChunks++;
+          break;
+        } catch {
+          if (attempt === 2) { failedChunks++; break; }
+          await new Promise(r => setTimeout(r, 250 * (attempt + 1)));
+        }
+      }
+      if (onChunk) onChunk(chunk.length);
+    }
+  }
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  // Ingen svar i det hele tatt betyr nett-/tjenestefeil, ikke manglende kartdekning.
+  if (okChunks === 0 && failedChunks > 0) throw new Error('network');
+  return out;
+}
+
+// Avstandsringer: tett der bygninger står, grovere ut mot åsene.
+const HZ_D_NEAR = geoSpread(2, 160, 13);      // pass 1 – overflatemodell
+const HZ_D_MID  = geoSpread(170, 600, 10);    // pass 3 – overflatemodell
+const HZ_D_FAR  = geoSpread(650, 30000, 13);  // pass 4 – terrengmodell
+const HZ_REFINE = 5;                          // pass 2 – radiell forfining
+const HZ_MID_RAYS = 120, HZ_FAR_RAYS = 60;
+const HZ_TOTAL_POINTS = 1
+  + HZ_BINS * HZ_D_NEAR.length + HZ_BINS * HZ_REFINE
+  + HZ_MID_RAYS * HZ_D_MID.length + HZ_FAR_RAYS * HZ_D_FAR.length;
+
+/**
+ * Bygger en horisontprofil: for hver av 360 asimut-retninger, hvor høyt over
+ * øyehøyde det høyeste hinderet ligger. Nærsonen (0–600 m) leses fra DOM1
+ * (overflatemodell = bygninger, trær og terreng), fjernsonen fra DTM1 (terreng).
+ */
+async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
+  let done = 0;
+  const tick = n => { done += n; if (onProgress) onProgress(done, HZ_TOTAL_POINTS); };
+
+  const [ground] = await fetchElevations([[lat, lng]], 'dtm1', tick);
+  if (ground === null) throw new Error('no-coverage');
+  const eyeZ = ground + eyeHeight;
+
+  // Synsvinkel til et punkt, korrigert for jordkrumning og refraksjon.
+  const angleTo = (d, z) => Math.atan2(z - eyeZ - d * d * (1 - REFR_K) / (2 * R_EARTH), d) / D2R;
+
+  const best = Array.from({ length: HZ_BINS }, () => ({ alt: -90, dist: 0, z: 0, src: null }));
+  const consider = (bin, d, z, src) => {
+    if (z === null) return;
+    const a = angleTo(d, z);
+    if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src };
+  };
+
+  // Pass 1 – nærsone, 1° stråler
+  const p1 = [];
+  for (let i = 0; i < HZ_BINS; i++) for (const d of HZ_D_NEAR) p1.push(destPoint(lat, lng, i, d));
+  const z1 = await fetchElevations(p1, 'dom1', tick);
+  let nearHits = 0;
+  const peakIdx = [];
+  for (let i = 0; i < HZ_BINS; i++) {
+    let bi = 0, ba = -90;
+    HZ_D_NEAR.forEach((d, k) => {
+      const z = z1[i * HZ_D_NEAR.length + k];
+      if (z !== null) nearHits++;
+      consider(i, d, z, 'bygg');
+      if (z !== null) { const a = angleTo(d, z); if (a > ba) { ba = a; bi = k; } }
+    });
+    peakIdx.push(bi);
+  }
+  if (nearHits < p1.length * 0.5) throw new Error('no-coverage');
+
+  // Pass 2 – forfin radielt rundt hver stråles høyeste treff, slik at vi
+  // treffer den nære kanten av taket og ikke bare midt på taket.
+  const p2 = [], m2 = [];
+  for (let i = 0; i < HZ_BINS; i++) {
+    const k = peakIdx[i];
+    const lo = k > 0 ? HZ_D_NEAR[k - 1] : 1.5, hi = HZ_D_NEAR[k];
+    for (let s = 1; s <= HZ_REFINE; s++) {
+      const d = lo + (hi - lo) * s / (HZ_REFINE + 1);
+      p2.push(destPoint(lat, lng, i, d)); m2.push([i, d]);
+    }
+  }
+  const z2 = await fetchElevations(p2, 'dom1', tick);
+  m2.forEach(([i, d], k) => consider(i, d, z2[k], 'bygg'));
+
+  // Pass 3 – mellomsone (170–600 m), 3° stråler
+  const p3 = [];
+  for (let i = 0; i < HZ_MID_RAYS; i++) for (const d of HZ_D_MID) p3.push(destPoint(lat, lng, i * 3, d));
+  const z3 = await fetchElevations(p3, 'dom1', tick);
+  spreadRays(z3, HZ_MID_RAYS, HZ_D_MID, 3, 1, best, angleTo, 'bygg');
+
+  // Pass 4 – fjernsone (0,65–30 km) fra terrengmodellen: åser og fjell
+  const p4 = [];
+  for (let i = 0; i < HZ_FAR_RAYS; i++) for (const d of HZ_D_FAR) p4.push(destPoint(lat, lng, i * 6, d));
+  const z4 = await fetchElevations(p4, 'dtm1', tick);
+  spreadRays(z4, HZ_FAR_RAYS, HZ_D_FAR, 6, 3, best, angleTo, 'terreng');
+
+  const rays = best.map(b => ({
+    alt:  Math.max(b.alt, -2),
+    dist: b.dist,
+    z:    b.z,
+    src:  b.src,
+  }));
+  const nearest = rays.reduce((m, r) => (r.dist > 0 && r.alt > 5 && r.dist < m ? r.dist : m), 9999);
+  return { lat, lng, eye: eyeHeight, ground, eyeZ, rays, nearest, builtAt: Date.now() };
+}
+
+/** Sprer grovere stråler (3°/6°) utover nabo-binene i profilen. */
+function spreadRays(zs, rayCount, dists, stepDeg, spread, best, angleTo, src) {
+  for (let i = 0; i < rayCount; i++) {
+    dists.forEach((d, k) => {
+      const z = zs[i * dists.length + k];
+      if (z === null) return;
+      const a = angleTo(d, z);
+      for (let o = -spread; o <= spread; o++) {
+        const bin = ((i * stepDeg + o) % HZ_BINS + HZ_BINS) % HZ_BINS;
+        if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src };
+      }
+    });
+  }
+}
+
+/** Horisonthøyde (grader) i en vilkårlig retning, lineært interpolert. */
+function horizonAt(profile, azDeg) {
+  if (!profile) return 0;
+  const n = profile.rays.length;
+  const f = (((azDeg % 360) + 360) % 360) * n / 360;
+  const i0 = Math.floor(f) % n, i1 = (i0 + 1) % n, t = f - Math.floor(f);
+  return profile.rays[i0].alt * (1 - t) + profile.rays[i1].alt * t;
+}
+
+/**
+ * Finner alle tidsrom på dagen der sola faktisk er synlig over den lokale
+ * horisonten. Med profile = null får du «flat horisont» (astronomisk).
+ */
+function computeSunWindows(startMs, lat, lng, profile) {
+  const end = startMs + 86400000, STEP = 10000;
+  const visible = t => {
+    const s = solarPosition(t, lat, lng);
+    return (s.refracted + SUN_RADIUS) > horizonAt(profile, s.azimuth);
+  };
+  const raw = [];
+  let prev = visible(startMs), open = prev ? startMs : null;
+  for (let t = startMs + STEP; t <= end; t += STEP) {
+    const v = visible(t);
+    if (v !== prev) {
+      let lo = t - STEP, hi = t;
+      for (let k = 0; k < 22; k++) {          // binærsøk ned til ~1 sekund
+        const m = (lo + hi) / 2;
+        if (visible(m) === prev) lo = m; else hi = m;
+      }
+      if (v) open = hi; else { raw.push([open, hi]); open = null; }
+      prev = v;
+    }
+  }
+  if (open !== null) raw.push([open, end]);
+
+  // Slå sammen vinduer med under 2 minutters opphold, og skjul glimt < 1 min.
+  const merged = [];
+  for (const w of raw) {
+    const last = merged[merged.length - 1];
+    if (last && w[0] - last[1] < 120000) last[1] = w[1];
+    else merged.push([w[0], w[1]]);
+  }
+  const total = merged.reduce((a, w) => a + (w[1] - w[0]), 0);
+  const shown = merged.filter(w => w[1] - w[0] >= 60000);
+  return {
+    windows: merged, shown, total,
+    first: merged.length ? merged[0][0] : null,
+    last:  merged.length ? merged[merged.length - 1][1] : null,
+  };
+}
+
+/** Sola sin bane gjennom døgnet, til panorama-tegningen. */
+function sunPath(startMs, lat, lng, stepMin = 3) {
+  const pts = [];
+  for (let t = startMs; t <= startMs + 86400000; t += stepMin * 60000) {
+    const s = solarPosition(t, lat, lng);
+    if (s.refracted > -1.5) pts.push({ t, az: s.azimuth, el: s.refracted });
+  }
+  return pts;
+}
+
+// ════════════════════════════════════════════════════════
+//  HORISONT – TILSTAND, LAGRING OG UI
+// ════════════════════════════════════════════════════════
+let hzProfile   = null;   // ferdig beregnet profil
+let hzSunResult = null;   // solvinduer for valgt dato
+let hzPin       = { ...HZ_HOME_DEFAULT };
+let hzEye       = 1.7;
+
+const hzCacheKey = (lat, lng, eye) =>
+  `solmelding_hz_v1_${lat.toFixed(5)}_${lng.toFixed(5)}_${eye.toFixed(1)}`;
+
+function hzLoadCached(lat, lng, eye) {
+  try {
+    const raw = localStorage.getItem(hzCacheKey(lat, lng, eye));
+    if (!raw) return null;
+    const p = JSON.parse(raw);
+    return (p && p.rays && p.rays.length === HZ_BINS) ? p : null;
+  } catch { return null; }
+}
+function hzSaveCached(profile) {
+  const key = hzCacheKey(profile.lat, profile.lng, profile.eye);
+  const body = JSON.stringify(profile);
+  const readIdx = () => {
+    try { return JSON.parse(localStorage.getItem('solmelding_hz_index') || '[]'); }
+    catch { return []; }
+  };
+  const write = () => {
+    localStorage.setItem(key, body);
+    const idx = readIdx().filter(k => k !== key);
+    idx.push(key);
+    while (idx.length > 6) { try { localStorage.removeItem(idx.shift()); } catch {} }
+    localStorage.setItem('solmelding_hz_index', JSON.stringify(idx));
+  };
+  try {
+    write();
+  } catch {
+    // Sannsynligvis full lagringskvote – kast alt gammelt og prøv én gang til.
+    try {
+      for (const k of readIdx()) { try { localStorage.removeItem(k); } catch {} }
+      localStorage.removeItem('solmelding_hz_index');
+      write();
+    } catch {}
+  }
+}
+function hzSaveSettings() {
+  try {
+    localStorage.setItem('solmelding_hz_settings', JSON.stringify({
+      enabled: document.getElementById('hzEnable').checked,
+      pin: hzPin, eye: hzEye,
+    }));
+  } catch {}
+}
+function hzLoadSettings() {
+  try { return JSON.parse(localStorage.getItem('solmelding_hz_settings') || 'null'); }
+  catch { return null; }
+}
+
+const hzEnabled = () => document.getElementById('hzEnable').checked;
+const hzIsFresh = () => !!hzProfile
+  && Math.abs(hzProfile.lat - hzPin.lat) < 1e-6
+  && Math.abs(hzProfile.lng - hzPin.lng) < 1e-6
+  && Math.abs(hzProfile.eye - hzEye) < 1e-6;
+
+function hzFloorLabel(m) {
+  if (m < 2.6) return '(bakkeplan)';
+  return `(ca. ${Math.max(2, Math.round((m - 1.5) / 3) + 1)}. etasje)`;
+}
+
+function hzUpdateEyeUI() {
+  document.getElementById('hzEyeVal').textContent = hzEye.toFixed(1).replace('.', ',') + ' m';
+  document.getElementById('hzFloor').textContent  = hzFloorLabel(hzEye);
+}
+function hzUpdateCoordUI() {
+  document.getElementById('hzCoords').innerHTML =
+    `📍 <b>${hzPin.lat.toFixed(5)}° N, ${hzPin.lng.toFixed(5)}° Ø</b>`
+    + (hzProfile && hzIsFresh() ? ` · bakkenivå <b>${hzProfile.ground.toFixed(1)} moh</b>` : '');
+}
+function hzSetWarn(html) {
+  const el = document.getElementById('hzWarn');
+  if (!html) { el.classList.add('hidden'); el.innerHTML = ''; return; }
+  el.innerHTML = html; el.classList.remove('hidden');
+}
+
+/** Omtrentlig avstand i meter mellom to koordinater. */
+function hzMetersBetween(aLat, aLng, bLat, bLng) {
+  const dLat = (bLat - aLat) * D2R, dLng = (bLng - aLng) * D2R;
+  const x = dLng * Math.cos((aLat + bLat) / 2 * D2R);
+  return Math.hypot(dLat, x) * R_EARTH;
+}
+
+/** Er pinnen på Solhjørnet? */
+function hzAtHome(pin) {
+  return hzMetersBetween(pin.lat, pin.lng, HZ_HOME_DEFAULT.lat, HZ_HOME_DEFAULT.lng) <= HZ_HOME_RADIUS;
+}
+
+/** Sett pinnen tilbake på Solhjørnet og regn ut på nytt. */
+function hzUseSolhjornet() {
+  hzPin = { ...HZ_HOME_DEFAULT };
+  const s = hzLoadSettings();
+  if (s && typeof s.eye === 'number') {
+    hzEye = s.eye;
+    document.getElementById('hzEye').value = hzEye;
+    hzUpdateEyeUI();
+  }
+  hzMap.center = { ...hzPin };
+  hzMap.zoom = Math.max(hzMap.zoom, 18);
+  hzMap.draw();
+  hzUpdateCoordUI();
+  hzSaveSettings();
+  runHorizon();
+}
+
+async function runHorizon() {
+  const btn = document.getElementById('hzRunBtn');
+  const prog = document.getElementById('hzProgress');
+  const bar = document.getElementById('hzBar');
+  const txt = document.getElementById('hzProgTxt');
+  btn.disabled = true;
+  hzSetWarn('');
+
+  const cached = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  try {
+    if (cached) {
+      hzProfile = cached;
+    } else {
+      prog.classList.remove('hidden');
+      txt.textContent = 'Leser høydedata fra Kartverket …';
+      hzProfile = await buildHorizonProfile(hzPin.lat, hzPin.lng, hzEye, (done, total) => {
+        const pct = Math.min(100, done / total * 100);
+        bar.style.width = pct.toFixed(1) + '%';
+        txt.textContent = `Leser høydedata fra Kartverket … ${Math.round(pct)} %`;
+      });
+      hzSaveCached(hzProfile);
+    }
+    prog.classList.add('hidden');
+    bar.style.width = '0%';
+
+    coords = { lat: hzPin.lat, lng: hzPin.lng, name: coords ? coords.name : 'Min posisjon' };
+    if (hzAtHome(hzPin)) {
+      coords.name = HZ_HOME_DEFAULT.name;
+    } else {
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${hzPin.lat}&lon=${hzPin.lng}`
+                  + `&format=json&zoom=18&accept-language=no`;
+        const d = await (await fetch(url)).json();
+        const a = d.address || {};
+        const name = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.city]
+          .filter(Boolean).join(', ');
+        if (name) coords.name = name;
+      } catch {}
+    }
+    document.getElementById('locationInput').value = coords.name;
+    saveLocation(coords);
+    hzSaveSettings();
+    hzUpdateCoordUI();
+    hzCheckPlacement();
+    updateSolarData();
+  } catch (e) {
+    prog.classList.add('hidden');
+    hzProfile = null;
+    hzSetWarn(e && e.message === 'no-coverage'
+      ? '❌ Fant ingen høydedata her. Kartverkets modell dekker bare Norge – prøv et punkt på land i Norge.'
+      : '❌ Fikk ikke kontakt med Kartverkets høydetjeneste. Sjekk nettforbindelsen og prøv igjen.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/** Advarer bare hvis pinnen ser ut til å ligge inne i et bygg. */
+function hzCheckPlacement() {
+  if (!hzProfile) return;
+  // Å stå tett inntil en vegg er helt legitimt – et solhjørne er nettopp det –
+  // så nærhet til bygg er ingen feil. Vi sier bare fra hvis himmelen er borte
+  // i praktisk talt alle retninger, som tyder på at punktet havnet inni et hus.
+  const walled = hzProfile.rays.filter(r => r.alt > 60).length;
+  hzSetWarn(walled > 330
+    ? '⚠️ Horisonten er sperret i nesten alle retninger. Ligger pinnen inne i et bygg?'
+    : '');
+}
+
+// ── Kartvelger (Kartverkets flisetjeneste, ingen bibliotek) ──
+const hzMap = {
+  zoom: 18,
+  center: { ...HZ_HOME_DEFAULT },
+  tiles: new Map(),
+  drag: null,
+  moved: 0,
+
+  world(lat, lng, z) {
+    const n = 256 * Math.pow(2, z);
+    const s = Math.min(0.9999, Math.max(-0.9999, Math.sin(lat * D2R)));
+    return {
+      x: (lng + 180) / 360 * n,
+      y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n,
+    };
+  },
+  unworld(x, y, z) {
+    const n = 256 * Math.pow(2, z);
+    return {
+      lat: Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) / D2R,
+      lng: x / n * 360 - 180,
+    };
+  },
+  tile(z, x, y) {
+    const key = `${z}/${x}/${y}`;
+    let img = this.tiles.get(key);
+    if (!img) {
+      img = new Image();
+      img.crossOrigin = 'anonymous'; // Kartverket sender CORS-header, så lerretet holdes rent
+      img.onload = () => this.draw();
+      img.onerror = () => { img.failed = true; };
+      img.src = `https://cache.kartverket.no/v1/wmts/1.0.0/topo/default/webmercator/${z}/${y}/${x}.png`;
+      this.tiles.set(key, img);
+      if (this.tiles.size > 400) this.tiles.delete(this.tiles.keys().next().value);
+    }
+    return img;
+  },
+
+  /** Lerretets bufferstørrelse må følge visningsstørrelsen, ellers blir kartet uskarpt. */
+  resize() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || !cv.clientWidth) return false;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const w = Math.round(cv.clientWidth * dpr), h = Math.round(cv.clientHeight * dpr);
+    if (cv.width === w && cv.height === h) return false;
+    cv.width = w; cv.height = h;
+    return true;
+  },
+
+  draw() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || cv.offsetParent === null) return;
+    this.resize();
+    const ctx = cv.getContext('2d');
+    const dpr = cv.width / (cv.clientWidth || cv.width);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // tegn i CSS-piksler
+    const W = cv.clientWidth, H = cv.clientHeight, z = this.zoom;
+    ctx.fillStyle = '#0d1b2a'; ctx.fillRect(0, 0, W, H);
+
+    const c = this.world(this.center.lat, this.center.lng, z);
+    const x0 = c.x - W / 2, y0 = c.y - H / 2;
+    const n = Math.pow(2, z);
+    for (let tx = Math.floor(x0 / 256); tx <= Math.floor((x0 + W) / 256); tx++) {
+      for (let ty = Math.floor(y0 / 256); ty <= Math.floor((y0 + H) / 256); ty++) {
+        if (ty < 0 || ty >= n) continue;
+        const img = this.tile(z, ((tx % n) + n) % n, ty);
+        if (img.complete && !img.failed && img.naturalWidth) {
+          ctx.drawImage(img, Math.round(tx * 256 - x0), Math.round(ty * 256 - y0));
+        }
+      }
+    }
+
+    // Pin
+    const p = this.world(hzPin.lat, hzPin.lng, z);
+    const px = p.x - x0, py = p.y - y0;
+    ctx.beginPath();
+    ctx.moveTo(px, py); ctx.lineTo(px - 8, py - 17); ctx.lineTo(px + 8, py - 17);
+    ctx.closePath();
+    ctx.fillStyle = '#ff7f2a'; ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py - 24, 11, 0, Math.PI * 2);
+    ctx.fillStyle = '#f4a429'; ctx.fill();
+    ctx.strokeStyle = '#0d1b2a'; ctx.lineWidth = 2; ctx.stroke();
+    ctx.beginPath(); ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#0d1b2a'; ctx.fill();
+
+    ctx.font = 'bold 11px -apple-system,sans-serif';
+    ctx.fillStyle = '#0d1b2a'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('☀', px, py - 24);
+    ctx.textBaseline = 'alphabetic';
+  },
+
+  init() {
+    const cv = document.getElementById('hzMap');
+    if (!cv || cv.dataset.ready) return;
+    cv.dataset.ready = '1';
+    const at = e => {
+      const r = cv.getBoundingClientRect();
+      return { x: e.clientX - r.left, y: e.clientY - r.top };
+    };
+    cv.addEventListener('pointerdown', e => {
+      cv.setPointerCapture(e.pointerId);
+      this.drag = at(e); this.moved = 0;
+    });
+    cv.addEventListener('pointermove', e => {
+      if (!this.drag) return;
+      const p = at(e), dx = p.x - this.drag.x, dy = p.y - this.drag.y;
+      this.moved += Math.abs(dx) + Math.abs(dy);
+      const c = this.world(this.center.lat, this.center.lng, this.zoom);
+      this.center = this.unworld(c.x - dx, c.y - dy, this.zoom);
+      this.drag = p;
+      this.draw();
+    });
+    cv.addEventListener('pointerup', e => {
+      const wasDragging = this.drag;
+      this.drag = null;
+      if (!wasDragging || this.moved > 6) return;
+      const p = at(e);
+      const c = this.world(this.center.lat, this.center.lng, this.zoom);
+      const ll = this.unworld(c.x - cv.clientWidth / 2 + p.x, c.y - cv.clientHeight / 2 + p.y, this.zoom);
+      hzPin = { lat: +ll.lat.toFixed(6), lng: +ll.lng.toFixed(6) };
+      hzSaveSettings();
+      hzUpdateCoordUI();
+      hzSetWarn('ℹ️ Punktet er flyttet. Trykk «Beregn horisont her» for å oppdatere tallene.');
+      this.draw();
+    });
+    cv.addEventListener('wheel', e => { e.preventDefault(); hzZoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
+    window.addEventListener('resize', () => this.draw());
+  },
+};
+
+function hzZoom(delta) {
+  hzMap.zoom = Math.max(12, Math.min(19, hzMap.zoom + delta));
+  hzMap.draw();
+}
+
+// ════════════════════════════════════════════════════════
+//  HORISONT – RESULTATKORT OG PANORAMA
+// ════════════════════════════════════════════════════════
+function renderHorizonResults(d) {
+  const box = document.getElementById('hzResults');
+  if (!hzSunResult || !hzProfile) { box.classList.add('hidden'); return; }
+  box.classList.remove('hidden');
+
+  const r = hzSunResult;
+  document.getElementById('hzTotal').textContent = r.total > 0 ? fmtHMS(r.total) : 'Ingen direkte sol';
+
+  const lost = Math.max(0, r.flatTotal - r.total);
+  document.getElementById('hzSub').innerHTML = r.total > 0
+    ? `Første sol <b>${fmtTimeHM(new Date(r.first))}</b> · siste sol <b>${fmtTimeHM(new Date(r.last))}</b>`
+      + ` · ${fmtHM(lost)} skjult bak bygninger og terreng`
+    : `Sola er over den astronomiske horisonten i ${fmtHMS(r.flatTotal)}, men når aldri over hindringene rundt punktet.`;
+
+  const wins = document.getElementById('hzWindows');
+  wins.innerHTML = r.shown.length
+    ? r.shown.map(w => `<span class="hz-win">☀️ ${fmtTimeHM(new Date(w[0]))} – ${fmtTimeHM(new Date(w[1]))}</span>`).join('')
+    : '<span class="hz-win none">Ingen sammenhengende solvindu</span>';
+
+  drawPanorama(d);
+}
+
+/** Panorama: horisontlinje rundt hele kompasset + sola sin bane. */
+function drawPanorama(d) {
+  const cv = document.getElementById('hzPano');
+  const ctx = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const L = 34, Rr = 12, T = 12, B = 26;
+  ctx.clearRect(0, 0, W, H);
+
+  const startMs = new Date(d.year, d.month - 1, d.day).getTime();
+  const paths = {
+    today:  sunPath(startMs, coords.lat, coords.lng),
+    summer: sunPath(new Date(d.summerSolstice.getUTCFullYear(), 5, 21).getTime(), coords.lat, coords.lng, 6),
+    winter: sunPath(new Date(d.solstice.getUTCFullYear(), 11, 21).getTime(), coords.lat, coords.lng, 6),
+  };
+  const sunMax = Math.max(1, ...paths.summer.map(p => p.el), ...paths.today.map(p => p.el));
+  const yMax = Math.max(30, Math.min(90, Math.ceil((sunMax + 7) / 5) * 5));
+
+  const X = az => L + (az / 360) * (W - L - Rr);
+  const Y = el => H - B - (Math.max(0, el) / yMax) * (H - T - B);
+
+  // Himmel
+  const sky = ctx.createLinearGradient(0, T, 0, H - B);
+  sky.addColorStop(0, '#0b2038'); sky.addColorStop(1, '#16324d');
+  ctx.fillStyle = sky; ctx.fillRect(L, T, W - L - Rr, H - T - B);
+
+  // Rutenett
+  ctx.font = '9px -apple-system,sans-serif';
+  ctx.strokeStyle = 'rgba(122,155,181,.18)'; ctx.lineWidth = 1;
+  const elStep = yMax > 60 ? 20 : (yMax > 30 ? 10 : 5);
+  for (let e = 0; e <= yMax; e += elStep) {
+    ctx.beginPath(); ctx.moveTo(L, Y(e)); ctx.lineTo(W - Rr, Y(e)); ctx.stroke();
+    ctx.fillStyle = '#7a9bb5'; ctx.textAlign = 'right';
+    ctx.fillText(e + '°', L - 5, Y(e) + 3);
+  }
+  const COMPASS = ['N', 'NØ', 'Ø', 'SØ', 'S', 'SV', 'V', 'NV', 'N'];
+  ctx.textAlign = 'center';
+  COMPASS.forEach((c, i) => {
+    const x = X(i * 45);
+    ctx.strokeStyle = 'rgba(122,155,181,.18)';
+    ctx.beginPath(); ctx.moveTo(x, T); ctx.lineTo(x, H - B); ctx.stroke();
+    ctx.fillStyle = (c === 'S') ? '#f4a429' : '#7a9bb5';
+    ctx.fillText(c, x, H - B + 13);
+  });
+
+  // Referansebaner (solverv)
+  const drawPath = (pts, style, width, dash) => {
+    ctx.save();
+    ctx.setLineDash(dash || []); ctx.strokeStyle = style; ctx.lineWidth = width;
+    ctx.beginPath();
+    let started = false, prevAz = null;
+    for (const p of pts) {
+      if (prevAz !== null && Math.abs(p.az - prevAz) > 180) started = false;
+      prevAz = p.az;
+      if (!started) { ctx.moveTo(X(p.az), Y(p.el)); started = true; }
+      else ctx.lineTo(X(p.az), Y(p.el));
+    }
+    ctx.stroke(); ctx.restore();
+  };
+  drawPath(paths.summer, 'rgba(251,191,36,.35)', 1.2, [4, 4]);
+  drawPath(paths.winter, 'rgba(147,197,253,.35)', 1.2, [4, 4]);
+
+  // Sola sin bane i dag – lys der sola er synlig, matt der den er sperret
+  const today = paths.today;
+  for (let i = 1; i < today.length; i++) {
+    const a = today[i - 1], b = today[i];
+    if (Math.abs(b.az - a.az) > 180) continue;
+    const seen = (a.el + SUN_RADIUS) > horizonAt(hzProfile, a.az);
+    ctx.beginPath();
+    ctx.moveTo(X(a.az), Y(a.el)); ctx.lineTo(X(b.az), Y(b.el));
+    ctx.strokeStyle = seen ? '#f4a429' : 'rgba(244,164,41,.22)';
+    ctx.lineWidth = seen ? 3 : 1.6;
+    ctx.stroke();
+  }
+
+  // Horisont-silhuett
+  ctx.beginPath();
+  ctx.moveTo(L, H - B);
+  for (let a = 0; a <= 360; a++) ctx.lineTo(X(a), Y(horizonAt(hzProfile, a)));
+  ctx.lineTo(W - Rr, H - B); ctx.closePath();
+  const gr = ctx.createLinearGradient(0, T, 0, H - B);
+  gr.addColorStop(0, '#24405c'); gr.addColorStop(1, '#0f2135');
+  ctx.fillStyle = gr; ctx.fill();
+  ctx.strokeStyle = '#4c7ba6'; ctx.lineWidth = 1.4;
+  ctx.beginPath();
+  for (let a = 0; a <= 360; a++) { const x = X(a), y = Y(horizonAt(hzProfile, a)); a === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y); }
+  ctx.stroke();
+
+  // Timemerker langs dagens bane
+  ctx.font = '9px -apple-system,sans-serif'; ctx.textAlign = 'center';
+  for (const p of today) {
+    const dt = new Date(p.t);
+    if (dt.getMinutes() !== 0 || dt.getHours() % 3 !== 0) continue;
+    if (p.el < horizonAt(hzProfile, p.az)) continue;
+    ctx.beginPath(); ctx.arc(X(p.az), Y(p.el), 2, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffe6b0'; ctx.fill();
+    ctx.fillText(pad(dt.getHours()), X(p.az), Y(p.el) - 6);
+  }
+
+  // Første og siste sol
+  if (hzSunResult && hzSunResult.first !== null) {
+    [[hzSunResult.first, '#fbbf24', '▲'], [hzSunResult.last, '#fb923c', '▼']].forEach(([t, col, ch]) => {
+      const s = solarPosition(t, coords.lat, coords.lng);
+      const x = X(s.azimuth), y = Y(s.refracted);
+      ctx.beginPath(); ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = col; ctx.fill();
+      ctx.fillStyle = col; ctx.font = 'bold 10px -apple-system,sans-serif';
+      ctx.fillText(`${ch} ${fmtTimeHM(new Date(t))}`, Math.max(L + 24, Math.min(W - Rr - 24, x)), y - 9);
+    });
+  }
+
+  document.getElementById('hzPanoSub').textContent =
+    'Mørkt felt: horisonten rundt punktet. Stiplet: solbanen ved solverv.';
+}
+
+// ════════════════════════════════════════════════════════
+//  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
+// ════════════════════════════════════════════════════════
+let solProfile = null, solTarget = null, solTimer = null;
+
+function solEl(id) { return document.getElementById(id); }
+
+/** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */
+function solComputeTarget(nowMs) {
+  if (!solProfile) return null;
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  const n = new Date(nowMs);
+  for (let i = 0; i < 200; i++) {
+    // Bygg hver dag lokalt, så sommertidsskifter ikke forskyver døgnet.
+    const day = new Date(n.getFullYear(), n.getMonth(), n.getDate() + i);
+    const r = computeSunWindows(day.getTime(), lat, lng, solProfile);
+    for (const w of r.shown) {
+      if (nowMs < w[0]) return { kind: 'until', at: w[0], win: w, dayOffset: i, day: r };
+      if (nowMs < w[1]) return { kind: 'left',  at: w[1], win: w, dayOffset: i, day: r };
+    }
+  }
+  return null;
+}
+
+function solFmtCountdown(ms) {
+  const s = Math.max(0, Math.round(ms / 1000));
+  const d = Math.floor(s / 86400);
+  const h = Math.floor(s / 3600) % 24, m = Math.floor(s / 60) % 60, sec = s % 60;
+  const two = v => String(v).padStart(2, '0');
+  if (d > 0) return `${d} d ${two(h)}:${two(m)}`;
+  return `${two(h)}:${two(m)}:${two(sec)}`;
+}
+
+const SOL_DAYS = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
+
+function solRender() {
+  const now = Date.now();
+  if (!solTarget || now >= solTarget.at) {
+    solTarget = solComputeTarget(now);
+    if (!solTarget) {
+      solEl('solState').textContent = 'Ingen sol på en god stund';
+      solEl('solCount').textContent = '–';
+      solEl('solNote').textContent = 'Sola når ikke hjørnet de neste månedene.';
+      solEl('solSub').textContent = '';
+      return;
+    }
+  }
+  const t = solTarget;
+  const hhmm = ms => new Date(ms).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+  solEl('solCount').textContent = solFmtCountdown(t.at - now);
+
+  if (t.kind === 'left') {
+    solEl('solState').textContent = '☀️ Sola er her nå';
+    solEl('solNote').textContent = `Sol i hjørnet til ${hhmm(t.win[1])}`;
+  } else {
+    solEl('solState').textContent = t.dayOffset === 0 ? 'Sola kommer' : 'Neste sol';
+    const when = t.dayOffset === 0 ? ''
+      : t.dayOffset === 1 ? 'i morgen ' : SOL_DAYS[new Date(t.win[0]).getDay()] + ' ';
+    solEl('solNote').textContent = `Sol ${when}${hhmm(t.win[0])} – ${hhmm(t.win[1])}`;
+  }
+  const tot = t.day.total;
+  solEl('solSub').textContent = tot > 0
+    ? `${t.dayOffset === 0 ? 'I dag' : 'Den dagen'}: ${fmtHMS(tot)} direkte sol`
+    : '';
+}
+
+async function enterSolMode() {
+  const box = solEl('solMode');
+  box.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+  solStartSaying();
+  solEl('solState').textContent = 'Et øyeblikk';
+  solEl('solCount').textContent = '⛱️';
+  solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
+  solEl('solSub').textContent = '';
+
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  try {
+    let p = hzLoadCached(lat, lng, hzEye);
+    if (!p) {
+      p = await buildHorizonProfile(lat, lng, hzEye, (done, total) => {
+        solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
+      });
+      hzSaveCached(p);
+    }
+    solProfile = p;
+  } catch {
+    solEl('solState').textContent = 'Fikk ikke tak i dataene';
+    solEl('solCount').textContent = '😕';
+    solEl('solNote').textContent = 'Sjekk nettforbindelsen og prøv igjen.';
+    return;
+  }
+
+  solTarget = null;
+  solRender();
+  clearInterval(solTimer);
+  solTimer = setInterval(solRender, 1000);
+  solStartMusic();
+}
+
+function exitSolMode() {
+  solEl('solMode').classList.add('hidden');
+  document.body.style.overflow = '';
+  clearInterval(solTimer); solTimer = null;
+  clearInterval(solSayTimer); solSayTimer = null;
+  solStopMusic();
+}
+
+// Nonnaene kjefter på hverandre, maser om mat og drikke. Bare italiensk.
+const NN_SAY_A = ['Mamma mia!', 'Mangia, mangia!', 'Che sole!', 'Balla, balla!',
+                  'Andiamo!', 'Porca miseria!', 'Ma che cavolo!', 'Testa dura!',
+                  'Zitta, tu!', 'Accidenti!', 'Che palle!', 'Madonna santa!',
+                  'Una birra?', 'Vino rosso!', 'Ancora vino!', 'Salute!',
+                  'Spaghetti!', 'Lasagne al forno!', 'Parmigiana!',
+                  'Carbonara, no panna!', 'Cannoli!', 'Ragù della nonna!'];
+const NN_SAY_B = ['Bellissimo!', 'Tarantella!', 'Sole mio!', 'Ancora!', 'Vino?',
+                  'Presto, presto!', 'Mannaggia!', 'Sei matta!', "Ma va'!",
+                  'Uffa!', 'Cretina!', 'Basta, basta!',
+                  'Birra fredda!', "Dov'è il vino?", 'Un bicchiere?', 'Prosecco!',
+                  'Chi paga? Tu!', 'Pizza margherita!', 'Gnocchi!', 'Tiramisù!',
+                  'Polpette!', 'Melanzane alla parmigiana!'];
+let solSayTimer = null, solSayIx = 0;
+
+function solStartSaying() {
+  clearInterval(solSayTimer);
+  const step = () => {
+    const a = solEl('nnSayA'), b = solEl('nnSayB');
+    if (a) a.textContent = NN_SAY_A[solSayIx % NN_SAY_A.length];
+    if (b) b.textContent = NN_SAY_B[(solSayIx + 3) % NN_SAY_B.length];
+    solSayIx++;
+  };
+  step();
+  // Boblene vises annenhver gang, én runde er 6,4 s.
+  solSayTimer = setInterval(step, 6400);
+}
+
+// ════════════════════════════════════════════════════════
+//  «Tarantella di Piedigrotta» – Luigi Ricci (1805–1859),
+//  fra operaen «La festa di Piedigrotta» (Napoli, 1852).
+//  Dette er tarantellaen folk flest kjenner som selve
+//  Italia-melodien. Falt i det fri i 1930.
+//  A-moll, 6/8. Alle tall er antall åttendedeler.
+//  Opptakten i kilden er flyttet inn i taktene, slik at
+//  slyngen går rundt i hele takter.
+// ════════════════════════════════════════════════════════
+const SOL_BEATS = 6;                 // åttendedeler per takt
+const SOL_UNIT  = 60 / 140 / 3;      // 140 BPM punktert firedel, som i kilden
+
+// Kilden har opptakt på 3 åttendedeler og sju hele takter, og
+// slutttakten på 3 åttendedeler blir opptakt neste gang rundt.
+// Her er den rullet slik at slyngen starter på taktslag 1 og går
+// sømløst rundt: åtte hele takter, 48 åttendedeler.
+const SOL_LEAD = [
+  ['E5',2],['E5',1],['A5',2],['A5',1],
+  ['E5',2],['E5',1],['E5',2],['E5',1],
+  ['F5',2],['F5',1],['F5',1],['G5',1],['F5',1],
+  ['E5',2],[null,1],['E5',2],['E5',1],
+  ['E5',2],['D5',1],['D5',2],['D5',1],
+  ['D5',2],['C5',1],['C5',2],['C5',1],
+  ['C5',2],['B4',1],['B4',1],['C5',1],['B4',1],
+  ['A4',2],[null,1],['A5',2],['A5',1],
+];
+
+// Akkorder: én per punktert firedel (to per takt).
+// «chord» er venstrehåndens stradella-akkord – trange treklanger i
+// samme leie, slik ekte trekkspillbass gjør det. «bass» er grunntone og kvint.
+const SOL_CHORD_LIB = {
+  Am: { chord: ['A3','C4','E4'],  bass: ['A2','E2'] },
+  Dm: { chord: ['A3','D4','F4'],  bass: ['D2','A2'] },
+  E7: { chord: ['G#3','B3','E4'], bass: ['E2','B2'] },
+};
+const SOL_PROG = [
+  'Am','Am', 'Am','Am', 'Dm','Dm', 'Am','Am',
+  'E7','E7', 'Am','Am', 'E7','E7', 'Am','Am',
+];
+
+// ════════════════════════════════════════════════════════
+//  TREKKSPILL-MOTOR
+//  Fritungene etterlignes med sagtannoscillatorer gjennom et
+//  formantfilter. Flere tunger per tone stemmes noen cent fra
+//  hverandre – det er musette-svevingen som gjør at et trekkspill
+//  høres ut som et trekkspill. Venstrehånden spiller stradella:
+//  bass på slaget, korte akkordstøt imellom.
+// ════════════════════════════════════════════════════════
+const SOL_SEMI = { C: 0, D: 2, E: 4, F: 5, G: 7, A: 9, B: 11 };
+function solFreq(name) {
+  const m = /^([A-G])([b#]?)(\d)$/.exec(name);
+  const semi = SOL_SEMI[m[1]] + (m[2] === 'b' ? -1 : m[2] === '#' ? 1 : 0);
+  return 440 * Math.pow(2, (semi - 9 + (+m[3] - 4) * 12) / 12);
+}
+
+let solCtx = null, solGain = null, solBus = null, solCh = null, solNoiseBuf = null;
+let solLoopTimer = null, solNextAt = 0, solMusicOn = false;
+
+/** Kort romklang, laget av avtagende støy – gir instrumentet luft rundt seg. */
+function accRoom(dur, decay) {
+  const sr = solCtx.sampleRate, len = Math.ceil(dur * sr);
+  const buf = solCtx.createBuffer(2, len, sr);
+  for (let c = 0; c < 2; c++) {
+    const d = buf.getChannelData(c);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+  }
+  return buf;
+}
+
+/**
+ * Bølgeform for en fritunge. En trekkspilltunge er en asymmetrisk
+ * ventil, så spekteret er tett og rikt, men med en tydelig formanttopp
+ * lavt i overtonerekka og et mykt fall øverst. Fasene spres for å ta
+ * bort den skarpe sagtannkanten.
+ */
+function accReedWave(bright) {
+  const N = 26;
+  const real = new Float32Array(N + 1), imag = new Float32Array(N + 1);
+  for (let n = 1; n <= N; n++) {
+    const a = Math.pow(n, -1.15) * (1 + .45 * Math.cos(n * 1.7)) * Math.exp(-Math.pow(n / bright, 2));
+    const ph = (n * n * 1.13) % (Math.PI * 2);
+    real[n] = a * Math.cos(ph);
+    imag[n] = a * Math.sin(ph);
+  }
+  return solCtx.createPeriodicWave(real, imag);
+}
+
+/**
+ * Én trekkspillstemme. «reeds» er tungerekkene i cent med hver sin
+ * styrke: flere tunger noen cent fra hverandre gir musette-svevingen,
+ * og en rekke en oktav over eller under er registeret som gjør at det
+ * høres ut som et trekkspill og ikke en synth.
+ */
+function accChannel(vol, o) {
+  const inn = solCtx.createGain(); inn.gain.value = 1;
+  const hp = solCtx.createBiquadFilter();
+  hp.type = 'highpass'; hp.frequency.value = o.hp; hp.Q.value = .7;
+  const f1 = solCtx.createBiquadFilter();
+  f1.type = 'peaking'; f1.frequency.value = o.f1; f1.Q.value = 1.4; f1.gain.value = 4;
+  const f2 = solCtx.createBiquadFilter();
+  f2.type = 'peaking'; f2.frequency.value = o.f2; f2.Q.value = 1.1; f2.gain.value = 5.5;
+  const lp = solCtx.createBiquadFilter();
+  lp.type = 'lowpass'; lp.frequency.value = o.lp; lp.Q.value = .6;
+  const gain = solCtx.createGain(); gain.gain.value = vol;
+  inn.connect(hp); hp.connect(f1); f1.connect(f2); f2.connect(lp); lp.connect(gain); gain.connect(solBus);
+  return { inn, gain, vol, reeds: o.reeds, wave: accReedWave(o.bright), chiff: o.chiff };
+}
+
+function accInit() {
+  const AC = window.AudioContext || window.webkitAudioContext;
+  if (!AC) return false;
+  solCtx = new AC();
+
+  solGain = solCtx.createGain();
+  solGain.gain.value = .38;
+  solGain.connect(solCtx.destination);
+
+  const comp = solCtx.createDynamicsCompressor();
+  comp.threshold.value = -15; comp.knee.value = 24; comp.ratio.value = 3.5;
+  comp.attack.value = .006; comp.release.value = .16;
+  comp.connect(solGain);
+
+  solBus = solCtx.createGain(); solBus.gain.value = 1;
+  solBus.connect(comp);
+
+  // Kort, dempet rom – bare nok til at det ikke klinger knusktørt.
+  const conv = solCtx.createConvolver();
+  conv.buffer = accRoom(.65, 3.4);
+  const damp = solCtx.createBiquadFilter();
+  damp.type = 'lowpass'; damp.frequency.value = 3200;
+  const wet = solCtx.createGain(); wet.gain.value = .14;
+  solBus.connect(conv); conv.connect(damp); damp.connect(wet); wet.connect(comp);
+
+  const n = Math.floor(solCtx.sampleRate * .5);
+  solNoiseBuf = solCtx.createBuffer(1, n, solCtx.sampleRate);
+  const d = solNoiseBuf.getChannelData(0);
+  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
+
+  solCh = {
+    // Høyre hånd: tre tunger i musette pluss en svak oktavtunge.
+    lead: accChannel(.46, {
+      reeds: [[-14, 1], [0, 1], [13, 1], [1200, .3]],
+      hp: 175, f1: 480, f2: 1450, lp: 4400, bright: 15, chiff: .05,
+    }),
+    // Venstre hånd, akkordknappene: trangt leie, 8' og 4'.
+    harm: accChannel(.24, {
+      reeds: [[-6, 1], [5, 1], [1200, .2]],
+      hp: 250, f1: 520, f2: 1150, lp: 2900, bright: 10, chiff: .035,
+    }),
+    // Bassknappene: 16' under 8' – det gir tyngden.
+    bass: accChannel(.4, {
+      reeds: [[-1200, .65], [0, 1], [4, .7]],
+      hp: 42, f1: 180, f2: 620, lp: 1250, bright: 8, chiff: .05,
+    }),
+  };
+
+  // Belgen puster litt – svak, langsom bevegelse i styrken.
+  const lfo = solCtx.createOscillator(), amt = solCtx.createGain();
+  lfo.frequency.value = .27; amt.gain.value = .04;
+  lfo.connect(amt); amt.connect(solBus.gain); lfo.start();
+
+  const tg = solCtx.createGain(); tg.gain.value = .17;
+  tg.connect(solBus);
+  solCh.noise = { gain: tg };
+  return true;
+}
+
+/** Kort luftpust i anslaget – ventilen og lufta som slipper forbi tunga. */
+function accChiff(ch, t, vol) {
+  const src = solCtx.createBufferSource();
+  src.buffer = solNoiseBuf;
+  src.playbackRate.value = .8 + Math.random() * .4;
+  const bp = solCtx.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = 1900; bp.Q.value = .8;
+  const g = solCtx.createGain();
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0005, t + .035);
+  src.connect(bp); bp.connect(g); g.connect(ch.inn);
+  src.start(t, Math.random() * .3); src.stop(t + .05);
+}
+
+/**
+ * Én tone. Trekkspill har ikke anslag som en streng: tonen settes med
+ * belgtrykk. I en tarantella spilles den kort og bestemt – rask
+ * oppbygging, flat topp, og så kuttes den av mens neste tone venter.
+ */
+function accNote(ch, freq, t, dur, vol) {
+  const total = ch.reeds.reduce((a, r) => a + r[1], 0);
+  const v = (vol === undefined ? 1 : vol) / total;
+  const hold = Math.max(dur, .035);
+  const atk = Math.min(.011, hold * .3);
+  const rel = Math.min(.03, hold * .45);
+  const g = solCtx.createGain();
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(v * 1.14, t + atk);
+  g.gain.linearRampToValueAtTime(v, t + Math.min(atk + .035, hold));
+  g.gain.setValueAtTime(v, t + hold);
+  g.gain.linearRampToValueAtTime(0, t + hold + rel);
+  g.connect(ch.inn);
+  for (const [cents, lvl] of ch.reeds) {
+    const osc = solCtx.createOscillator();
+    osc.setPeriodicWave(ch.wave);
+    osc.frequency.value = freq;
+    osc.detune.value = cents;
+    const rg = solCtx.createGain(); rg.gain.value = lvl;
+    osc.connect(rg); rg.connect(g);
+    osc.start(t); osc.stop(t + hold + rel + .02);
+  }
+  if (ch.chiff) accChiff(ch, t, ch.chiff * (vol === undefined ? 1 : vol));
+}
+
+/** Venstrehåndens akkordstøt – alle tonene samtidig og kort. */
+function accChord(ch, names, t, dur, vol) {
+  for (const nm of names) accNote(ch, solFreq(nm), t, dur, vol);
+}
+
+/** Tamburin. Filtrert støy med rask utklang. */
+function accTamb(t, vol, open) {
+  const src = solCtx.createBufferSource();
+  src.buffer = solNoiseBuf;
+  src.playbackRate.value = .9 + Math.random() * .25;
+  const bp = solCtx.createBiquadFilter();
+  bp.type = 'bandpass'; bp.frequency.value = open ? 7200 : 8600; bp.Q.value = 1.1;
+  const g = solCtx.createGain();
+  const dur = open ? .16 : .055;
+  g.gain.setValueAtTime(vol, t);
+  g.gain.exponentialRampToValueAtTime(.0008, t + dur);
+  src.connect(bp); bp.connect(g); g.connect(solCh.noise.gain);
+  src.start(t, Math.random() * .3); src.stop(t + dur + .02);
+}
+
+/** Legg ut hele slyngen fra t0. Returnerer lengden i sekunder. */
+function solScheduleTune(t0) {
+  const U = SOL_UNIT, BAR = SOL_BEATS * U, HALF = BAR / 2;
+
+  // Melodi. Tarantellaen spilles kort og bestemt: hver tone kuttes
+  // godt før neste, og tonene på hovedslagene får mer belg.
+  let t = t0, pos = 0;
+  for (const [note, len] of SOL_LEAD) {
+    if (note) {
+      const onBeat = pos % 3 === 0;
+      const dur = len === 1 ? U * .42 : U * 1.05;
+      accNote(solCh.lead, solFreq(note), t, dur, solCh.lead.vol * (onBeat ? 1 : .8));
+    }
+    t += len * U; pos += len;
+  }
+  const total = t - t0;
+
+  // Venstre hånd: bass på slaget, to korte akkordstøt etter – «oom-pah-pah».
+  SOL_PROG.forEach((name, i) => {
+    const c = SOL_CHORD_LIB[name], at = t0 + i * HALF;
+    accNote(solCh.bass, solFreq(c.bass[i % 2]), at, U * .5, solCh.bass.vol);
+    accChord(solCh.harm, c.chord, at + U,      U * .26, solCh.harm.vol);
+    accChord(solCh.harm, c.chord, at + U * 2,  U * .26, solCh.harm.vol * .82);
+  });
+
+  // Tamburin på hver åttendedel, med aksent på de to hovedslagene.
+  const bars = Math.round(total / BAR);
+  for (let b = 0; b < bars; b++) {
+    for (let u = 0; u < SOL_BEATS; u++) {
+      const main = u === 0 || u === 3;
+      accTamb(t0 + (b * SOL_BEATS + u) * U, main ? .5 : .22, main);
+    }
+  }
+  return total;
+}
+
+function solLoopTune() {
+  if (!solMusicOn) return;
+  solNextAt = Math.max(solNextAt, solCtx.currentTime + .06);
+  const len = solScheduleTune(solNextAt);
+  solNextAt += len;
+  solLoopTimer = setTimeout(solLoopTune, Math.max(250, (solNextAt - solCtx.currentTime - .4) * 1000));
+}
+
+function solStartMusic() {
+  try {
+    if (!solCtx && !accInit()) return;
+    if (solCtx.state === 'suspended') solCtx.resume();
+    solMusicOn = true;
+    solNextAt = solCtx.currentTime + .12;
+    solLoopTune();
+    solEl('solMusicBtn').classList.add('on');
+    solEl('solMusicBtn').textContent = '🎵 Musikk på';
+  } catch {}
+}
+
+function solStopMusic() {
+  solMusicOn = false;
+  clearTimeout(solLoopTimer); solLoopTimer = null;
+  if (solCtx) { try { solCtx.close(); } catch {} solCtx = null; solGain = null; solBus = null; solCh = null; solNoiseBuf = null; }
+  const b = solEl('solMusicBtn');
+  if (b) { b.classList.remove('on'); b.textContent = '🎵 Musikk'; }
+}
+
+function solToggleMusic() {
+  if (solMusicOn) solStopMusic(); else solStartMusic();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && !solEl('solMode').classList.contains('hidden')) exitSolMode();
+});
 
 function roundRect(ctx, x, y, w, h, r) {
   ctx.beginPath();
