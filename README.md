@@ -52,14 +52,15 @@ mindre sol – det er et helt riktig svar for akkurat det punktet, og et solhjø
 nettopp et sted der veggen står nær. Vil du se hva som skjer lenger ut i gata eller
 høyere opp i gården, flytt pinnen eller endre høyden.
 
-Knappen **⛱️ Solhjørnet** setter pinnen tilbake på det faste utepunktet og regner ut
-på nytt.
-
 ## ⛱️ Solhjørnet-modus
 
 Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen fullskjermvisning
 med italiensk sommerstemning:
 
+- **Fast posisjon** – viser alltid soldata for **59.93414° N, 10.76769° Ø**,
+  uavhengig av kartpinnen og lagret sted. Kartet og ditt valgte sted endres ikke.
+  Nedtellingen bruker horisonten for dette eksakte punktet og den valgte høyden
+  over bakken, ikke en tidligere profil fra et annet punkt.
 - **Nedtelling** – står sola på hjørnet nå, telles det ned til den forsvinner. Ellers
   telles det ned til neste gang sola treffer, og appen søker framover dag for dag
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.

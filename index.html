@@ -1785,7 +1785,7 @@ const R_EARTH   = 6371000;   // m
 const REFR_K    = 0.13;      // atmosfærisk refraksjonskoeffisient (standard)
 const SUN_RADIUS = 0.2667;   // sola sin halve diameter i grader (øvre rand)
 const HZ_BINS   = 360;       // 1° oppløsning i horisontprofilen
-const HZ_HOME_DEFAULT = { lat: 59.9341, lng: 10.7677, name: 'Solhjørnet' };
+const HZ_HOME_DEFAULT = Object.freeze({ lat: 59.93414, lng: 10.76769, name: 'Solhjørnet' });
 /** Så nær hjemmepunktet at det fortsatt regnes som Solhjørnet (meter). */
 const HZ_HOME_RADIUS = 12;
 
@@ -2069,7 +2069,9 @@ function hzLoadCached(lat, lng, eye) {
     const raw = localStorage.getItem(hzCacheKey(lat, lng, eye));
     if (!raw) return null;
     const p = JSON.parse(raw);
-    return (p && p.rays && p.rays.length === HZ_BINS) ? p : null;
+    // Nøkkelen er avrundet; profilen må likevel gjelde akkurat dette punktet og høyden.
+    return (p && p.lat === lat && p.lng === lng && p.eye === eye
+      && p.rays && p.rays.length === HZ_BINS) ? p : null;
   } catch { return null; }
 }
 function hzSaveCached(profile) {
@@ -2493,7 +2495,7 @@ function drawPanorama(d) {
 // ════════════════════════════════════════════════════════
 //  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
 // ════════════════════════════════════════════════════════
-let solProfile = null, solTarget = null, solTimer = null;
+let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 
 function solEl(id) { return document.getElementById(id); }
 
@@ -2557,6 +2559,16 @@ function solRender() {
 }
 
 async function enterSolMode() {
+  const request = ++solRequest;
+  clearInterval(solTimer); solTimer = null;
+  solProfile = null;
+  solTarget = null;
+
+  // Beregn alltid for Solhjørnet uten å flytte pinnen i det vanlige kartet.
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  const eye = hzEye;
+  const cached = hzLoadCached(lat, lng, eye);
+
   const box = solEl('solMode');
   box.classList.remove('hidden');
   document.body.style.overflow = 'hidden';
@@ -2566,17 +2578,20 @@ async function enterSolMode() {
   solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
   solEl('solSub').textContent = '';
 
-  const { lat, lng } = HZ_HOME_DEFAULT;
   try {
-    let p = hzLoadCached(lat, lng, hzEye);
+    let p = cached;
     if (!p) {
-      p = await buildHorizonProfile(lat, lng, hzEye, (done, total) => {
-        solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
+      p = await buildHorizonProfile(lat, lng, eye, (done, total) => {
+        if (request === solRequest) {
+          solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
+        }
       });
       hzSaveCached(p);
     }
+    if (request !== solRequest) return;
     solProfile = p;
   } catch {
+    if (request !== solRequest) return;
     solEl('solState').textContent = 'Fikk ikke tak i dataene';
     solEl('solCount').textContent = '😕';
     solEl('solNote').textContent = 'Sjekk nettforbindelsen og prøv igjen.';
@@ -2591,6 +2606,7 @@ async function enterSolMode() {
 }
 
 function exitSolMode() {
+  solRequest++;
   solEl('solMode').classList.add('hidden');
   document.body.style.overflow = '';
   clearInterval(solTimer); solTimer = null;
