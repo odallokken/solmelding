@@ -2565,7 +2565,7 @@ function drawPanorama(d) {
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 let solDailyTimer = null, solDailyKey = '', solPreviousFocus = null;
-let solQuizIndex = 0;
+let solQuizIndex = -1, solQuizOrder = [], solQuizPosition = 0;
 
 function solEl(id) { return document.getElementById(id); }
 
@@ -2645,7 +2645,6 @@ function solCalendarDay(nowMs) {
   return {
     key: `${parts.year}-${parts.month}-${parts.day}`,
     monthDay: `${parts.month}-${parts.day}`,
-    ordinal: Math.floor(Date.UTC(+parts.year, +parts.month - 1, +parts.day) / 86400000),
   };
 }
 
@@ -2668,13 +2667,30 @@ function solShowQuizQuestion(index) {
   solEl('solQuizAnnouncement').textContent = 'Nytt spørsmål: ' + question;
 }
 
+function solShuffleQuiz() {
+  solQuizOrder = SOL_QUIZ.map((_, index) => index);
+  for (let i = solQuizOrder.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [solQuizOrder[i], solQuizOrder[j]] = [solQuizOrder[j], solQuizOrder[i]];
+  }
+  // Unngå samme spørsmål rett etter gjenåpning eller mellom to runder.
+  if (solQuizOrder.length > 1 && solQuizOrder[0] === solQuizIndex) {
+    const j = 1 + Math.floor(Math.random() * (solQuizOrder.length - 1));
+    [solQuizOrder[0], solQuizOrder[j]] = [solQuizOrder[j], solQuizOrder[0]];
+  }
+  solQuizPosition = 0;
+  solShowQuizQuestion(solQuizOrder[0]);
+}
+
 function solFlipQuiz() {
   const previousDay = solDailyKey;
   solUpdateDaily();
   if (solDailyKey !== previousDay) return;
 
   if (solEl('solQuiz').classList.contains('is-flipped')) {
-    solShowQuizQuestion((solQuizIndex + 1) % SOL_QUIZ.length);
+    solQuizPosition++;
+    if (solQuizPosition === solQuizOrder.length) solShuffleQuiz();
+    else solShowQuizQuestion(solQuizOrder[solQuizPosition]);
   } else {
     const answer = SOL_QUIZ[solQuizIndex][1];
     solEl('solQuizAnswer').textContent = answer;
@@ -2705,8 +2721,7 @@ function solUpdateDaily(nowMs = Date.now(), reset = false) {
     source.classList.add('hidden');
   }
 
-  const index = ((day.ordinal % SOL_QUIZ.length) + SOL_QUIZ.length) % SOL_QUIZ.length;
-  solShowQuizQuestion(index);
+  solShuffleQuiz();
 }
 
 /** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */

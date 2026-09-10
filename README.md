@@ -76,10 +76,11 @@ med italiensk sommerstemning:
   Tekstene er egenformulert på norsk, og hver oppføring lenker til sin kilde.
 - **Italia-quiz** – én knapp som veksler mellom spørsmål og svar. Trykk for å snu
   kortet og se svaret; neste trykk snur til et nytt spørsmål. Du kan fortsette
-  gjennom alle 60 spørsmål før rekken begynner på nytt. Det fungerer også med
-  Enter og mellomrom. Første spørsmål bestemmes av norsk dato; åpning av modusen
-  eller oppdatering av siden starter på dette spørsmålet igjen. Ved norsk midnatt
-  vises et nytt startspørsmål uten å røpe svaret. Redusert bevegelse slår av
+  gjennom alle 60 spørsmål uten gjentakelser før en ny, tilfeldig stokket runde.
+  Rekkefølgen stokkes også når du åpner modusen eller laster siden på nytt, og
+  samme spørsmål vises ikke rett etter gjenåpning eller mellom to runder.
+  Ved norsk midnatt starter en ny stokket runde uten å røpe svaret.
+  Det fungerer også med Enter og mellomrom. Redusert bevegelse slår av
   snuanimasjonen.
 - **Musikk** – «Nonnaenes kjøkkendans», en egen italienskinspirert melodi med
   mandolinaktige plukk, myk gitar og spretten bass. Instrumentene genereres med
