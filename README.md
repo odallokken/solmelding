@@ -119,6 +119,16 @@ høyere opp i gården, flytt pinnen eller endre høyden.
 Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen fullskjermvisning
 med italiensk sommerstemning:
 
+- **Solstatus på knappen** – viser om sola er på hjørnet nå, hvor lenge den blir,
+  eller hvor lenge det er til neste sol. En grønn linje tømmes gjennom soltiden;
+  i skyggen fylles en blå linje de siste 24 timene før sola kommer. Lengre ventetid
+  vises med tom linje og dato, ikke som om sola er rett rundt hjørnet.
+  Teksten gir samme informasjon uten å være avhengig av farger.
+  Bygningskart og horisont hentes automatisk i bakgrunnen og deles med
+  fullskjermvisningen, uten å starte musikk eller endre kartpinnen.
+  Under lasting eller nettverksfeil vises ingen oppdiktet solstatus; trykk på
+  knappen for å prøve igjen ved feil. Dette er **beregnet sol, ikke værmelding**:
+  skydekke inngår ikke.
 - **Fast posisjon** – viser alltid soldata for **59.93413° N, 10.76767° Ø**,
   uavhengig av kartpinnen og lagret sted. Kartet og ditt valgte sted endres ikke.
   Beregningen er låst til **bakkeplan (1,7 m øyehøyde)**, uavhengig av høydeskyveren
@@ -133,7 +143,7 @@ med italiensk sommerstemning:
   telles det ned til neste gang sola treffer, og appen søker framover dag for dag
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
-  ned fra Kartverket med en framdriftsvisning. Solhjørnets profil har en egen,
+  ned fra Kartverket med en framdriftsvisning på knappen og i åpen fullskjermvisning. Solhjørnets profil har en egen,
   versjonert lagernøkkel og kan ikke blandes med profiler som inkluderer trær.
 - **På denne dag** – en kort Italia-relatert historie med årstall og kildelenke.
   Kalenderen følger norsk dato (`Europe/Oslo`), også gjennom sommertid og skuddår.

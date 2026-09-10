@@ -346,15 +346,27 @@
     }
 
     /* ── Solhjørnet: hero-knapp ── */
-    .sol-hero { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
-      margin: 0 0 14px; padding: 17px 20px; border: 0; border-radius: 18px; cursor: pointer;
+    .sol-hero { width: 100%; display: grid; gap: 6px;
+      margin: 0 0 14px; padding: 14px 20px; border: 0; border-radius: 18px; cursor: pointer;
       font-family: inherit; font-size: 1.16rem; font-weight: 900; letter-spacing: .3px; color: #2b1a0d;
       background: linear-gradient(135deg, #ffd27a 0%, #ffb347 45%, #ff8a3d 100%);
       box-shadow: 0 8px 26px rgba(255,150,60,.34); transition: transform .12s, box-shadow .12s; }
     .sol-hero:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(255,150,60,.44); }
     .sol-hero:active { transform: translateY(0); }
-    .sol-hero .um { font-size: 1.5em; line-height: 1; }
-    .sol-hero small { display: block; font-size: .66rem; font-weight: 700; opacity: .72; letter-spacing: .2px; }
+    .sol-hero:focus-visible { outline: 3px solid var(--text); outline-offset: 4px; }
+    .sol-hero-heading { display: flex; align-items: center; justify-content: center; gap: 9px; }
+    .sol-hero .um { font-size: 1.3em; line-height: 1; }
+    .sol-hero small { display: block; font-size: .7rem; font-weight: 600; letter-spacing: 0; line-height: 1.4; }
+    .sol-hero-message { font-size: .76rem; font-weight: 700; line-height: 1.4; letter-spacing: 0; }
+    .sol-hero-track { display: block; height: 4px; border-radius: 4px; overflow: hidden; background: #2b1a0d26; }
+    .sol-hero-fill { display: block; height: 100%; width: 0; background: #315d7a; transition: width 1s linear; }
+    .sol-hero[data-state="sun"] .sol-hero-fill { background: #28623c; }
+    .sol-hero:not([data-state="sun"]):not([data-state="waiting"]) .sol-hero-track { visibility: hidden; }
+    .sol-hero .sol-hero-caveat { font-size: .6rem; font-weight: 500; }
+    @media (prefers-reduced-motion: reduce) {
+      .sol-hero, .sol-hero-fill { transition: none; }
+      .sol-hero:hover { transform: none; }
+    }
 
     /* ── Solhjørnet: italiensk modus ── */
     #solMode { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
@@ -520,10 +532,14 @@
     </div>
   </header>
 
-  <button class="sol-hero" onclick="enterSolMode()">
-    <span class="um">⛱️</span>
-    <span>Solhjørnet<small>Sol i hjørnet – akkurat nå</small></span>
+  <button class="sol-hero" id="solHero" data-state="loading" onclick="enterSolMode()" aria-describedby="solHeroLegend">
+    <span class="sol-hero-heading"><span class="um" id="solHeroIcon" aria-hidden="true">⛱️</span>Solhjørnet</span>
+    <span class="sol-hero-message" id="solHeroState" role="status" aria-live="polite">Sjekker om sola er her …</span>
+    <small id="solHeroTime">Henter soltidene for hjørnet</small>
+    <span class="sol-hero-track" aria-hidden="true"><span class="sol-hero-fill" id="solHeroFill"></span></span>
+    <small class="sol-hero-caveat">Solberegning · ikke værmelding</small>
   </button>
+  <span class="sol-sr-only" id="solHeroLegend">Åpne Solhjørnet for detaljer. I sol tømmes linjen når soltiden går. I skygge fylles den de siste 24 timene før neste sol. Skydekke er ikke med i beregningen.</span>
 
   <main id="frontPage">
   <section class="input-panel" aria-label="Velg sted og dato">
@@ -3032,6 +3048,8 @@ function drawPanorama(d) {
 // ════════════════════════════════════════════════════════
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
+let solProfilePromise = null, solProfileError = null, solProfileSourceDate = '';
+let solLoadingText = 'Henter bygningskartet …', solTargetDay = '', solTargetCheckedAt = 0;
 let solDailyTimer = null, solDailyKey = '', solPreviousFocus = null;
 let solQuizIndex = -1, solQuizOrder = [], solQuizPosition = 0;
 
@@ -3220,19 +3238,73 @@ function solFmtCountdown(ms) {
 
 const SOL_DAYS = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
 
-function solRender() {
-  const now = Date.now();
-  if (!solTarget || now >= solTarget.at) {
+function solCurrentTarget(now) {
+  const day = new Date(now).toDateString();
+  if (day !== solTargetDay || now < solTargetCheckedAt || (solTarget && now >= solTarget.at)) {
     solTarget = solComputeTarget(now);
-    if (!solTarget) {
-      solEl('solState').textContent = 'Ingen sol på en god stund';
-      solEl('solCount').textContent = '–';
-      solEl('solNote').textContent = 'Sola når ikke hjørnet de neste månedene.';
-      solEl('solSub').textContent = '';
-      return;
+    solTargetDay = day;
+    solTargetCheckedAt = now;
+  }
+  return solTarget;
+}
+
+function solHeroDuration(ms) {
+  const minutes = Math.floor(Math.max(0, ms) / 60000);
+  if (minutes < 1) return 'under 1 min';
+  const days = Math.floor(minutes / 1440), hours = Math.floor(minutes / 60) % 24;
+  if (days) return `${days} d${hours ? ` ${hours} t` : ''}`;
+  if (hours) return `${hours} t${minutes % 60 ? ` ${minutes % 60} min` : ''}`;
+  return `${minutes} min`;
+}
+
+function solRenderHero(now = Date.now()) {
+  const button = solEl('solHero');
+  let state = 'loading', icon = '⛱️', message = 'Sjekker om sola er her …';
+  let time = solLoadingText, fraction = 0;
+  if (solProfileError) {
+    state = 'error';
+    message = 'Soltidene tok en liten siesta';
+    time = 'Kunne ikke hente data · trykk for å prøve igjen';
+  } else if (solProfile) {
+    const target = solCurrentTarget(now);
+    if (!target) {
+      state = 'unknown';
+      message = 'Sola tar en lang pause';
+      time = 'Ingen soltid funnet de neste 200 dagene';
+    } else if (target.kind === 'left') {
+      state = 'sun'; icon = '☀️';
+      message = 'Sola er her! Vin eller utepils?';
+      time = `Sol i ${solHeroDuration(target.at - now)} · til ${fmtTimeHM(new Date(target.at))}`;
+      fraction = (target.at - now) / (target.win[1] - target.win[0]);
+    } else {
+      state = 'waiting'; icon = '⛱️';
+      message = target.at - now < 3600000
+        ? 'Hold ut! Sola er snart på plass.'
+        : 'Sola lar vente på seg. Sett drikken kaldt!';
+      const when = target.dayOffset === 0 ? ''
+        : target.dayOffset === 1 ? 'i morgen '
+        : new Date(target.at).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' }) + ' ';
+      time = `Sol om ${solHeroDuration(target.at - now)} · ${when}${fmtTimeHM(new Date(target.at))}`;
+      // Ventelinjen viser bare de siste 24 timene, ikke en vilkårlig tid siden sidebesøket.
+      fraction = 1 - (target.at - now) / 86400000;
     }
   }
-  const t = solTarget;
+  button.dataset.state = state;
+  for (const [id, text] of [['solHeroIcon', icon], ['solHeroState', message], ['solHeroTime', time]]) {
+    if (solEl(id).textContent !== text) solEl(id).textContent = text;
+  }
+  solEl('solHeroFill').style.width = `${Math.max(0, Math.min(1, fraction)) * 100}%`;
+}
+
+function solRender(now = Date.now()) {
+  const t = solCurrentTarget(now);
+  if (!t) {
+    solEl('solState').textContent = 'Ingen sol på en god stund';
+    solEl('solCount').textContent = '–';
+    solEl('solNote').textContent = 'Sola når ikke hjørnet de neste månedene.';
+    solEl('solSub').textContent = '';
+    return;
+  }
   const hhmm = ms => new Date(ms).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
   solEl('solCount').textContent = solFmtCountdown(t.at - now);
 
@@ -3265,11 +3337,57 @@ function solLoadBuildingMask() {
   return solBuildingMaskPromise;
 }
 
+function solLoading(note) {
+  solLoadingText = note;
+  solRenderHero();
+  if (!solEl('solMode').classList.contains('hidden')) solEl('solNote').textContent = note;
+}
+
+function solEnsureProfile() {
+  if (solProfile) return Promise.resolve(solProfile);
+  if (solProfilePromise) return solProfilePromise;
+  solProfileError = null;
+  solLoading('Henter bygningskartet …');
+  solProfilePromise = (async () => {
+    const { lat, lng } = HZ_HOME_DEFAULT;
+    const mask = await solLoadBuildingMask();
+    const variant = hzBuildingVariant(mask, lat, lng);
+    solProfileSourceDate = mask.sourceDate;
+    let profile = hzLoadCached(lat, lng, SOL_EYE_HEIGHT, variant);
+    if (!profile) {
+      profile = await buildHorizonProfile(lat, lng, SOL_EYE_HEIGHT, (done, total) => {
+        solLoading(`Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`);
+      }, mask);
+      hzSaveCached(profile);
+    }
+    solProfile = profile;
+    solTargetDay = '';
+    return profile;
+  })().catch(error => {
+    solProfileError = error;
+    console.warn('Kunne ikke hente Solhjørnets bygnings- og terrengprofil:', error);
+    throw error;
+  }).finally(() => {
+    solProfilePromise = null;
+    solRenderHero();
+  });
+  return solProfilePromise;
+}
+
+function solTick() {
+  if (document.hidden) return;
+  const now = Date.now();
+  solRenderHero(now);
+  if (solProfile && !solEl('solMode').classList.contains('hidden')) solRender(now);
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  solEnsureProfile().catch(() => solRenderHero());
+  solTimer = setInterval(solTick, 1000);
+});
+
 async function enterSolMode() {
   const request = ++solRequest;
-  clearInterval(solTimer); solTimer = null;
-  solProfile = null;
-  solTarget = null;
 
   // Fast punkt og bakkeplan, uavhengig av kartpinnen og høydeskyveren.
   const { lat, lng } = HZ_HOME_DEFAULT;
@@ -3297,28 +3415,15 @@ async function enterSolMode() {
   solEl('solBuildingDate').textContent = '';
 
   try {
-    const mask = await solLoadBuildingMask();
+    await solEnsureProfile();
     if (request !== solRequest) return;
-    const variant = hzBuildingVariant(mask, lat, lng);
-    const sourceDate = mask.sourceDate;
+    const sourceDate = solProfileSourceDate;
     solEl('solBuildingDate').textContent = ' · ' + sourceDate.slice(0, 10)
       + (Date.now() - Date.parse(sourceDate) > 90 * 86400000 ? ' (eldre kartgrunnlag)' : '');
-    let p = hzLoadCached(lat, lng, eye, variant);
-    if (!p) {
-      p = await buildHorizonProfile(lat, lng, eye, (done, total) => {
-        if (request === solRequest) {
-          solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
-        }
-      }, mask);
-      hzSaveCached(p);
-    }
-    if (request !== solRequest) return;
-    solProfile = p;
   } catch (error) {
     if (request !== solRequest) return;
     solEl('solState').textContent = 'Fikk ikke tak i dataene';
     solEl('solCount').textContent = '😕';
-    console.warn('Kunne ikke hente Solhjørnets bygnings- og terrengprofil:', error);
     solEl('solNote').textContent = location.protocol === 'file:'
       ? 'Åpne den publiserte nettsiden for å bruke Solhjørnets bygningskart.'
       : error.message === 'building-mask-missing'
@@ -3331,10 +3436,7 @@ async function enterSolMode() {
     return;
   }
 
-  solTarget = null;
   solRender();
-  clearInterval(solTimer);
-  solTimer = setInterval(solRender, 1000);
 }
 
 function exitSolMode() {
@@ -3343,7 +3445,6 @@ function exitSolMode() {
   solEl('app').inert = false;
   document.body.style.overflow = '';
   document.documentElement.style.overflowY = '';
-  clearInterval(solTimer); solTimer = null;
   clearInterval(solSayTimer); solSayTimer = null;
   clearInterval(solDailyTimer); solDailyTimer = null;
   solStopMusic();
@@ -3354,8 +3455,10 @@ function exitSolMode() {
 }
 
 document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) solTick();
   if (!document.hidden && !solEl('solMode').classList.contains('hidden')) solUpdateDaily();
 });
+window.addEventListener('pageshow', solTick);
 
 // Nonnaene kjefter på hverandre, maser om mat og drikke. Bare italiensk.
 const NN_SAY_A = ['Mamma mia!', 'Mangia, mangia!', 'Che sole!', 'Balla, balla!',
