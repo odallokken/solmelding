@@ -838,6 +838,7 @@
         <p>Beregnet sol uten skydekke. Bygninger og terreng er med, nærliggende trær er ikke med.</p>
         <div class="sol-sub" id="solSub"></div>
         <div class="sol-sub" id="solPoint"></div>
+        <p class="sol-sub" id="solCalibrationNote">Siste solslutt kalibreres etter observasjonen ca. kl. 18:55 den 10. september 2026. Dette er en foreløpig tidskorreksjon bare for Solhjørnet, ikke en ny måling av bygningene. Avviket kan variere med årstiden. Klokkeslett vises i norsk tid.</p>
         <div class="sol-sub"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Bygningskart © OpenStreetMap-bidragsytere</a><span id="solBuildingDate"></span></div>
       </div>
     </details>
@@ -3076,6 +3077,12 @@ function drawPanorama(d) {
 //  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
 // ════════════════════════════════════════════════════════
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
+const SOL_OBSERVED_END = Object.freeze({
+  lat: 59.93413, lng: 10.76767, eye: 1.7,
+  day: Date.parse('2026-09-10T00:00:00Z'),
+  at: Date.parse('2026-09-10T18:55:00+02:00'),
+});
+let solCalibration = null;
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 let solProfilePromise = null, solProfileError = null, solProfileSourceDate = '';
 let solLoadingText = 'Henter bygningskartet …', solTargetDay = '', solTargetCheckedAt = 0;
@@ -3089,6 +3096,12 @@ const SOL_CALENDAR_FORMAT = new Intl.DateTimeFormat('en-CA', {
 });
 const SOL_DATE_LABEL = new Intl.DateTimeFormat('nb-NO', {
   timeZone: 'Europe/Oslo', day: 'numeric', month: 'long',
+});
+const SOL_TIME_LABEL = new Intl.DateTimeFormat('nb-NO', {
+  timeZone: 'Europe/Oslo', hour: '2-digit', minute: '2-digit',
+});
+const SOL_MIDNIGHT_HOUR = new Intl.DateTimeFormat('en-GB', {
+  timeZone: 'Europe/Oslo', hour: '2-digit', hourCycle: 'h23',
 });
 
 const SOL_QUIZ = [
@@ -3239,15 +3252,46 @@ function solUpdateDaily(nowMs = Date.now(), reset = false) {
   solShuffleQuiz();
 }
 
+function solDayStart(utcDay) {
+  // Ved midnatt UTC er Oslo kl. 01 eller 02, også på datoene sommertiden skifter.
+  return utcDay - Number(SOL_MIDNIGHT_HOUR.format(utcDay)) * 3600000;
+}
+
+function solCalibrateProfile(profile) {
+  const observation = SOL_OBSERVED_END;
+  if (profile.lat !== observation.lat || profile.lng !== observation.lng || profile.eye !== observation.eye) {
+    throw new Error('calibration-point-mismatch');
+  }
+  const reference = computeSunWindows(solDayStart(observation.day), profile.lat, profile.lng, profile);
+  if (reference.last === null) throw new Error('calibration-reference-missing');
+  // En modell som allerede slutter tidligere, skal ikke få lagt til sol.
+  return { offsetMs: Math.max(0, reference.last - observation.at) };
+}
+
+function solApplyCalibration(result, utcDay) {
+  if (!solCalibration || solCalibration.offsetMs === 0 || utcDay < SOL_OBSERVED_END.day || result.last === null) return result;
+  const endAt = result.last - solCalibration.offsetMs;
+  // Juster bare siste solslutt. Starttidene og den lagrede horisonten er urørt.
+  const windows = result.windows.map(([start, end]) => [
+    start, Math.min(end, endAt),
+  ]).filter(([start, end]) => end > start);
+  return {
+    ...result, windows, shown: windows.filter(([start, end]) => end - start >= 60000),
+    total: windows.reduce((total, [start, end]) => total + end - start, 0),
+    first: windows.length ? windows[0][0] : null,
+    last: windows.length ? windows[windows.length - 1][1] : null,
+    calibratedEnd: endAt,
+  };
+}
+
 /** Finn om sola er på Solhjørnet nå, ellers når den kommer neste gang. */
 function solComputeTarget(nowMs) {
   if (!solProfile) return null;
   const { lat, lng } = HZ_HOME_DEFAULT;
-  const n = new Date(nowMs);
+  const today = Date.parse(solCalendarDay(nowMs).key + 'T00:00:00Z');
   for (let i = 0; i < 200; i++) {
-    // Bygg hver dag lokalt, så sommertidsskifter ikke forskyver døgnet.
-    const day = new Date(n.getFullYear(), n.getMonth(), n.getDate() + i);
-    const r = computeSunWindows(day.getTime(), lat, lng, solProfile);
+    const day = today + i * 86400000;
+    const r = solApplyCalibration(computeSunWindows(solDayStart(day), lat, lng, solProfile), day);
     for (const w of r.shown) {
       if (nowMs < w[0]) return { kind: 'until', at: w[0], win: w, dayOffset: i, day: r };
       if (nowMs < w[1]) return { kind: 'left',  at: w[1], win: w, dayOffset: i, day: r };
@@ -3265,10 +3309,8 @@ function solFmtCountdown(ms) {
   return `${two(h)}:${two(m)}:${two(sec)}`;
 }
 
-const SOL_DAYS = ['søndag', 'mandag', 'tirsdag', 'onsdag', 'torsdag', 'fredag', 'lørdag'];
-
 function solCurrentTarget(now) {
-  const day = new Date(now).toDateString();
+  const day = solCalendarDay(now).key;
   if (day !== solTargetDay || now < solTargetCheckedAt || (solTarget && now >= solTarget.at)) {
     solTarget = solComputeTarget(now);
     solTargetDay = day;
@@ -3303,7 +3345,8 @@ function solRenderHero(now = Date.now()) {
     } else if (target.kind === 'left') {
       state = 'sun'; icon = '☀️';
       message = 'Sola er her! Vin eller utepils?';
-      time = `Sol i ${solHeroDuration(target.at - now)} · til ${fmtTimeHM(new Date(target.at))}`;
+      const approximate = target.at === target.day.calibratedEnd ? 'ca. ' : '';
+      time = `Sol i ${solHeroDuration(target.at - now)} · til ${approximate}${SOL_TIME_LABEL.format(target.at)}`;
       fraction = (target.at - now) / (target.win[1] - target.win[0]);
     } else {
       state = 'waiting'; icon = '⛱️';
@@ -3312,8 +3355,8 @@ function solRenderHero(now = Date.now()) {
         : 'Sola lar vente på seg. Sett drikken kaldt!';
       const when = target.dayOffset === 0 ? ''
         : target.dayOffset === 1 ? 'i morgen '
-        : new Date(target.at).toLocaleDateString('nb-NO', { day: 'numeric', month: 'short' }) + ' ';
-      time = `Sol om ${solHeroDuration(target.at - now)} · ${when}${fmtTimeHM(new Date(target.at))}`;
+        : SOL_DATE_LABEL.format(target.at) + ' ';
+      time = `Sol om ${solHeroDuration(target.at - now)} · ${when}${SOL_TIME_LABEL.format(target.at)}`;
       // Ventelinjen viser bare de siste 24 timene, ikke en vilkårlig tid siden sidebesøket.
       fraction = 1 - (target.at - now) / 86400000;
     }
@@ -3335,22 +3378,24 @@ function solRender(now = Date.now()) {
     solEl('solSub').textContent = '';
     return;
   }
-  const hhmm = ms => new Date(ms).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+  const hhmm = ms => SOL_TIME_LABEL.format(ms);
   solEl('solCount').classList.toggle('is-long', t.at - now >= 86400000);
   solEl('solCount').textContent = solFmtCountdown(t.at - now);
 
   if (t.kind === 'left') {
     solEl('solState').textContent = '☀️ Sola er her nå';
-    solEl('solNote').textContent = `Sol i hjørnet til ${hhmm(t.win[1])}`;
+    const approximate = t.win[1] === t.day.calibratedEnd ? 'ca. ' : '';
+    solEl('solNote').textContent = `Sol i hjørnet til ${approximate}${hhmm(t.win[1])}`;
   } else {
     solEl('solState').textContent = t.dayOffset === 0 ? 'Sola kommer' : 'Neste sol';
     const when = t.dayOffset === 0 ? ''
-      : t.dayOffset === 1 ? 'i morgen ' : SOL_DAYS[new Date(t.win[0]).getDay()] + ' ';
-    solEl('solNote').textContent = `Sol ${when}${hhmm(t.win[0])} – ${hhmm(t.win[1])}`;
+      : t.dayOffset === 1 ? 'i morgen ' : SOL_DATE_LABEL.format(t.win[0]) + ' ';
+    const approximate = t.win[1] === t.day.calibratedEnd ? 'ca. ' : '';
+    solEl('solNote').textContent = `Sol ${when}${hhmm(t.win[0])} – ${approximate}${hhmm(t.win[1])}`;
   }
   const tot = t.day.total;
   solEl('solSub').textContent = tot > 0
-    ? `${t.dayOffset === 0 ? 'I dag' : 'Den dagen'}: ${fmtHMS(tot)} direkte sol`
+    ? `${t.dayOffset === 0 ? 'I dag' : 'Den dagen'}: ${fmtHMS(tot)} direkte sol${t.day.calibratedEnd ? ' · kalibrert sluttid' : ''}`
     : '';
 }
 
@@ -3391,6 +3436,7 @@ function solEnsureProfile() {
       }, mask);
       hzSaveCached(profile);
     }
+    solCalibration = solCalibrateProfile(profile);
     solProfile = profile;
     solTargetDay = '';
     return profile;
@@ -3465,6 +3511,8 @@ async function enterSolMode() {
       ? 'Bygningskartet mangler. Last siden på nytt og prøv igjen.'
       : error.message === 'building-mask-coverage'
         ? 'Bygningskartet må oppdateres for Solhjørnets posisjon.'
+        : error.message === 'calibration-reference-missing' || error.message === 'calibration-point-mismatch'
+          ? 'Kan ikke kalibrere soltidene med dette høydegrunnlaget. Prøv å laste siden på nytt.'
         : error.message === 'no-coverage'
           ? 'Mangler nødvendige terreng- eller bygningshøyder. Prøv igjen senere.'
           : 'Sjekk nettforbindelsen og prøv igjen.';

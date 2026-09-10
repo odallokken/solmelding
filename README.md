@@ -148,6 +148,23 @@ blå kort og gullfargede detaljer:
 - **Nedtelling** – står sola på hjørnet nå, telles det ned til den forsvinner. Ellers
   telles det ned til neste gang sola treffer, og appen søker framover dag for dag
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
+- **Kalibrert solslutt** – en bruker på stedet oppga at sola forsvant ca.
+  **18:55 den 10. september 2026**, norsk tid (UTC+02:00). Forskjellen fra
+  modellens siste solslutt på referansedagen brukes til å justere siste solslutt
+  også på senere datoer, **bare i Solhjørnet**. Den registrerte modellkjøringen ga
+  19:12:51, altså en foreløpig korreksjon på omtrent 18 minutter tidligere.
+  Avviket beregnes på nytt fra referansedagen når en annen høydeprofil lastes,
+  slik at korreksjonen ikke legges oppå seg selv eller en ny modell.
+  Solstartene flyttes ikke. Solperioder som blir helt avkortet, fjernes.
+  Hvis modellen allerede slutter tidligere på referansedagen, legges det
+  ikke til sol; da brukes modellens tider uten ekstra tidskorreksjon.
+  Knappen, nedtellingen og dagens sum bruker de samme kalibrerte soltidene.
+  Sluttiden merkes «ca.», og både datoer og klokkeslett følger norsk tid.
+  Kalibreringen er knyttet til det faste punktet og 1,7 m høyde; den endrer
+  ikke selve høydeprofilen, historiske datoer før observasjonen, det vanlige
+  kartet, 3D-visningen eller andre lokasjoner. Dette er en enkel, foreløpig
+  tidskorreksjon fra én observasjon, ikke en måling av hvilket hinder som
+  skjuler sola. Avviket kan endre seg med årstiden.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
   ned fra Kartverket med en framdriftsvisning på knappen og i åpen fullskjermvisning. Solhjørnets profil har en egen,
   versjonert lagernøkkel og kan ikke blandes med profiler som inkluderer trær.
