@@ -28,8 +28,16 @@ lenge før den «egentlig» går ned.
 
 Denne funksjonen regner ut når sola faktisk treffer *ett bestemt punkt*:
 
-1. Sett pinnen der du bor i kartet, og still inn hvor høyt over bakken du er
-   (gateplan, 2. etasje, takterrasse …).
+1. Slå på **Terreng + bygninger** og tillat posisjon i nettleseren. Kartet flytter
+   pinnen til enhetens posisjon, også når et tidligere åpent kart gjenåpnes ved
+   lasting av siden. Oppgitt posisjonsnøyaktighet vises under kartet; finjuster
+   pinnen med et trykk og still inn høyden over bakken (gateplan, 2. etasje,
+   takterrasse …). **Min posisjon i kartet** henter posisjonen på nytt.
+   Uten posisjonstilgang beholdes kartpinnen, og du kan velge punktet manuelt.
+   Panorering, zooming eller et manuelt trykk avbryter en ventende automatisk
+   plassering, slik at et sent posisjonssvar ikke overstyrer valget ditt.
+   Kartet kan zoomes ut til landsoversikt med **−**, og inn igjen med **+** eller
+   musehjulet (zoomnivå 3–18).
 2. Appen henter ca. 8 500 høydepunkter fra Kartverket og bygger en horisontprofil –
    én synsvinkel for hver av de 360 kompassretningene.
    - **Nærsonen (2–600 m)** hentes fra **DOM1**, Kartverkets digitale *overflatemodell*

@@ -462,18 +462,20 @@
     </div>
     <div id="hzBody" class="hidden">
       <p class="hz-help">
-        Klikk i kartet for å sette punktet. Horisonten regnes ut fra Kartverkets 1-meters
+        Kartet bruker enhetens posisjon hvis du tillater det. Klikk i kartet for å finjustere
+        punktet, og bruk − for å zoome ut. Horisonten regnes ut fra Kartverkets 1-meters
         overflatemodell – terreng, bygninger og trær inkludert.
       </p>
       <div class="map-wrap">
         <canvas id="hzMap" width="640" height="380"></canvas>
         <div class="map-zoom">
-          <button type="button" onclick="hzZoom(1)" title="Zoom inn">+</button>
-          <button type="button" onclick="hzZoom(-1)" title="Zoom ut">−</button>
+          <button type="button" id="hzZoomIn" onclick="hzZoom(1)" title="Zoom inn" aria-label="Zoom inn">+</button>
+          <button type="button" id="hzZoomOut" onclick="hzZoom(-1)" title="Zoom ut" aria-label="Zoom ut">−</button>
         </div>
         <div class="map-attr">© Kartverket</div>
       </div>
       <div class="hz-coords" id="hzCoords">–</div>
+      <div class="hz-coords" id="hzLocationStatus" role="status" aria-live="polite"></div>
       <div class="hz-slider-row">
         <label>
           <span>👁 Høyde over bakken</span>
@@ -483,6 +485,7 @@
       </div>
       <div class="btn-row">
         <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
+        <button class="btn-secondary" id="hzLocateBtn" onclick="hzLocate()">📡 Min posisjon i kartet</button>
       </div>
       <div class="hz-progress hidden" id="hzProgress">
         <div class="bar"><i id="hzBar"></i></div>
@@ -958,6 +961,8 @@ window.addEventListener('DOMContentLoaded', () => {
   if (hzS) {
     if (hzS.pin) hzPin = { ...hzS.pin };
     if (typeof hzS.eye === 'number') hzEye = hzS.eye;
+  } else if (coords) {
+    hzPin = { lat: coords.lat, lng: coords.lng };
   }
   hzMap.center = { ...hzPin };
   document.getElementById('hzEye').value = hzEye;
@@ -975,11 +980,16 @@ window.addEventListener('DOMContentLoaded', () => {
       hzMap.draw();
       hzUpdateCoordUI();
       if (hzIsFresh()) hzCheckPlacement();
+      hzLocate();
+    } else {
+      hzCancelLocation();
+      hzRunRequest++;
     }
     if (coords) updateSolarData();
   });
   document.getElementById('hzEye').addEventListener('input', e => {
     hzEye = parseFloat(e.target.value);
+    hzRunRequest++;
     hzUpdateEyeUI();
   });
   document.getElementById('hzEye').addEventListener('change', () => {
@@ -997,6 +1007,7 @@ window.addEventListener('DOMContentLoaded', () => {
     hzMap.init();
     hzMap.draw();
     if (hzIsFresh()) hzCheckPlacement();
+    hzLocate();
     if (coords) updateSolarData();
   }
 });
@@ -1061,21 +1072,26 @@ async function geocode(q) {
   return { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon), name: data[0].display_name.split(',')[0].trim() };
 }
 
-async function getCurrentPosition() {
+function getDevicePosition() {
   return new Promise((res, rej) => {
     if (!navigator.geolocation) { rej(new Error('no geo')); return; }
-    navigator.geolocation.getCurrentPosition(async pos => {
-      const { latitude: lat, longitude: lng } = pos.coords;
-      let name = 'Din posisjon';
-      try {
-        const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=no`;
-        const r = await fetch(url, { headers: { 'User-Agent': 'Solmeldinger/2.0' } });
-        const d = await r.json();
-        name = d.address?.city || d.address?.town || d.address?.village || d.address?.county || 'Din posisjon';
-      } catch {}
-      res({ lat, lng, name });
-    }, rej, { timeout: 10000 });
+    navigator.geolocation.getCurrentPosition(res, rej, {
+      enableHighAccuracy: true, timeout: 10000, maximumAge: 0,
+    });
   });
+}
+
+async function getCurrentPosition() {
+  const pos = await getDevicePosition();
+  const { latitude: lat, longitude: lng } = pos.coords;
+  let name = 'Din posisjon';
+  try {
+    const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lng}&format=json&accept-language=no`;
+    const r = await fetch(url, { headers: { 'User-Agent': 'Solmeldinger/2.0' } });
+    const d = await r.json();
+    name = d.address?.city || d.address?.town || d.address?.village || d.address?.county || 'Din posisjon';
+  } catch {}
+  return { lat, lng, name };
 }
 
 // ════════════════════════════════════════════════════════
@@ -1299,7 +1315,9 @@ function updateSolarData() {
 
   // Direkte sol på stedet – kun når horisontprofilen gjelder gjeldende punkt
   hzSunResult = null;
-  if (hzEnabled() && hzIsFresh()) {
+  if (hzEnabled() && hzIsFresh()
+      && Math.abs(coords.lat - hzProfile.lat) < 1e-6
+      && Math.abs(coords.lng - hzProfile.lng) < 1e-6) {
     const startMs = new Date(year, month - 1, day).getTime();
     const real = computeSunWindows(startMs, coords.lat, coords.lng, hzProfile);
     const flat = computeSunWindows(startMs, coords.lat, coords.lng, null);
@@ -2127,6 +2145,8 @@ let hzProfile   = null;   // ferdig beregnet profil
 let hzSunResult = null;   // solvinduer for valgt dato
 let hzPin       = { ...HZ_HOME_DEFAULT };
 let hzEye       = 1.7;
+let hzLocationRequest = 0, hzLocating = false;
+let hzRunRequest = 0, hzBuilding = false;
 
 const hzCacheKey = (lat, lng, eye) =>
   `solmelding_hz_v1_${lat.toFixed(5)}_${lng.toFixed(5)}_${eye.toFixed(1)}`;
@@ -2205,6 +2225,66 @@ function hzSetWarn(html) {
   el.innerHTML = html; el.classList.remove('hidden');
 }
 
+function hzUpdateButtons() {
+  document.getElementById('hzLocateBtn').disabled = hzLocating;
+  document.getElementById('hzRunBtn').disabled = hzLocating || hzBuilding;
+}
+
+function hzCancelLocation() {
+  if (!hzLocating) return;
+  hzLocationRequest++;
+  hzLocating = false;
+  document.getElementById('hzLocationStatus').textContent = '';
+  hzUpdateButtons();
+}
+
+function hzSetPin(pin, recenter = false) {
+  hzRunRequest++;
+  hzPin = { lat: +pin.lat.toFixed(6), lng: +pin.lng.toFixed(6) };
+  hzProfile = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  hzSunResult = null;
+  if (recenter) {
+    hzMap.center = { ...hzPin };
+    hzMap.zoom = 18;
+  }
+  hzSaveSettings();
+  hzUpdateCoordUI();
+  if (hzIsFresh()) hzCheckPlacement();
+  else hzSetWarn('ℹ️ Punktet er flyttet. Trykk «Beregn horisont her» for å oppdatere tallene.');
+  hzMap.draw();
+  if (coords) updateSolarData();
+}
+
+async function hzLocate() {
+  const request = ++hzLocationRequest;
+  const status = document.getElementById('hzLocationStatus');
+  hzLocating = true;
+  hzUpdateButtons();
+  status.textContent = 'Finner enhetens posisjon … Tillat posisjon hvis nettleseren spør.';
+  try {
+    const position = await getDevicePosition();
+    if (request !== hzLocationRequest || !hzEnabled()) return;
+    const { latitude: lat, longitude: lng, accuracy } = position.coords;
+    hzSetPin({ lat, lng }, true);
+    status.textContent = `Enhetens posisjon · oppgitt nøyaktighet ca. ${Math.ceil(accuracy)} m.`
+      + ' Finjuster pinnen ved behov; posisjonen kan være unøyaktig, særlig innendørs.';
+  } catch (error) {
+    if (request !== hzLocationRequest || !hzEnabled()) return;
+    console.warn('Kunne ikke finne enhetens posisjon for kartet:', error);
+    status.textContent = (error.code === 1
+      ? 'Posisjonstilgang er avslått. Tillat posisjon i nettleseren for å bruke enhetens plassering.'
+      : error.code === 3
+        ? 'Det tok for lang tid å finne posisjonen. Prøv «Min posisjon i kartet» igjen.'
+        : 'Kunne ikke hente enhetens posisjon. Prøv «Min posisjon i kartet» igjen.')
+      + ' Kartpinnen er ikke flyttet. Du kan velge punktet manuelt.';
+  } finally {
+    if (request === hzLocationRequest) {
+      hzLocating = false;
+      hzUpdateButtons();
+    }
+  }
+}
+
 /** Omtrentlig avstand i meter mellom to koordinater. */
 function hzMetersBetween(aLat, aLng, bLat, bLng) {
   const dLat = (bLat - aLat) * D2R, dLng = (bLng - aLng) * D2R;
@@ -2218,44 +2298,53 @@ function hzAtHome(pin) {
 }
 
 async function runHorizon() {
-  const btn = document.getElementById('hzRunBtn');
+  hzCancelLocation();
+  const request = ++hzRunRequest;
+  const pin = { ...hzPin }, eye = hzEye;
   const prog = document.getElementById('hzProgress');
   const bar = document.getElementById('hzBar');
   const txt = document.getElementById('hzProgTxt');
-  btn.disabled = true;
+  hzBuilding = true;
+  hzUpdateButtons();
   hzSetWarn('');
 
-  const cached = hzLoadCached(hzPin.lat, hzPin.lng, hzEye);
+  const cached = hzLoadCached(pin.lat, pin.lng, eye);
   try {
+    let profile;
     if (cached) {
-      hzProfile = cached;
+      profile = cached;
     } else {
       prog.classList.remove('hidden');
       txt.textContent = 'Leser høydedata fra Kartverket …';
-      hzProfile = await buildHorizonProfile(hzPin.lat, hzPin.lng, hzEye, (done, total) => {
+      profile = await buildHorizonProfile(pin.lat, pin.lng, eye, (done, total) => {
+        if (request !== hzRunRequest) return;
         const pct = Math.min(100, done / total * 100);
         bar.style.width = pct.toFixed(1) + '%';
         txt.textContent = `Leser høydedata fra Kartverket … ${Math.round(pct)} %`;
       });
-      hzSaveCached(hzProfile);
+      hzSaveCached(profile);
     }
+    if (request !== hzRunRequest || !hzEnabled()) return;
     prog.classList.add('hidden');
     bar.style.width = '0%';
 
-    coords = { lat: hzPin.lat, lng: hzPin.lng, name: coords ? coords.name : 'Min posisjon' };
-    if (hzAtHome(hzPin)) {
-      coords.name = HZ_HOME_DEFAULT.name;
+    const location = { ...pin, name: 'Valgt kartpunkt' };
+    if (hzAtHome(pin)) {
+      location.name = HZ_HOME_DEFAULT.name;
     } else {
       try {
-        const url = `https://nominatim.openstreetmap.org/reverse?lat=${hzPin.lat}&lon=${hzPin.lng}`
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${pin.lat}&lon=${pin.lng}`
                   + `&format=json&zoom=18&accept-language=no`;
         const d = await (await fetch(url)).json();
         const a = d.address || {};
         const name = [a.road && (a.road + (a.house_number ? ' ' + a.house_number : '')), a.suburb || a.city]
           .filter(Boolean).join(', ');
-        if (name) coords.name = name;
+        if (name) location.name = name;
       } catch {}
     }
+    if (request !== hzRunRequest || !hzEnabled()) return;
+    hzProfile = profile;
+    coords = location;
     document.getElementById('locationInput').value = coords.name;
     saveLocation(coords);
     hzSaveSettings();
@@ -2263,13 +2352,16 @@ async function runHorizon() {
     hzCheckPlacement();
     updateSolarData();
   } catch (e) {
-    prog.classList.add('hidden');
+    if (request !== hzRunRequest || !hzEnabled()) return;
     hzProfile = null;
     hzSetWarn(e && e.message === 'no-coverage'
       ? '❌ Fant ingen høydedata her. Kartverkets modell dekker bare Norge – prøv et punkt på land i Norge.'
       : '❌ Fikk ikke kontakt med Kartverkets høydetjeneste. Sjekk nettforbindelsen og prøv igjen.');
   } finally {
-    btn.disabled = false;
+    prog.classList.add('hidden');
+    bar.style.width = '0%';
+    hzBuilding = false;
+    hzUpdateButtons();
   }
 }
 
@@ -2288,6 +2380,8 @@ function hzCheckPlacement() {
 // ── Kartvelger (Kartverkets flisetjeneste, ingen bibliotek) ──
 const hzMap = {
   zoom: 18,
+  minZoom: 3,
+  maxZoom: 18,
   center: { ...HZ_HOME_DEFAULT },
   tiles: new Map(),
   drag: null,
@@ -2295,7 +2389,7 @@ const hzMap = {
 
   world(lat, lng, z) {
     const n = 256 * Math.pow(2, z);
-    const s = Math.min(0.9999, Math.max(-0.9999, Math.sin(lat * D2R)));
+    const s = Math.sin(Math.max(-85.05112878, Math.min(85.05112878, lat)) * D2R);
     return {
       x: (lng + 180) / 360 * n,
       y: (0.5 - Math.log((1 + s) / (1 - s)) / (4 * Math.PI)) * n,
@@ -2304,8 +2398,8 @@ const hzMap = {
   unworld(x, y, z) {
     const n = 256 * Math.pow(2, z);
     return {
-      lat: Math.atan(Math.sinh(Math.PI * (1 - 2 * y / n))) / D2R,
-      lng: x / n * 360 - 180,
+      lat: Math.atan(Math.sinh(Math.PI * (1 - 2 * Math.max(0, Math.min(n, y)) / n))) / D2R,
+      lng: ((x % n) + n) % n / n * 360 - 180,
     };
   },
   tile(z, x, y) {
@@ -2335,6 +2429,8 @@ const hzMap = {
   },
 
   draw() {
+    document.getElementById('hzZoomIn').disabled = this.zoom >= this.maxZoom;
+    document.getElementById('hzZoomOut').disabled = this.zoom <= this.minZoom;
     const cv = document.getElementById('hzMap');
     if (!cv || cv.offsetParent === null) return;
     this.resize();
@@ -2385,6 +2481,7 @@ const hzMap = {
       return { x: e.clientX - r.left, y: e.clientY - r.top };
     };
     cv.addEventListener('pointerdown', e => {
+      hzCancelLocation();
       cv.setPointerCapture(e.pointerId);
       this.drag = at(e); this.moved = 0;
     });
@@ -2404,19 +2501,18 @@ const hzMap = {
       const p = at(e);
       const c = this.world(this.center.lat, this.center.lng, this.zoom);
       const ll = this.unworld(c.x - cv.clientWidth / 2 + p.x, c.y - cv.clientHeight / 2 + p.y, this.zoom);
-      hzPin = { lat: +ll.lat.toFixed(6), lng: +ll.lng.toFixed(6) };
-      hzSaveSettings();
-      hzUpdateCoordUI();
-      hzSetWarn('ℹ️ Punktet er flyttet. Trykk «Beregn horisont her» for å oppdatere tallene.');
-      this.draw();
+      document.getElementById('hzLocationStatus').textContent = '';
+      hzSetPin(ll);
     });
+    cv.addEventListener('pointercancel', () => { this.drag = null; });
     cv.addEventListener('wheel', e => { e.preventDefault(); hzZoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
     window.addEventListener('resize', () => this.draw());
   },
 };
 
 function hzZoom(delta) {
-  hzMap.zoom = Math.max(12, Math.min(19, hzMap.zoom + delta));
+  hzCancelLocation();
+  hzMap.zoom = Math.max(hzMap.minZoom, Math.min(hzMap.maxZoom, hzMap.zoom + delta));
   hzMap.draw();
 }
 
