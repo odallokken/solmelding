@@ -20,6 +20,23 @@ En enkel webapp som viser solstatistikk for valgfritt sted og dato i Norge.
 - Husker **siste posisjon** (localStorage)
 - Grunnberegningene kjører **offline** (NOAA-algoritme). Bare kartet og horisontberegningen trenger nett.
 
+## Forsiden på mobil
+
+Velg **sted og dato**, og trykk **Vis solmelding** eller **Min posisjon**.
+Datopilene bytter én dag om gangen; **I dag** går tilbake til dagens dato.
+Hovedkortet samler dagslys, soloppgang og solnedgang for valgt sted og dato.
+Disse tidene gjelder uten lokale hindringer, i nettleserens tidssone.
+
+- **Mer om dagen** åpner detaljstatistikk, demring, skumring og merkedager.
+- **Nøyaktig sol der du bor** åpner kartet og høydeinnstillingene. Når beregningen
+  er klar, vises direkte sol i et eget kort. **Se de beregnede soltidene** går
+  direkte til resultatet; horisontgrafen og 3D kan åpnes ved behov.
+- **Del solmeldingen** åpner nedlasting av mobilbildet.
+
+Feltene starter lukket, også når terrengberegning er aktiv fra forrige besøk.
+Å lukke kartfeltet slår ikke av beregningen eller endrer kartpinnen. Tastaturet
+kan åpne og lukke feltene med Enter eller mellomrom, og fokus er tydelig markert.
+
 ## 🏙️ Nøyaktig sol der du bor
 
 Vanlige soloppgangstider later som om du står på ei endeløs slette. Bor du i en bygate
@@ -28,7 +45,7 @@ lenge før den «egentlig» går ned.
 
 Denne funksjonen regner ut når sola faktisk treffer *ett bestemt punkt*:
 
-1. Slå på **Terreng + bygninger** og tillat posisjon i nettleseren. Kartet flytter
+1. Åpne **Nøyaktig sol der du bor**, slå på **Terreng + bygninger** og tillat posisjon i nettleseren. Kartet flytter
    pinnen til enhetens posisjon, også når et tidligere åpent kart gjenåpnes ved
    lasting av siden. Oppgitt posisjonsnøyaktighet vises under kartet; finjuster
    pinnen med et trykk og still inn høyden over bakken (gateplan, 2. etasje,

@@ -271,6 +271,80 @@
     footer a { color: #9ab8d0; }
     .footer-ig { white-space: nowrap; font-weight: 800; color: #c8dff0; font-size: .78rem; }
 
+    /* ── Forside: det viktigste først, detaljer ved behov ── */
+    #app > header { display: flex; align-items: center; gap: 12px; text-align: left; padding: 8px 0 20px; }
+    #app > header .sun-face-wrap { flex-shrink: 0; margin: 0; }
+    #sunFaceCanvas { width: 56px; height: 56px; }
+    #app > header h1 { font-size: clamp(1.35rem, 5.5vw, 1.9rem); }
+    #app > header p { font-size: .8rem; line-height: 1.4; }
+    #frontPage { --muted: #9ab8d0; }
+    #frontPage button, #frontPage input, #frontPage summary { font-family: inherit; }
+    #frontPage button, #frontPage input:not([type="checkbox"]), #frontPage summary { min-height: 44px; }
+    #frontPage :is(button, input, summary, a, [tabindex]):focus-visible {
+      outline: 3px solid var(--accent); outline-offset: 3px;
+    }
+    #frontPage button:disabled { opacity: .55; cursor: wait; transform: none; }
+    #frontPage .input-panel { padding: 16px; overflow: visible; }
+    #frontPage .input-row { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; align-items: end; }
+    #frontPage .input-group { min-width: 0; }
+    #frontPage input[type="date"], #frontPage input[type="text"] { min-width: 0; font-size: 16px; }
+    .date-controls { display: flex; gap: 6px; align-items: center; }
+    .date-controls input { flex: 1; width: 0; }
+    .date-label { display: flex; justify-content: space-between; align-items: center; margin: -11px 0 -5px; }
+    #frontPage .date-step { flex-shrink: 0; width: 44px; padding: 0; font-size: 1.2rem; }
+    #frontPage .date-today { padding: 8px 10px; font-size: .8rem; }
+    #frontPage .location-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+    #frontPage .location-actions button { padding: 10px 8px; }
+    #frontPage .status-msg { min-height: 0; text-align: left; line-height: 1.5; padding: 0 2px 14px; }
+    #frontPage .status-msg:empty { display: none; }
+    .daylight-summary { padding: 20px; margin-bottom: 14px; }
+    .summary-context { color: var(--muted); font-size: .8rem; line-height: 1.5; overflow-wrap: anywhere; }
+    .summary-heading { font-size: .85rem; font-weight: 600; margin: 16px 0 6px; }
+    #frontPage .daylight-summary .card-value { font-size: clamp(2.2rem, 10vw, 3rem); font-variant-numeric: tabular-nums; }
+    .summary-unit { margin-top: 5px; font-size: .72rem; color: var(--muted); }
+    .summary-times { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0 14px; }
+    .summary-times .time-block { text-align: left; }
+    .summary-times .val { font-size: 1.5rem; font-variant-numeric: tabular-nums; }
+    .summary-times .lbl { font-size: .72rem; }
+    .summary-note { color: var(--muted); font-size: .72rem; line-height: 1.5; margin-top: 12px; }
+    #frontPage .front-disclosure {
+      background: var(--card); border: 1px solid var(--cborder); border-radius: 14px;
+      padding: 0; margin-bottom: 12px; min-width: 0;
+    }
+    .front-disclosure > summary {
+      cursor: pointer; padding: 16px; color: var(--text); font-size: .9rem; font-weight: 650;
+      list-style-position: inside; line-height: 1.4;
+    }
+    .front-disclosure > summary::marker { color: var(--accent); font-size: .8rem; }
+    .disclosure-hint { display: block; font-size: .75rem; font-weight: 400; color: var(--muted); margin: 4px 0 0 18px; }
+    .disclosure-body { padding: 0 16px 16px; }
+    #frontPage .front-disclosure .card { background: var(--bg); }
+    #frontPage .results-grid { grid-template-columns: minmax(0, 1fr); }
+    #frontPage .card-sub { line-height: 1.5; }
+    #frontPage .accuracy-note { opacity: 1; justify-content: flex-start; text-align: left; line-height: 1.5; margin: 12px 0 0; }
+    #frontPage .hz-switch { min-height: 44px; color: var(--text); }
+    #frontPage .hz-switch input { width: 20px; height: 20px; }
+    #frontPage .hz-help { font-size: .8rem; }
+    #frontPage .hz-coords { line-height: 1.5; overflow-wrap: anywhere; }
+    #frontPage .map-zoom button { width: 44px; height: 44px; }
+    #frontPage #hzBody > .btn-row { flex-direction: column; }
+    #frontPage .hz-slider-row label { flex-wrap: wrap; line-height: 1.5; }
+    #frontPage .hz-scene { overflow: visible; }
+    #frontPage .hz-scene summary { display: list-item; padding: 10px 0; }
+    #precisionResultsLink { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent); font-size: .85rem; margin-top: 8px; }
+    @media (min-width: 600px) {
+      #frontPage .input-row { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+      #frontPage .location-actions { grid-template-columns: minmax(0, 1fr) auto; }
+      #frontPage .results-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      #frontPage #hzBody > .btn-row { flex-direction: row; }
+      .daylight-summary { padding: 24px; }
+      .summary-times { margin-top: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      #frontPage *, #frontPage *::before { animation: none !important; transition: none !important; }
+      #frontPage button:hover { transform: none; }
+    }
+
     /* ── Solhjørnet: hero-knapp ── */
     .sol-hero { width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px;
       margin: 0 0 14px; padding: 17px 20px; border: 0; border-radius: 18px; cursor: pointer;
@@ -440,8 +514,10 @@
     <div class="sun-face-wrap">
       <canvas id="sunFaceCanvas" width="160" height="160"></canvas>
     </div>
-    <h1>Arntes solservice</h1>
-    <p>Dagslys, solstatistikk og merkedager i mørketida</p>
+    <div>
+      <h1>Arntes solservice</h1>
+      <p>Soloppgang, solnedgang og dagslys der du er</p>
+    </div>
   </header>
 
   <button class="sol-hero" onclick="enterSolMode()">
@@ -449,92 +525,70 @@
     <span>Solhjørnet<small>Sol i hjørnet – akkurat nå</small></span>
   </button>
 
-  <!-- Input -->
-  <div class="input-panel">
+  <main id="frontPage">
+  <section class="input-panel" aria-label="Velg sted og dato">
     <div class="input-row">
       <div class="input-group">
-        <label>📅 Dato</label>
-        <input type="date" id="dateInput">
+        <label for="locationInput">Sted</label>
+        <input type="text" id="locationInput" placeholder="Skriv et sted, f.eks. Oslo" autocomplete="off" enterkeyhint="go">
       </div>
       <div class="input-group">
-        <label>📍 Sted</label>
-        <input type="text" id="locationInput" placeholder="f.eks. Oslo, Bergen, Tromsø …">
-      </div>
-    </div>
-    <div class="btn-row">
-      <button class="btn-primary" onclick="handleCalculate()"><span style="font-size:1.2em">☀️</span> Solmelding</button>
-      <button class="btn-secondary" onclick="handleCurrentLocation()" title="Bruk min posisjon">📡 Min posisjon</button>
-    </div>
-  </div>
-
-  <div class="status-msg" id="statusMsg"></div>
-
-  <!-- Nøyaktig sted: horisont fra terreng + bygninger -->
-  <div class="input-panel">
-    <div class="hz-head">
-      <div class="hz-title">🏙️ Nøyaktig sol der du bor</div>
-      <label class="hz-switch"><input type="checkbox" id="hzEnable"> Terreng + bygninger</label>
-    </div>
-    <div id="hzBody" class="hidden">
-      <p class="hz-help">
-        Kartet bruker enhetens posisjon hvis du tillater det. Klikk i kartet for å finjustere
-        punktet, og bruk − for å zoome ut. Horisonten regnes ut fra Kartverkets 1-meters
-        overflatemodell – terreng, bygninger og trær inkludert.
-      </p>
-      <div class="map-wrap">
-        <canvas id="hzMap" width="640" height="380"></canvas>
-        <div class="map-zoom">
-          <button type="button" id="hzZoomIn" onclick="hzZoom(1)" title="Zoom inn" aria-label="Zoom inn">+</button>
-          <button type="button" id="hzZoomOut" onclick="hzZoom(-1)" title="Zoom ut" aria-label="Zoom ut">−</button>
+        <div class="date-label">
+          <label for="dateInput">Dato</label>
+          <button class="btn-secondary date-today" type="button" onclick="changeFrontDate(0)">I dag</button>
         </div>
-        <div class="map-attr">© Kartverket</div>
+        <div class="date-controls">
+          <button class="btn-secondary date-step" type="button" onclick="changeFrontDate(-1)" aria-label="Forrige dag">‹</button>
+          <input type="date" id="dateInput" required>
+          <button class="btn-secondary date-step" type="button" onclick="changeFrontDate(1)" aria-label="Neste dag">›</button>
+        </div>
       </div>
-      <div class="hz-coords" id="hzCoords">–</div>
-      <div class="hz-coords" id="hzLocationStatus" role="status" aria-live="polite"></div>
-      <div class="hz-slider-row">
-        <label>
-          <span>👁 Høyde over bakken</span>
-          <span><b id="hzEyeVal">1,7 m</b> <span class="hz-floor" id="hzFloor">(bakkeplan)</span></span>
-        </label>
-        <input type="range" id="hzEye" min="0" max="40" step="0.1" value="1.7">
-      </div>
-      <div class="btn-row">
-        <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
-        <button class="btn-secondary" id="hzLocateBtn" onclick="hzLocate()">📡 Min posisjon i kartet</button>
-      </div>
-      <div class="hz-progress hidden" id="hzProgress">
-        <div class="bar"><i id="hzBar"></i></div>
-        <span id="hzProgTxt"></span>
-      </div>
-      <div class="hz-warn hidden" id="hzWarn"></div>
     </div>
-  </div>
+    <div class="btn-row location-actions">
+      <button class="btn-primary" onclick="handleCalculate()">Vis solmelding</button>
+      <button class="btn-secondary" onclick="handleCurrentLocation()" title="Bruk min posisjon">Min posisjon</button>
+    </div>
+  </section>
 
-  <!-- Milestone -->
-  <div id="milestoneBanner" class="hidden"></div>
-  <div id="solvervMilestoneBanner" class="hidden"></div>
-  <div id="varjevndognBanner" class="hidden"></div>
+  <div class="status-msg" id="statusMsg" role="status" aria-live="polite"></div>
 
-  <!-- Results -->
   <div id="mainResults" class="hidden">
-
-    <!-- Sun arc -->
-    <div class="card full-width arc-card" style="margin-bottom:11px">
-      <canvas id="sunArcCanvas" width="660" height="110"></canvas>
-    </div>
+    <section class="card daylight-summary" aria-labelledby="daylightHeading">
+      <div aria-live="polite" aria-atomic="true">
+        <p class="summary-context" id="subDagslys"></p>
+        <h2 class="summary-heading" id="daylightHeading">Dagslys</h2>
+        <div class="card-value orange" id="valDagslys">–</div>
+        <p class="summary-unit">timer · minutter · sekunder</p>
+        <div class="summary-times">
+          <div class="time-block">
+            <div class="lbl">Soloppgang</div>
+            <div class="val rise" id="valSunrise">–</div>
+          </div>
+          <div class="time-block">
+            <div class="lbl">Solnedgang</div>
+            <div class="val set" id="valSunset">–</div>
+          </div>
+        </div>
+      </div>
+      <canvas id="sunArcCanvas" width="660" height="110" role="img" aria-label="Solbane fra soloppgang til solnedgang"></canvas>
+      <p class="summary-note">Uten lokale hindringer · tider i nettleserens tidssone</p>
+    </section>
 
     <!-- Direkte sol på stedet (terreng + bygninger) -->
-    <div id="hzResults" class="hidden">
+    <div id="hzResults" class="hidden" tabindex="-1" aria-label="Direkte sol på valgt sted">
       <div class="card full-width hz-card" style="margin-bottom:11px">
         <div class="card-label"><span>🏙️</span> Direkte sol på stedet (terreng + bygninger)</div>
         <div class="card-value orange" id="hzTotal">–</div>
         <div class="card-sub" id="hzSub"></div>
         <div class="hz-windows" id="hzWindows"></div>
       </div>
-      <div class="card full-width arc-card" style="margin-bottom:11px">
-        <canvas id="hzPano" width="660" height="300"></canvas>
-        <div class="card-sub" id="hzPanoSub" style="padding:6px 6px 2px"></div>
-      </div>
+      <details class="front-disclosure">
+        <summary>Se horisonten<span class="disclosure-hint">Solbane og hindringer rundt punktet</span></summary>
+        <div class="disclosure-body">
+          <canvas id="hzPano" width="660" height="300"></canvas>
+          <div class="card-sub" id="hzPanoSub" style="padding:6px 6px 2px"></div>
+        </div>
+      </details>
       <details class="card full-width hz-scene" id="hzScene">
         <summary>Se omgivelsene og sola i 3D</summary>
         <p class="hz-help" id="hzSceneHelp">
@@ -574,14 +628,13 @@
       </details>
     </div>
 
-    <div class="results-grid">
-
-      <!-- Dagslys -->
-      <div class="card">
-        <div class="card-label"><span>⏱</span> Dagslys i dag (tt:mm:ss)</div>
-        <div class="card-value orange" id="valDagslys">–</div>
-        <div class="card-sub" id="subDagslys"></div>
-      </div>
+    <details class="front-disclosure">
+      <summary>Mer om dagen<span class="disclosure-hint">Endring i dagslys, demring og merkedager</span></summary>
+      <div class="disclosure-body">
+      <div id="milestoneBanner" class="hidden"></div>
+      <div id="solvervMilestoneBanner" class="hidden"></div>
+      <div id="varjevndognBanner" class="hidden"></div>
+      <div class="results-grid">
 
       <!-- Sol siden vintersolverv -->
       <div class="card">
@@ -604,23 +657,13 @@
         <div class="card-sub" id="subTilsvarende"></div>
       </div>
 
-      <!-- Demring · Soloppgang · Solnedgang · Skumring -->
-      <div class="card full-width">
-        <div class="card-label"><span>🌅</span> Soloppgang · Solnedgang</div>
+      <!-- Demring · Skumring -->
+      <div class="card">
+        <div class="card-label"><span>🌅</span> Før og etter sola</div>
         <div class="times-row">
           <div class="time-block">
             <div class="lbl">Demring</div>
             <div class="val dawn" id="valDawn">–</div>
-          </div>
-          <div class="time-divider">·</div>
-          <div class="time-block">
-            <div class="lbl">Soloppgang</div>
-            <div class="val rise" id="valSunrise">–</div>
-          </div>
-          <div class="time-divider">·</div>
-          <div class="time-block">
-            <div class="lbl">Solnedgang</div>
-            <div class="val set" id="valSunset">–</div>
           </div>
           <div class="time-divider">·</div>
           <div class="time-block">
@@ -636,18 +679,62 @@
       <span id="sourceBadge" class="source-badge loading">⏳ Henter data …</span>
       <span>tider i nettleserens tidssone</span>
     </div>
+      </div>
+    </details>
 
   </div><!-- /mainResults -->
 
   <div id="polarMessage" class="hidden"></div>
 
-  <!-- Export -->
-  <div class="export-section hidden" id="exportSection">
-    <h3>Eksporter</h3>
-    <div class="btn-row">
-      <button class="btn-png"    onclick="exportPNG()">📸 mobilbilde (.png)</button>
+  <details class="front-disclosure" id="precisionPanel">
+    <summary>Nøyaktig sol der du bor<span class="disclosure-hint" id="precisionHint">Kart, høyde og skygge fra omgivelsene</span></summary>
+    <div class="disclosure-body">
+      <label class="hz-switch"><input type="checkbox" id="hzEnable" aria-controls="hzBody"> Terreng + bygninger</label>
+      <p class="hz-help" id="precisionIntro">Slå på for å beregne direkte sol ved et bestemt punkt, med bygninger, trær og terreng.</p>
+      <div id="hzBody" class="hidden">
+        <p class="hz-help">
+          Kartet bruker enhetens posisjon hvis du tillater det. Klikk i kartet for å finjustere
+          punktet, og bruk − for å zoome ut. Horisonten regnes ut fra Kartverkets 1-meters
+          overflatemodell – terreng, bygninger og trær inkludert.
+        </p>
+        <div class="map-wrap">
+          <canvas id="hzMap" width="640" height="380"></canvas>
+          <div class="map-zoom">
+            <button type="button" id="hzZoomIn" onclick="hzZoom(1)" title="Zoom inn" aria-label="Zoom inn">+</button>
+            <button type="button" id="hzZoomOut" onclick="hzZoom(-1)" title="Zoom ut" aria-label="Zoom ut">−</button>
+          </div>
+          <div class="map-attr">© Kartverket</div>
+        </div>
+        <div class="hz-coords" id="hzCoords">–</div>
+        <div class="hz-coords" id="hzLocationStatus" role="status" aria-live="polite"></div>
+        <div class="hz-slider-row">
+          <label for="hzEye">
+            <span>👁 Høyde over bakken</span>
+            <span><b id="hzEyeVal">1,7 m</b> <span class="hz-floor" id="hzFloor">(bakkeplan)</span></span>
+          </label>
+          <input type="range" id="hzEye" min="0" max="40" step="0.1" value="1.7">
+        </div>
+        <div class="btn-row">
+          <button class="btn-primary" id="hzRunBtn" onclick="runHorizon()">🏙️ Beregn horisont her</button>
+          <button class="btn-secondary" id="hzLocateBtn" onclick="hzLocate()">📡 Min posisjon i kartet</button>
+        </div>
+        <a class="hidden" id="precisionResultsLink" href="#hzResults">Se de beregnede soltidene ↑</a>
+        <div class="hz-progress hidden" id="hzProgress" role="status" aria-live="polite">
+          <div class="bar"><i id="hzBar"></i></div>
+          <span id="hzProgTxt"></span>
+        </div>
+        <div class="hz-warn hidden" id="hzWarn" role="status" aria-live="polite"></div>
+      </div>
     </div>
-  </div>
+  </details>
+
+  <details class="front-disclosure export-section hidden" id="exportSection">
+    <summary>Del solmeldingen<span class="disclosure-hint">Last ned et bilde til mobil eller Instagram</span></summary>
+    <div class="disclosure-body">
+      <button class="btn-png" onclick="exportPNG()">📸 Last ned mobilbilde (.png)</button>
+    </div>
+  </details>
+  </main>
 
   <footer>
     <span>Data: <a href="https://gml.noaa.gov/grad/solcalc/" target="_blank">NOAA</a> ·
@@ -1009,6 +1096,20 @@ window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('locationInput').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleCalculate();
   });
+  document.getElementById('precisionPanel').addEventListener('toggle', e => {
+    // Et skjult lerret har ingen bredde; tegn på nytt når kartet blir synlig.
+    if (e.target.open && hzEnabled()) hzMap.draw();
+  });
+  const mainResults = document.getElementById('mainResults');
+  const horizonResults = document.getElementById('hzResults');
+  const resultLink = document.getElementById('precisionResultsLink');
+  const syncResultLink = () => resultLink.classList.toggle('hidden',
+    mainResults.classList.contains('hidden') || horizonResults.classList.contains('hidden'));
+  const resultObserver = new MutationObserver(syncResultLink);
+  for (const panel of [mainResults, horizonResults]) {
+    resultObserver.observe(panel, { attributes: true, attributeFilter: ['class'] });
+  }
+  syncResultLink();
 
   // ── Nøyaktig horisont ──
   const hzS = hzLoadSettings();
@@ -1028,6 +1129,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   document.getElementById('hzEnable').addEventListener('change', e => {
     document.getElementById('hzBody').classList.toggle('hidden', !e.target.checked);
+    updatePrecisionHint();
     hzSaveSettings();
     if (e.target.checked) {
       hzMap.init();
@@ -1070,7 +1172,22 @@ window.addEventListener('DOMContentLoaded', () => {
     hzLocate();
     if (coords) updateSolarData();
   }
+  updatePrecisionHint();
 });
+
+function updatePrecisionHint() {
+  document.getElementById('precisionHint').textContent = hzEnabled()
+    ? 'På · åpne kart og høydeinnstillinger'
+    : 'Kart, høyde og skygge fra omgivelsene';
+  document.getElementById('precisionIntro').classList.toggle('hidden', hzEnabled());
+}
+
+function changeFrontDate(step) {
+  const input = document.getElementById('dateInput');
+  if (step === 0 || !input.value) input.value = fmtDateInput(new Date());
+  if (step !== 0) input.stepUp(step);
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}
 
 // ════════════════════════════════════════════════════════
 //  LOCATION
@@ -1300,6 +1417,11 @@ function setSourceBadge(source) {
 // ════════════════════════════════════════════════════════
 function updateSolarData() {
   if (!coords) return;
+  const dateInput = document.getElementById('dateInput');
+  if (!dateInput.value || !dateInput.validity.valid) {
+    showStatus('Velg en gyldig dato for å se solmeldingen.', true);
+    return;
+  }
   clearStatus();
   hzSunResult = null;
   setSourceBadge('noaa');
