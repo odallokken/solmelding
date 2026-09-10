@@ -52,6 +52,43 @@ Denne funksjonen regner ut når sola faktisk treffer *ett bestemt punkt*:
 Resultatet er en liste over soltidsrom, hvor mye direkte sol du får til sammen, og et
 panoramabilde av horisonten sett fra punktet ditt.
 
+### Interaktive omgivelser i 3D
+
+Etter beregningen kan du åpne **Se omgivelsene og sola i 3D**. Synspunktet følger
+den valgte kartpinnen og høyden over bakken, ikke et fast demonstrasjonspunkt.
+Dra med mus eller finger for å se rundt hele kompasset. Piltastene virker når
+bildet har fokus; **Se mot nord** og **Se mot sola** gir rask orientering.
+Tidslinjen viser solas beregnede plassering gjennom den valgte datoen, i samme
+lokale tidssone som resten av appen.
+
+Bygningsformer, inkludert gårdsrom, hentes fra OpenStreetMap i et avgrenset
+nærområde. Kartverkets DOM1 og DTM1 gir overflate- og terrenghøyder. Tak gjengis
+forenklet som flate flater. Hvis målte bygningshøyder mangler, brukes tilgjengelig
+OSM-høyde eller etasjeantall; dette opplyses i visningen. Uten høydedata vises ikke
+bygningen som om høyden var kjent.
+
+Trær illustreres ved kartlagte enkelttrær og innen kartlagte skogarealer.
+Trekroner og plasseringen av trær innen skogarealer er omtrentlige. **Manglende
+kartlegging betyr at bygninger eller trær kan mangle i bildet.** Visningen er ikke
+et foto, en detaljert fasademodell eller en registrering av dagens bladverk.
+Terrengflaten er også grovere enn høydegrunnlaget som brukes til soltidsberegningen.
+
+Den turkise horisontlinjen og solstatusen bruker den eksisterende horisontprofilen,
+også for hindringer utenfor 3D-nærområdet. En dempet solmarkør viser den projiserte
+posisjonen når sola er skjult. Solstatusen avgjøres **ikke** av de forenklede
+3D-formene eller eventuelle illustrative skygger. Skydekke inngår ikke.
+
+3D-data lastes bare når du åpner visningen. Siste nærområde beholdes i minnet i
+inntil 15 minutter, slik at endring av klokkeslett ikke gir nye nettverkskall.
+Rått OSM-kartgrunnlag for inntil tre punkter lagres lokalt i sju dager. Kartets
+databasedato vises, med varsel hvis den er eldre enn 90 dager. Den offentlige
+Overpass-tjenesten hos Private.coffee kan ligge etter dagens OSM-data og har
+ingen tilgjengelighetsgaranti. Appen bytter ikke automatisk til andre tjenere
+ved feil eller begrensninger; HTTP-feil gir minst ett minutts ventetid før nytt kall.
+Kart- og høydekall avbrytes ved lukking eller bytte av punkt. Ved manglende data,
+nettverksfeil eller en nettleser uten WebGL2 vises en feilmelding med ny prøveknapp;
+soltidene og den vanlige horisontgrafen er fortsatt tilgjengelige.
+
 Profilen mellomlagres, så samme punkt og høyde beregnes bare én gang.
 Beregningen tar 5–10 sekunder første gang og dekker bare Norge.
 
@@ -153,12 +190,23 @@ serveres av GitHub Pages fra `main`, så hver push til `main` oppdaterer siden a
 Alternativt kan du åpne `index.html` rett i en nettleser – ingen installasjon eller server
 nødvendig. Behold `italy-days.js` i samme mappe for dagsfaktaene og `audio/` for nonnaenes utrop.
 Kan lagres på hjemskjerm på iPhone e.l.
+Den valgfrie 3D-visningen bruker JavaScript-moduler og må åpnes via en webserver
+(for eksempel den publiserte siden), ikke `file://`. Den krever WebGL2 og nett
+for kart- og høydedata.
 
 ## Teknisk
 
-- Ren HTML/CSS/JavaScript – ingen avhengigheter, ingen build-steg
+- Ren HTML/CSS/JavaScript uten build-steg. Den valgfrie 3D-visningen bruker lokalt
+  medfølgende Three.js 0.186.0; resten av appen trenger ikke 3D-biblioteket.
+- `surroundings-data.mjs` bygger geometrien fra kartlegging og høydedata;
+  `surroundings-view.mjs` tegner og styrer første-personsvisningen.
+- Three.js-filene i `vendor/three/` er hentet fra npm-pakken `three@0.186.0`.
+  Den minifiserte kjernen er lagret som `three.core.js` for å samsvare med
+  bibliotekets relative import. Lisensen følger med; ingen CDN brukes ved visning.
 - Geokoding via [OSM Nominatim](https://nominatim.openstreetmap.org/)
 - Høydedata via [Kartverkets høydedata-API](https://ws.geonorge.no/hoydedata/v1/) (DOM1 og DTM1)
+- Avgrensede OSM-uttrekk via [Private.coffee Overpass](https://overpass.private.coffee/api/interpreter),
+  bare ved åpning av 3D og uten API-nøkkel. Større bruk må avklares med tjenesteleverandøren.
 - Kartbakgrunn via [Kartverkets WMTS-cache](https://kartverket.no/api-og-data/kartgrunnlag), tegnet i et eget lite kart uten kartbibliotek
 - All solberegning skjer lokalt i nettleseren
 
@@ -167,6 +215,9 @@ Kan lagres på hjemskjerm på iPhone e.l.
 - Solberegning: [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/)
 - Høydedata og kart: [Kartverket](https://hoydedata.no/) (CC BY 4.0)
 - Geokoding: [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/)
+- Bygningsformer og kartlagt vegetasjon:
+  [OpenStreetMap-bidragsytere](https://www.openstreetmap.org/copyright) (ODbL).
+- 3D-rendering: [Three.js](https://threejs.org/), versjon 0.186.0 (MIT).
 - Italia-kalender: [Wikidata](https://www.wikidata.org/) (CC0), Britannica og
   Wikipedia, med kildelenke ved hver oppføring. Faktagrunnlag hentet 9. september 2026.
 - Nonnaenes stemmer: KI-genererte klipp laget med Resemble AIs
