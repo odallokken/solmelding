@@ -106,10 +106,12 @@ med italiensk sommerstemning:
   animasjon. Underveis kjefter de på hverandre og maser om mat og drikke
   i snakkebobler. De har sitt eget område under kortene, slik at tekst og knapper
   ikke dekkes til. **Trykk på en nonna** for å høre et italiensk utrop; boblen viser
-  det hun sier. Hvert trykk gir en ny replikk, uten å legge flere stemmer i kø.
-  Stemmen bruker enhetens talesyntese med italiensk språk og foretrekker lokale
-  italienske stemmer. Klang og tilgjengelighet avhenger av nettleser og installerte
-  stemmer; ingen opptak eller egen taletjeneste lastes inn.
+  det hun sier. Nonnaen med kjevlen roper **«Mamma mia! Mangia, mangia!»**;
+  nonnaen med tresleiven roper **«Ehi! Basta, basta!»**.
+  De to godkjente, KI-genererte lydklippene følger med appen i `audio/`, slik at
+  stemme og uttrykk er de samme på tvers av enheter. Ingen talesyntese, API-nøkkel
+  eller ekstern taletjeneste trengs ved avspilling. Et nytt trykk starter nonnaens
+  klipp fra begynnelsen og stopper et eventuelt pågående utrop, uten kø.
   Tale virker også når musikken er slått av, og stoppes når modusen lukkes.
   Figurene er knapper som kan brukes med tastatur. Ved redusert bevegelse vises
   de i ro, slik at det fortsatt er mulig å trykke på dem.
@@ -140,7 +142,7 @@ faktiske høyden, så «første sol» kan avvike med et halvt minutt ved helt fr
 serveres av GitHub Pages fra `main`, så hver push til `main` oppdaterer siden automatisk.
 
 Alternativt kan du åpne `index.html` rett i en nettleser – ingen installasjon eller server
-nødvendig. Behold `italy-days.js` i samme mappe for dagsfaktaene.
+nødvendig. Behold `italy-days.js` i samme mappe for dagsfaktaene og `audio/` for nonnaenes utrop.
 Kan lagres på hjemskjerm på iPhone e.l.
 
 ## Teknisk
@@ -158,4 +160,9 @@ Kan lagres på hjemskjerm på iPhone e.l.
 - Geokoding: [OpenStreetMap Nominatim](https://nominatim.openstreetmap.org/)
 - Italia-kalender: [Wikidata](https://www.wikidata.org/) (CC0), Britannica og
   Wikipedia, med kildelenke ved hver oppføring. Faktagrunnlag hentet 9. september 2026.
+- Nonnaenes stemmer: KI-genererte klipp laget med Resemble AIs
+  [Chatterbox Multilingual-demo](https://huggingface.co/spaces/ResembleAI/Chatterbox-Multilingual-TTS)
+  9. september 2026 og godkjent ved lytting. [Modellen](https://github.com/resemble-ai/chatterbox)
+  er MIT-lisensiert. Klippene bruker demoens franske og spanske stemmepresett
+  med italiensk tekst, uttrykksstyrke 1,5 og frø 42/123; de er ikke opptak av ekte nonnaer.
 - Instagram: [@arntessolservice](https://www.instagram.com/arntessolservice/)

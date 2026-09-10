@@ -678,7 +678,7 @@
       </button>
       <span class="sol-sr-only" id="solQuizAnnouncement" aria-live="polite"></span>
     </section>
-    <p class="sol-music-hint" id="solSpeechNotice" role="status">Trykk på en nonna for et italiensk utrop 🔊</p>
+    <p class="sol-music-hint" id="solSpeechNotice" role="status">Trykk på en nonna 🔊 · KI-genererte stemmer</p>
   </div>
 
   <div class="sol-nonnas" id="solNonnas" role="group" aria-label="Nonnaene" onfocusin="solFocusNonnas(event)">
@@ -2858,8 +2858,11 @@ const NN_SAY_B = ['Bellissimo!', 'Tarantella!', 'Sole mio!', 'Ancora!', 'Vino?',
                   'Chi paga? Tu!', 'Pizza margherita!', 'Gnocchi!', 'Tiramisù!',
                   'Polpette!', 'Melanzane alla parmigiana!'];
 let solSayTimer = null, solSayIx = 0;
-let solUtterance = null, solSpeechTimeout = null;
-const solSpokenIndex = { a: 0, b: 0 };
+let solNonnaAudio = null, solSpeechTimeout = null;
+const SOL_NONNA_CLIPS = {
+  a: { src: 'audio/nonna-shout-a.wav', text: 'Mamma mia! Mangia, mangia!' },
+  b: { src: 'audio/nonna-shout-b.wav', text: 'Ehi! Basta, basta!' },
+};
 
 function solFocusNonnas(event) {
   if (event.target.matches('.nonna:focus-visible')) {
@@ -2874,70 +2877,67 @@ function solSpeechNotice(text, lang = 'nb') {
 }
 
 function solStopNonnaSpeech() {
-  const utterance = solUtterance;
-  solUtterance = null;
+  const audio = solNonnaAudio;
+  solNonnaAudio = null;
   clearTimeout(solSpeechTimeout); solSpeechTimeout = null;
   document.querySelectorAll('.nonna.is-speaking').forEach(el => el.classList.remove('is-speaking'));
-  if (utterance) {
-    utterance.onstart = null; utterance.onend = null; utterance.onerror = null;
-    window.speechSynthesis.cancel();
+  if (audio) {
+    audio.onplaying = null; audio.onended = null; audio.onerror = null; audio.onpause = null;
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
   }
   solReleaseAudioPlayback();
-  solSpeechNotice('Trykk på en nonna for et italiensk utrop 🔊');
+  solSpeechNotice('Trykk på en nonna 🔊 · KI-genererte stemmer');
 }
 
 function solSpeakNonna(who) {
-  if (!window.speechSynthesis || !window.SpeechSynthesisUtterance) {
-    console.warn('Nettleseren støtter ikke talesyntese.');
-    solSpeechNotice('Denne nettleseren støtter ikke tale. Prøv Safari eller en annen oppdatert nettleser.');
-    return;
-  }
   solStopNonnaSpeech();
-  const phrases = who === 'a' ? NN_SAY_A : NN_SAY_B;
-  const phrase = phrases[solSpokenIndex[who]++ % phrases.length];
+  const clip = SOL_NONNA_CLIPS[who];
   const button = solEl(who === 'a' ? 'nonnaA' : 'nonnaB');
   const bubble = solEl(who === 'a' ? 'nnSayA' : 'nnSayB');
-  const utterance = new SpeechSynthesisUtterance(phrase);
-  solUtterance = utterance;
+  const audio = new Audio(clip.src);
+  solNonnaAudio = audio;
   const finish = message => {
-    if (solUtterance !== utterance) return;
+    if (solNonnaAudio !== audio) return;
     solStopNonnaSpeech();
     if (message) solSpeechNotice(message);
     solResumeMusicAfterSpeech();
   };
-  utterance.lang = 'it-IT';
-  utterance.rate = who === 'a' ? 1.05 : 1.12;
-  utterance.pitch = who === 'a' ? 1.15 : 1;
-  utterance.volume = 1;
-  utterance.onstart = () => {
-    if (solUtterance === utterance) solSpeechNotice('Nonna: ' + phrase, 'it');
+  audio.volume = 1;
+  audio.onplaying = () => {
+    if (solNonnaAudio === audio) solSpeechNotice('Nonna: ' + clip.text, 'it');
   };
-  utterance.onend = () => finish();
-  utterance.onerror = event => {
-    if (solUtterance !== utterance) return;
-    console.warn('Nonnaens tale ble avbrutt:', event.error);
-    finish('Fikk ikke spilt av stemmen. Sjekk volum og italienske stemmer på enheten, og trykk igjen.');
+  audio.onended = () => finish();
+  audio.onerror = () => {
+    if (solNonnaAudio !== audio) return;
+    console.warn('Kunne ikke laste nonnaens lydklipp:', audio.error);
+    finish('Fikk ikke lastet lydklippet. Sjekk nettforbindelsen og trykk igjen.');
   };
-  bubble.textContent = phrase;
+  audio.onpause = () => {
+    if (!audio.ended) finish('Utropet ble satt på pause. Trykk på nonnaen for å spille det igjen.');
+  };
+  bubble.textContent = clip.text;
   button.classList.add('is-speaking');
   solSpeechNotice('Nonna gjør seg klar …');
   solSpeechTimeout = setTimeout(() => {
-    if (solUtterance !== utterance) return;
-    console.warn('Nonnaens tale svarte ikke innen fristen.');
-    finish('Stemmen svarte ikke. Sjekk volum og italienske stemmer på enheten, og trykk igjen.');
+    if (solNonnaAudio !== audio) return;
+    console.warn('Nonnaens lydklipp svarte ikke innen fristen.');
+    finish('Lydklippet svarte ikke. Sjekk nettforbindelsen og trykk igjen.');
   }, 12000);
   try {
-    const voices = window.speechSynthesis.getVoices().filter(voice => /^it(?:-|$)/i.test(voice.lang));
-    const localVoices = voices.filter(voice => voice.localService);
-    const available = localVoices.length ? localVoices : voices;
-    if (available.length) utterance.voice = available[who === 'b' && available.length > 1 ? 1 : 0];
     solClaimAudioPlayback();
-    window.speechSynthesis.resume();
-    // Må skje direkte i trykket også når stemmelisten ennå er tom på iPhone.
-    window.speechSynthesis.speak(utterance);
+    // Start i selve trykket for iPhone; ikke vent på nedlasting eller musikk først.
+    audio.play().then(() => {
+      if (solNonnaAudio !== audio) audio.pause();
+    }).catch(error => {
+      if (solNonnaAudio !== audio) return;
+      console.warn('Kunne ikke spille nonnaens lydklipp:', error);
+      finish('Kunne ikke spille utropet. Sjekk medievolum og trykk på nonnaen igjen.');
+    });
   } catch (error) {
-    console.warn('Kunne ikke starte nonnaens tale:', error);
-    finish('Kunne ikke starte stemmen. Prøv igjen i en oppdatert nettleser.');
+    console.warn('Kunne ikke starte nonnaens lydklipp:', error);
+    finish('Kunne ikke starte utropet. Prøv igjen i en oppdatert nettleser.');
   }
 }
 
@@ -3056,7 +3056,7 @@ function solClaimAudioPlayback() {
 }
 
 function solReleaseAudioPlayback() {
-  if (solPreviousAudioType !== null && !solMusicOn && !solUtterance) {
+  if (solPreviousAudioType !== null && !solMusicOn && !solNonnaAudio) {
     navigator.audioSession.type = solPreviousAudioType;
     solPreviousAudioType = null;
   }
@@ -3203,7 +3203,7 @@ function solUpdateMusicPlayback(ctx) {
   if (ctx.state === 'running') {
     solMusicButton('🎵 Musikk på', true);
     solMusicNotice('Ingen lyd? Sjekk medievolum, lydløsmodus og Bluetooth.');
-  } else if (solUtterance) {
+  } else if (solNonnaAudio) {
     solMusicButton('🎵 Musikk pauset', true);
     solMusicNotice('Nonna snakker. Musikken fortsetter etterpå.');
   } else {
@@ -3218,9 +3218,9 @@ async function solResumeMusicAfterSpeech() {
   if (!solMusicOn || !ctx) return;
   try {
     await solResumeAudio(ctx);
-    if (request === solMusicRequest && !solUtterance) solUpdateMusicPlayback(ctx);
+    if (request === solMusicRequest && !solNonnaAudio) solUpdateMusicPlayback(ctx);
   } catch (error) {
-    if (request !== solMusicRequest || solUtterance) return;
+    if (request !== solMusicRequest || solNonnaAudio) return;
     solStopMusic();
     console.warn('Kunne ikke fortsette musikken:', error);
     solMusicButton('🎵 Start musikk igjen', false);
@@ -3256,7 +3256,7 @@ async function solStartMusic() {
     }
     const [, buffer] = await Promise.all([resumed, solMusicBufferPromise]);
     if (request !== solMusicRequest) return;
-    if (ctx.state !== 'running' && !solUtterance) throw new Error('Lyden er satt på pause av nettleseren. Prøv Musikk igjen.');
+    if (ctx.state !== 'running' && !solNonnaAudio) throw new Error('Lyden er satt på pause av nettleseren. Prøv Musikk igjen.');
     const source = ctx.createBufferSource(), gain = ctx.createGain();
     source.buffer = buffer; source.loop = true;
     solStartedAt = ctx.currentTime;
