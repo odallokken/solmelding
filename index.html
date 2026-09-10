@@ -705,6 +705,8 @@
     <div class="sol-count" id="solCount">–</div>
     <div class="sol-note" id="solNote"></div>
     <div class="sol-sub" id="solSub"></div>
+    <div class="sol-sub" id="solPoint"></div>
+    <div class="sol-sub"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit">Bygningskart © OpenStreetMap-bidragsytere</a><span id="solBuildingDate"></span></div>
     <div class="sol-actions">
       <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-describedby="solMusicHint">🎵 Musikk</button>
       <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
@@ -1929,7 +1931,7 @@ const R_EARTH   = 6371000;   // m
 const REFR_K    = 0.13;      // atmosfærisk refraksjonskoeffisient (standard)
 const SUN_RADIUS = 0.2667;   // sola sin halve diameter i grader (øvre rand)
 const HZ_BINS   = 360;       // 1° oppløsning i horisontprofilen
-const HZ_HOME_DEFAULT = Object.freeze({ lat: 59.93414, lng: 10.76769, name: 'Solhjørnet' });
+const HZ_HOME_DEFAULT = Object.freeze({ lat: 59.93413, lng: 10.76767, name: 'Solhjørnet' });
 /** Så nær hjemmepunktet at det fortsatt regnes som Solhjørnet (meter). */
 const HZ_HOME_RADIUS = 12;
 
@@ -2046,12 +2048,75 @@ const HZ_TOTAL_POINTS = 1
   + HZ_BINS * HZ_D_NEAR.length + HZ_BINS * HZ_REFINE
   + HZ_MID_RAYS * HZ_D_MID.length + HZ_FAR_RAYS * HZ_D_FAR.length;
 
+function hzBuildingVariant(mask, lat, lng) {
+  const ringValid = ring => Array.isArray(ring) && ring.length >= 3
+    && ring.every(point => point && Number.isFinite(point.x) && Number.isFinite(point.z));
+  if (!mask || !/^[a-f0-9]{16}$/.test(mask.version) || !Number.isFinite(mask.lat) || !Number.isFinite(mask.lng)
+      || !Number.isFinite(mask.radius) || !Number.isFinite(Date.parse(mask.sourceDate))
+      || !Array.isArray(mask.buildings) || !mask.buildings.length
+      || hzMetersBetween(lat, lng, mask.lat, mask.lng) + 600 > mask.radius
+      || mask.buildings.some(building => !building || !ringValid(building.outer)
+        || !Array.isArray(building.holes) || !building.holes.every(ringValid)
+        || !Array.isArray(building.bounds) || building.bounds.length !== 4
+        || !building.bounds.every(Number.isFinite)
+        || building.outer.some(point => point.x < building.bounds[0] || point.x > building.bounds[2]
+          || point.z < building.bounds[1] || point.z > building.bounds[3]))) {
+    throw new Error('building-mask-coverage');
+  }
+  return 'buildings-' + mask.version;
+}
+
+function hzPointInBuilding(lat, lng, mask) {
+  const scale = R_EARTH * D2R;
+  const point = { x: (lng - mask.lng) * scale * Math.cos(mask.lat * D2R), z: (mask.lat - lat) * scale };
+  const insideRing = ring => {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const a = ring[i], b = ring[j];
+      if ((a.z > point.z) !== (b.z > point.z)
+          && point.x < (b.x - a.x) * (point.z - a.z) / (b.z - a.z) + a.x) inside = !inside;
+    }
+    return inside;
+  };
+  return mask.buildings.some(building => {
+    const [minX, minZ, maxX, maxZ] = building.bounds;
+    return point.x >= minX && point.x <= maxX && point.z >= minZ && point.z <= maxZ
+      && insideRing(building.outer) && !building.holes.some(insideRing);
+  });
+}
+
+async function hzSurfaceSamples(points, mask, onChunk) {
+  if (!mask) return {
+    heights: await fetchElevations(points, 'dom1', onChunk),
+    sources: points.map(() => 'bygg'),
+  };
+  const heights = new Array(points.length).fill(null), sources = [];
+  const buildings = [], terrain = [];
+  points.forEach((point, index) => {
+    const building = hzPointInBuilding(point[0], point[1], mask);
+    sources[index] = building ? 'bygg' : 'terreng';
+    (building ? buildings : terrain).push({ point, index });
+  });
+  // DTM outside building footprints removes nearby vegetation without removing buildings.
+  for (const [group, source] of [[terrain, 'dtm1'], [buildings, 'dom1']]) {
+    if (!group.length) continue;
+    const values = await fetchElevations(group.map(item => item.point), source, onChunk);
+    if (values.some(value => !Number.isFinite(value))) {
+      throw new Error('no-coverage');
+    }
+    values.forEach((value, i) => { heights[group[i].index] = value; });
+  }
+  return { heights, sources };
+}
+
 /**
  * Bygger en horisontprofil: for hver av 360 asimut-retninger, hvor høyt over
  * øyehøyde det høyeste hinderet ligger. Nærsonen (0–600 m) leses fra DOM1
  * (overflatemodell = bygninger, trær og terreng), fjernsonen fra DTM1 (terreng).
+ * Solhjørnets bygningsmaske erstatter DOM1 med DTM1 utenfor bygningsomriss.
  */
-async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
+async function buildHorizonProfile(lat, lng, eyeHeight, onProgress, buildingMask = null) {
+  const variant = buildingMask ? hzBuildingVariant(buildingMask, lat, lng) : 'surface';
   let done = 0;
   const tick = n => { done += n; if (onProgress) onProgress(done, HZ_TOTAL_POINTS); };
 
@@ -2072,7 +2137,7 @@ async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
   // Pass 1 – nærsone, 1° stråler
   const p1 = [];
   for (let i = 0; i < HZ_BINS; i++) for (const d of HZ_D_NEAR) p1.push(destPoint(lat, lng, i, d));
-  const z1 = await fetchElevations(p1, 'dom1', tick);
+  const { heights: z1, sources: s1 } = await hzSurfaceSamples(p1, buildingMask, tick);
   let nearHits = 0;
   const peakIdx = [];
   for (let i = 0; i < HZ_BINS; i++) {
@@ -2080,7 +2145,7 @@ async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
     HZ_D_NEAR.forEach((d, k) => {
       const z = z1[i * HZ_D_NEAR.length + k];
       if (z !== null) nearHits++;
-      consider(i, d, z, 'bygg');
+      consider(i, d, z, s1[i * HZ_D_NEAR.length + k]);
       if (z !== null) { const a = angleTo(d, z); if (a > ba) { ba = a; bi = k; } }
     });
     peakIdx.push(bi);
@@ -2098,14 +2163,14 @@ async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
       p2.push(destPoint(lat, lng, i, d)); m2.push([i, d]);
     }
   }
-  const z2 = await fetchElevations(p2, 'dom1', tick);
-  m2.forEach(([i, d], k) => consider(i, d, z2[k], 'bygg'));
+  const { heights: z2, sources: s2 } = await hzSurfaceSamples(p2, buildingMask, tick);
+  m2.forEach(([i, d], k) => consider(i, d, z2[k], s2[k]));
 
   // Pass 3 – mellomsone (170–600 m), 3° stråler
   const p3 = [];
   for (let i = 0; i < HZ_MID_RAYS; i++) for (const d of HZ_D_MID) p3.push(destPoint(lat, lng, i * 3, d));
-  const z3 = await fetchElevations(p3, 'dom1', tick);
-  spreadRays(z3, HZ_MID_RAYS, HZ_D_MID, 3, 1, best, angleTo, 'bygg');
+  const { heights: z3, sources: s3 } = await hzSurfaceSamples(p3, buildingMask, tick);
+  spreadRays(z3, HZ_MID_RAYS, HZ_D_MID, 3, 1, best, angleTo, s3);
 
   // Pass 4 – fjernsone (0,65–30 km) fra terrengmodellen: åser og fjell
   const p4 = [];
@@ -2120,7 +2185,7 @@ async function buildHorizonProfile(lat, lng, eyeHeight, onProgress) {
     src:  b.src,
   }));
   const nearest = rays.reduce((m, r) => (r.dist > 0 && r.alt > 5 && r.dist < m ? r.dist : m), 9999);
-  return { lat, lng, eye: eyeHeight, ground, eyeZ, rays, nearest, builtAt: Date.now() };
+  return { lat, lng, eye: eyeHeight, ground, eyeZ, rays, nearest, variant, builtAt: Date.now() };
 }
 
 /** Sprer grovere stråler (3°/6°) utover nabo-binene i profilen. */
@@ -2130,9 +2195,10 @@ function spreadRays(zs, rayCount, dists, stepDeg, spread, best, angleTo, src) {
       const z = zs[i * dists.length + k];
       if (z === null) return;
       const a = angleTo(d, z);
+      const source = Array.isArray(src) ? src[i * dists.length + k] : src;
       for (let o = -spread; o <= spread; o++) {
         const bin = ((i * stepDeg + o) % HZ_BINS + HZ_BINS) % HZ_BINS;
-        if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src };
+        if (a > best[bin].alt) best[bin] = { alt: a, dist: d, z, src: source };
       }
     });
   }
@@ -2209,21 +2275,23 @@ let hzEye       = 1.7;
 let hzLocationRequest = 0, hzLocating = false;
 let hzRunRequest = 0, hzBuilding = false;
 
-const hzCacheKey = (lat, lng, eye) =>
-  `solmelding_hz_v1_${lat.toFixed(5)}_${lng.toFixed(5)}_${eye.toFixed(1)}`;
+const hzCacheKey = (lat, lng, eye, variant = 'surface') =>
+  `solmelding_hz_v1_${lat.toFixed(5)}_${lng.toFixed(5)}_${eye.toFixed(1)}`
+  + (variant === 'surface' ? '' : '_' + variant);
 
-function hzLoadCached(lat, lng, eye) {
+function hzLoadCached(lat, lng, eye, variant = 'surface') {
   try {
-    const raw = localStorage.getItem(hzCacheKey(lat, lng, eye));
+    const raw = localStorage.getItem(hzCacheKey(lat, lng, eye, variant));
     if (!raw) return null;
     const p = JSON.parse(raw);
     // Nøkkelen er avrundet; profilen må likevel gjelde akkurat dette punktet og høyden.
     return (p && p.lat === lat && p.lng === lng && p.eye === eye
+      && (p.variant || 'surface') === variant
       && p.rays && p.rays.length === HZ_BINS) ? p : null;
   } catch { return null; }
 }
 function hzSaveCached(profile) {
-  const key = hzCacheKey(profile.lat, profile.lng, profile.eye);
+  const key = hzCacheKey(profile.lat, profile.lng, profile.eye, profile.variant || 'surface');
   const body = JSON.stringify(profile);
   const readIdx = () => {
     try { return JSON.parse(localStorage.getItem('solmelding_hz_index') || '[]'); }
@@ -3061,6 +3129,20 @@ function solRender() {
     : '';
 }
 
+let solBuildingMaskPromise = null;
+function solLoadBuildingMask() {
+  if (!solBuildingMaskPromise) {
+    solBuildingMaskPromise = fetch('solhjornet-buildings.json').then(response => {
+      if (!response.ok) throw new Error('building-mask-missing');
+      return response.json();
+    }).catch(error => {
+      solBuildingMaskPromise = null;
+      throw error;
+    });
+  }
+  return solBuildingMaskPromise;
+}
+
 async function enterSolMode() {
   const request = ++solRequest;
   clearInterval(solTimer); solTimer = null;
@@ -3070,7 +3152,6 @@ async function enterSolMode() {
   // Fast punkt og bakkeplan, uavhengig av kartpinnen og høydeskyveren.
   const { lat, lng } = HZ_HOME_DEFAULT;
   const eye = SOL_EYE_HEIGHT;
-  const cached = hzLoadCached(lat, lng, eye);
 
   const box = solEl('solMode');
   box.style.setProperty('--nn-beat', (SOL_UNIT * 3) + 's');
@@ -3088,26 +3169,43 @@ async function enterSolMode() {
   solEl('solMusicBtn').focus({ preventScroll: true });
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';
-  solEl('solNote').textContent = 'Henter horisonten fra Kartverket …';
+  solEl('solNote').textContent = 'Henter bygningskartet …';
   solEl('solSub').textContent = '';
+  solEl('solPoint').textContent = `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° Ø · bakkeplan (${eye.toFixed(1).replace('.', ',')} m) · uten trær`;
+  solEl('solBuildingDate').textContent = '';
 
   try {
-    let p = cached;
+    const mask = await solLoadBuildingMask();
+    if (request !== solRequest) return;
+    const variant = hzBuildingVariant(mask, lat, lng);
+    const sourceDate = mask.sourceDate;
+    solEl('solBuildingDate').textContent = ' · ' + sourceDate.slice(0, 10)
+      + (Date.now() - Date.parse(sourceDate) > 90 * 86400000 ? ' (eldre kartgrunnlag)' : '');
+    let p = hzLoadCached(lat, lng, eye, variant);
     if (!p) {
       p = await buildHorizonProfile(lat, lng, eye, (done, total) => {
         if (request === solRequest) {
           solEl('solNote').textContent = `Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`;
         }
-      });
+      }, mask);
       hzSaveCached(p);
     }
     if (request !== solRequest) return;
     solProfile = p;
-  } catch {
+  } catch (error) {
     if (request !== solRequest) return;
     solEl('solState').textContent = 'Fikk ikke tak i dataene';
     solEl('solCount').textContent = '😕';
-    solEl('solNote').textContent = 'Sjekk nettforbindelsen og prøv igjen.';
+    console.warn('Kunne ikke hente Solhjørnets bygnings- og terrengprofil:', error);
+    solEl('solNote').textContent = location.protocol === 'file:'
+      ? 'Åpne den publiserte nettsiden for å bruke Solhjørnets bygningskart.'
+      : error.message === 'building-mask-missing'
+      ? 'Bygningskartet mangler. Last siden på nytt og prøv igjen.'
+      : error.message === 'building-mask-coverage'
+        ? 'Bygningskartet må oppdateres for Solhjørnets posisjon.'
+        : error.message === 'no-coverage'
+          ? 'Mangler nødvendige terreng- eller bygningshøyder. Prøv igjen senere.'
+          : 'Sjekk nettforbindelsen og prøv igjen.';
     return;
   }
 

@@ -109,7 +109,7 @@ function localGeometry(geometry, origin) {
     .filter((p, i, points) => i === 0 || !samePoint(p, points[i - 1]));
 }
 
-function stitchRings(segments) {
+function stitchRings(segments, minArea) {
   const remaining = segments.filter(segment => segment.length >= 2).map(segment => segment.slice());
   const rings = [];
   let incomplete = segments.filter(segment => segment.length < 2).length;
@@ -126,31 +126,31 @@ function stitchRings(segments) {
     }
     if (ring.length >= 4 && samePoint(ring[0], ring[ring.length - 1])) {
       ring.pop();
-      if (Math.abs(area(ring)) > 1) rings.push(ring);
+      if (Math.abs(area(ring)) > minArea) rings.push(ring);
       else incomplete++;
     } else incomplete++;
   }
   return { rings, incomplete };
 }
 
-function nearby(polygon) {
+function nearby(polygon, radius) {
   const xs = polygon.outer.map(p => p.x), zs = polygon.outer.map(p => p.z);
-  return Math.min(...xs) <= RADIUS && Math.max(...xs) >= -RADIUS
-    && Math.min(...zs) <= RADIUS && Math.max(...zs) >= -RADIUS;
+  return Math.min(...xs) <= radius && Math.max(...xs) >= -radius
+    && Math.min(...zs) <= radius && Math.max(...zs) >= -radius;
 }
 
-function polygonsFor(element, origin) {
+function polygonsFor(element, origin, minArea) {
   if (element.type === 'way') {
     const geometry = localGeometry(element.geometry, origin);
     if (geometry.length < 4) return { polygons: [], incomplete: 1 };
-    const { rings, incomplete } = stitchRings([geometry]);
+    const { rings, incomplete } = stitchRings([geometry], minArea);
     return { polygons: rings.map(outer => ({ outer, holes: [] })), incomplete };
   }
   const members = element.members || [];
   const outer = stitchRings(members.filter(m => m.type === 'way' && (m.role === 'outer' || !m.role))
-    .map(m => localGeometry(m.geometry, origin)));
+    .map(m => localGeometry(m.geometry, origin)), minArea);
   const inner = stitchRings(members.filter(m => m.type === 'way' && m.role === 'inner')
-    .map(m => localGeometry(m.geometry, origin)));
+    .map(m => localGeometry(m.geometry, origin)), minArea);
   const polygons = outer.rings.map(ring => ({ outer: ring, holes: [] }));
   let incomplete = outer.incomplete + inner.incomplete + members.filter(m => m.type === 'relation').length;
   for (const hole of inner.rings) {
@@ -162,7 +162,7 @@ function polygonsFor(element, origin) {
   return { polygons, incomplete };
 }
 
-export function parseSurroundings(osm, origin) {
+export function parseSurroundings(osm, origin, { radius = RADIUS, maxBuildings = MAX_BUILDINGS, minArea = 1 } = {}) {
   if (!osm || !Array.isArray(osm.elements) || osm.remark) {
     throw new Error('Karttjenesten leverte et ufullstendig svar. Pr\u00f8v igjen senere.');
   }
@@ -182,14 +182,14 @@ export function parseSurroundings(osm, origin) {
     if (element.type === 'node' && tags.natural === 'tree'
         && Number.isFinite(element.lat) && Number.isFinite(element.lon)) {
       const point = toLocal(element.lat, element.lon, origin);
-      if (Math.hypot(point.x, point.z) <= RADIUS) trees.push({ ...point, tags, source: 'mapped-tree' });
+      if (Math.hypot(point.x, point.z) <= radius) trees.push({ ...point, tags, source: 'mapped-tree' });
       continue;
     }
     const building = tags.building && tags.building !== 'no';
     const wooded = tags.natural === 'wood' || tags.landuse === 'forest';
     if ((!building && !wooded) || (element.type !== 'way' && element.type !== 'relation')) continue;
     if (element.type === 'way' && representedWays.has(element.id)) continue;
-    const parsed = polygonsFor(element, origin);
+    const parsed = polygonsFor(element, origin, minArea);
     incomplete += parsed.incomplete;
     if (element.type === 'relation') {
       for (const member of element.members || []) {
@@ -201,7 +201,7 @@ export function parseSurroundings(osm, origin) {
     }
     // An incomplete courtyard must not become a solid building.
     if (parsed.incomplete) continue;
-    const local = parsed.polygons.filter(nearby);
+    const local = parsed.polygons.filter(polygon => nearby(polygon, radius));
     local.forEach((polygon, i) => {
       const feature = { ...polygon, id: `${element.type}/${element.id}/${i}`, tags };
       if (building) buildings.push(feature);
@@ -210,8 +210,8 @@ export function parseSurroundings(osm, origin) {
   }
   buildings.sort((a, b) => distanceToPolygon(a) - distanceToPolygon(b));
   return {
-    buildings: buildings.slice(0, MAX_BUILDINGS), woods, trees,
-    incomplete: incomplete + Math.max(0, buildings.length - MAX_BUILDINGS),
+    buildings: buildings.slice(0, maxBuildings), woods, trees,
+    incomplete: incomplete + Math.max(0, buildings.length - maxBuildings),
   };
 }
 

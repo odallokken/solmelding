@@ -102,16 +102,22 @@ høyere opp i gården, flytt pinnen eller endre høyden.
 Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen fullskjermvisning
 med italiensk sommerstemning:
 
-- **Fast posisjon** – viser alltid soldata for **59.93414° N, 10.76769° Ø**,
+- **Fast posisjon** – viser alltid soldata for **59.93413° N, 10.76767° Ø**,
   uavhengig av kartpinnen og lagret sted. Kartet og ditt valgte sted endres ikke.
   Beregningen er låst til **bakkeplan (1,7 m øyehøyde)**, uavhengig av høydeskyveren
   i kartet. Nedtellingen bruker bare horisonten for dette eksakte punktet og
   denne høyden, aldri en lagret profil fra en høyere etasje.
+- **Uten nærliggende trær** – bare i Solhjørnet brukes DTM1 (bakken) utenfor
+  kartlagte bygningsomriss, også i åpne bakgårder. Innenfor omrissene brukes
+  DOM1 for å beholde bygningenes målte høyder; fjernt terreng beholdes.
+  Det vanlige kartet og 3D-visningen inkluderer fortsatt trær.
+  Punkt, bakkeplan og dato for bygningskartet vises i modusen.
 - **Nedtelling** – står sola på hjørnet nå, telles det ned til den forsvinner. Ellers
   telles det ned til neste gang sola treffer, og appen søker framover dag for dag
   (inntil 200 dager) slik at den også finner svaret midt på vinteren.
 - **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
-  ned fra Kartverket med en framdriftsvisning.
+  ned fra Kartverket med en framdriftsvisning. Solhjørnets profil har en egen,
+  versjonert lagernøkkel og kan ikke blandes med profiler som inkluderer trær.
 - **På denne dag** – en kort Italia-relatert historie med årstall og kildelenke.
   Kalenderen følger norsk dato (`Europe/Oslo`), også gjennom sommertid og skuddår.
   Historiene følger med appen i `italy-days.js`, uten et eksternt API ved hvert besøk.
@@ -166,6 +172,38 @@ med italiensk sommerstemning:
   Ingen eksterne bilder lastes ned.
 - Lukkes med **← Tilbake** eller **Esc**.
 
+### Bygningsgrunnlag for Solhjørnet
+
+`solhjornet-buildings.json` inneholder 1 101 bygningsomriss med eventuelle
+bakgårdshull innenfor et søkeområde på 650 m, rundt det faste punktet.
+OSM-grunnlaget er datert **10. september 2026**. Filen lastes først når
+Solhjørnet åpnes; forsiden trenger ikke laste kartgrunnlaget.
+Det gjøres ikke Overpass-kall fra Solhjørnet i nettleseren.
+
+Omrissene er fra [OpenStreetMap-bidragsyterne](https://www.openstreetmap.org/copyright),
+under [ODbL 1.0](https://opendatacommons.org/licenses/odbl/1-0/).
+Filen bevarer kilde-ID-er, dato, spørring, tjenesteadresse og lisens.
+Kartleggingen er ikke en garanti for at alle bygninger finnes eller er riktig
+plassert. DOM1 skiller heller ikke perfekt mellom tak og trær som overlapper
+taket. Takoverheng, slike trær, kartfeil og alderen på høydedataene kan derfor
+fortsatt påvirke resultatet. Tidene er modellberegninger, ikke observasjoner.
+Kartgrunnlag eldre enn 90 dager merkes i visningen.
+
+Oppdater omrissene med Node 18 eller nyere:
+
+```powershell
+node scripts\update-solhjornet-buildings.mjs 59.93413 10.76767
+```
+
+Skriptet gjør én avgrenset forespørsel til Overpass og bruker samme
+polygonparser som 3D-visningen, men uten dens avstands-, størrelses- og
+antallsbegrensninger. Ufullstendige polygoner eller tjenestefeil stopper
+oppdateringen. Endrede omriss gir en ny versjon og dermed en ny horisontprofil.
+Et manglende eller inkompatibelt bygningskart gir en synlig feil, aldri
+automatisk tilbakefall til beregninger med trær.
+Manglende høyder i nær- og mellomsonen avbryter beregningen, i stedet for å
+utelate en mulig hindring og lagre en misvisende profil.
+
 ## Nøyaktighet
 
 Beregningene bruker [NOAA Solar Calculator](https://gml.noaa.gov/grad/solcalc/)-algoritmen.
@@ -190,9 +228,9 @@ serveres av GitHub Pages fra `main`, så hver push til `main` oppdaterer siden a
 Alternativt kan du åpne `index.html` rett i en nettleser – ingen installasjon eller server
 nødvendig. Behold `italy-days.js` i samme mappe for dagsfaktaene og `audio/` for nonnaenes utrop.
 Kan lagres på hjemskjerm på iPhone e.l.
-Den valgfrie 3D-visningen bruker JavaScript-moduler og må åpnes via en webserver
-(for eksempel den publiserte siden), ikke `file://`. Den krever WebGL2 og nett
-for kart- og høydedata.
+Solhjørnets bygningskart og den valgfrie 3D-visningen må åpnes via en webserver
+(for eksempel den publiserte siden), ikke `file://`. 3D-visningen bruker
+JavaScript-moduler og krever WebGL2. Kart- og høydedata krever nett.
 
 ## Teknisk
 
