@@ -117,7 +117,8 @@ høyere opp i gården, flytt pinnen eller endre høyden.
 ## ⛱️ Solhjørnet-modus
 
 Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen fullskjermvisning
-med italiensk sommerstemning:
+med italiensk sommerstemning. Visningen bruker forsidens mørkeblå bakgrunn,
+blå kort og gullfargede detaljer:
 
 - **Solstatus på knappen** – viser om sola er på hjørnet nå, hvor lenge den blir,
   eller hvor lenge det er til neste sol. En grønn linje tømmes gjennom soltiden;
@@ -194,7 +195,7 @@ med italiensk sommerstemning:
   Tale virker også når musikken er slått av, og stoppes når modusen lukkes.
   Figurene er knapper som kan brukes med tastatur. Ved redusert bevegelse vises
   de i ro, slik at det fortsatt er mulig å trykke på dem.
-- **Italiensk landskap** – en egen SVG-illustrasjon med dempede olivengrønne åser,
+- **Italiensk landskap** – en egen SVG-illustrasjon med dempede blågrønne åser,
   sypresser og en villa med terrakottatak erstatter vinflasken og grønnsakene.
   Ingen eksterne bilder lastes ned.
 - Lukkes med **← Tilbake** eller **Esc**.
@@ -203,8 +204,8 @@ med italiensk sommerstemning:
 
 `solhjornet-buildings.json` inneholder 1 101 bygningsomriss med eventuelle
 bakgårdshull innenfor et søkeområde på 650 m, rundt det faste punktet.
-OSM-grunnlaget er datert **10. september 2026**. Filen lastes først når
-Solhjørnet åpnes; forsiden trenger ikke laste kartgrunnlaget.
+OSM-grunnlaget er datert **10. september 2026**. Filen lastes i bakgrunnen for
+solstatusen på knappen og gjenbrukes når Solhjørnet åpnes.
 Det gjøres ikke Overpass-kall fra Solhjørnet i nettleseren.
 
 Omrissene er fra [OpenStreetMap-bidragsyterne](https://www.openstreetmap.org/copyright),

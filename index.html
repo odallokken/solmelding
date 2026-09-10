@@ -372,11 +372,11 @@
     #solMode { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
       align-items: center; padding: 48px 20px 0; text-align: center; overflow-y: auto; isolation: isolate;
       --nn-beat: .5556s; --nn-bar: 1.1111s;
-      --card: #fffaf0; --cborder: rgba(31,58,87,.18); --text: #1a2e44; --muted: #52677a;
+      --muted: #9ab8d0;
       color: var(--text);
       background:
-        radial-gradient(ellipse at 72% 8%, #fff7d9 0%, transparent 58%),
-        linear-gradient(180deg, #f9ecda 0%, #f4dcc3 60%, #d9bb96 100%);
+        radial-gradient(ellipse at 72% 8%, var(--adim) 0%, transparent 58%),
+        var(--bg);
       animation: solIn .45s ease both; }
     @keyframes solIn { from { opacity: 0; transform: scale(.985); } to { opacity: 1; transform: none; } }
     .sol-landscape { position: fixed; inset: auto 0 0; width: 100%; height: min(46vh, 440px);
@@ -386,20 +386,20 @@
     .sol-flag { width: 56px; height: 4px; border-radius: 4px; margin: 0 auto 14px;
       background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
       box-shadow: 0 2px 8px rgba(0,0,0,.22); }
-    .sol-place { font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; }
+    .sol-place { font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; color: var(--accent); }
     .sol-place .um { display: block; font-size: 2.4rem; margin-bottom: 2px; }
     .sol-state { margin-top: 16px; font-size: .72rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: .07em; color: var(--muted); }
     .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 800;
-      line-height: 1.1; letter-spacing: -.5px; margin: 6px 0 4px; }
+      line-height: 1.1; letter-spacing: -.5px; margin: 6px 0 4px; color: var(--accent); }
     .sol-note { font-size: .9rem; font-weight: 600; min-height: 1.3em; }
     .sol-sub { margin-top: 8px; font-size: .78rem; color: var(--muted); }
     .sol-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
     .sol-btn { border: 1px solid var(--cborder); cursor: pointer; font-family: inherit; font-weight: 600; font-size: .9rem;
       padding: 10px 18px; border-radius: 10px; background: var(--card); color: var(--text);
       transition: background .15s, transform .1s; }
-    .sol-btn:hover { background: #fff; transform: translateY(-1px); }
-    .sol-btn.on { background: #2f7a4a; color: #fff; }
+    .sol-btn:hover { background: #2a4a6e; transform: translateY(-1px); }
+    .sol-btn.on { background: var(--adim); border-color: var(--accent); color: var(--accent); }
     .sol-music-hint { margin-top: 10px; font-size: .73rem; line-height: 1.5; color: var(--muted); }
     .sol-spinner { font-size: .9rem; color: var(--muted); font-weight: 600; }
 
@@ -420,13 +420,13 @@
     .sol-quiz.is-flipped .sol-quiz-inner { transform: rotateY(180deg); }
     .sol-quiz-face { grid-area: 1 / 1; min-height: 200px; display: flex; flex-direction: column;
       gap: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-    .sol-quiz-back { transform: rotateY(180deg); background: #eaf1e8; }
+    .sol-quiz-back { transform: rotateY(180deg); background: #1b3540; }
     .sol-quiz-copy { font-family: inherit; font-size: 1rem; font-weight: 600;
       line-height: 1.5; overflow-wrap: anywhere; }
     .sol-card-hint { margin-top: auto; font-size: .73rem; color: var(--muted); }
     .sol-quiz:hover .sol-card-hint { text-decoration: underline; text-underline-offset: 3px; }
     .sol-quiz:focus-visible, .sol-btn:focus-visible, .sol-fact-source:focus-visible {
-      outline: 3px solid #3e694c; outline-offset: 5px; }
+      outline: 3px solid var(--accent); outline-offset: 5px; }
     .sol-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
@@ -438,13 +438,13 @@
       padding: 0; border: 0; background: transparent; font: inherit; pointer-events: auto;
       transition: none; -webkit-tap-highlight-color: transparent; }
     .nonna:hover, .nonna.is-speaking { animation-play-state: paused; }
-    .nonna:focus-visible { outline: 3px solid #3e694c; outline-offset: 4px; }
+    .nonna:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
     .sol-nonnas.is-still .nonna { animation: none; transform: none; }
     .sol-nonnas.is-still .nonna-a { left: 8%; }
     .sol-nonnas.is-still .nonna-b { left: auto; right: 8%; }
     .sol-nonnas.is-still .nonna-b .nn-say { transform: translateX(-50%); animation: none; opacity: 1; }
     .nonna .shadow { position: absolute; bottom: 2px; left: 50%; width: 76px; height: 11px;
-      margin-left: -38px; border-radius: 50%; background: rgba(90,25,15,.22);
+      margin-left: -38px; border-radius: 50%; background: rgba(0,0,0,.3);
       animation: nnShadow var(--nn-beat) infinite ease-in-out; }
     .nonna-a { animation: nnCrossA 17s linear infinite; }
     .nonna-b { bottom: 34px; width: 114px; height: 149px;
@@ -485,13 +485,13 @@
     /* Snakkeboble */
     .nn-say { position: absolute; top: -58px; left: 50%; transform: translateX(-50%);
       z-index: 3;
-      background: #fffaf0; color: #6b2618; font-weight: 900; font-size: .74rem;
+      background: var(--card); color: var(--text); border: 1px solid var(--cborder); font-weight: 900; font-size: .74rem;
       padding: 7px 12px; border-radius: 14px; white-space: nowrap;
       box-shadow: 0 3px 10px rgba(0,0,0,.18); opacity: 0;
       animation: nnSay 6.4s infinite; }
     .nonna-b .nn-say { transform: translateX(-50%) scaleX(-1); animation-delay: 3.2s; }
     .nn-say::after { content: ''; position: absolute; bottom: -6px; left: 50%; margin-left: -5px;
-      border: 5px solid transparent; border-top-color: #fffaf0; border-bottom: 0; }
+      border: 5px solid transparent; border-top-color: var(--card); border-bottom: 0; }
     @keyframes nnSay { 0%, 6% { opacity: 0; transform: translateX(-50%) scale(.7); }
                        12%, 42% { opacity: 1; transform: translateX(-50%) scale(1); }
                        52%, 100% { opacity: 0; transform: translateX(-50%) scale(.9); } }
@@ -766,40 +766,40 @@
   <svg class="sol-landscape" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="solHillFar" x2="0" y2="1">
-        <stop stop-color="#b0b99c"/><stop offset="1" stop-color="#94a383"/>
+        <stop stop-color="#294553"/><stop offset="1" stop-color="#1d3949"/>
       </linearGradient>
       <linearGradient id="solHillNear" x2="0" y2="1">
-        <stop stop-color="#819675"/><stop offset="1" stop-color="#6c8163"/>
+        <stop stop-color="#203d40"/><stop offset="1" stop-color="#17303a"/>
       </linearGradient>
     </defs>
-    <circle cx="1080" cy="100" r="52" fill="#f4ce8f" opacity=".55"/>
-    <path d="M0 315 Q200 175 390 265 T770 248 T1120 206 T1440 254 V520 H0Z" fill="#c4c9b3"/>
+    <circle cx="1080" cy="100" r="52" fill="var(--accent)" opacity=".2"/>
+    <path d="M0 315 Q200 175 390 265 T770 248 T1120 206 T1440 254 V520 H0Z" fill="#183149"/>
     <path d="M0 350 Q180 240 390 310 T820 286 T1170 292 T1440 264 V520 H0Z" fill="url(#solHillFar)"/>
     <path d="M0 395 Q240 300 480 390 T880 361 T1200 360 T1440 330 V520 H0Z" fill="url(#solHillNear)"/>
-    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#d8c4a0" stroke-width="23"/>
-    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#ecddba" stroke-width="13"/>
+    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#6a6554" stroke-width="23"/>
+    <path d="M480 520 Q785 428 658 373 Q620 354 607 345" fill="none" stroke="#9b875f" stroke-width="13"/>
     <g stroke-linejoin="round">
-      <path d="M529 277 H625 V354 H529Z" fill="#ead6b3"/>
-      <path d="M516 281 L577 245 L638 281Z" fill="#b9785c"/>
-      <path d="M532 279 L577 253 L622 279" fill="none" stroke="#cf9975" stroke-width="3"/>
-      <path d="M625 304 H667 V354 H625Z" fill="#d9bf97"/>
-      <path d="M617 306 L646 282 L678 306Z" fill="#a66b52"/>
-      <path d="M565 354 V328 a12 12 0 0 1 24 0 V354" fill="#64715a"/>
-      <path d="M542 305 V295 a5 5 0 0 1 10 0 V305Z M602 305 V295 a5 5 0 0 1 10 0 V305Z" fill="#728064"/>
-      <path d="M641 334 V323 a5 5 0 0 1 10 0 V334Z" fill="#68765f"/>
-      <path d="M533 355 H670" stroke="#a99270" stroke-width="3"/>
+      <path d="M529 277 H625 V354 H529Z" fill="#716349"/>
+      <path d="M516 281 L577 245 L638 281Z" fill="#714a3e"/>
+      <path d="M532 279 L577 253 L622 279" fill="none" stroke="#a5744b" stroke-width="3"/>
+      <path d="M625 304 H667 V354 H625Z" fill="#62563f"/>
+      <path d="M617 306 L646 282 L678 306Z" fill="#624236"/>
+      <path d="M565 354 V328 a12 12 0 0 1 24 0 V354" fill="#182c30"/>
+      <path d="M542 305 V295 a5 5 0 0 1 10 0 V305Z M602 305 V295 a5 5 0 0 1 10 0 V305Z" fill="#c79547"/>
+      <path d="M641 334 V323 a5 5 0 0 1 10 0 V334Z" fill="#c79547"/>
+      <path d="M533 355 H670" stroke="#514936" stroke-width="3"/>
     </g>
-    <g fill="#4f6b54">
+    <g fill="#122f32">
       <path d="M795 369 C763 358 784 292 795 262 C805 292 826 358 795 369Z"/>
       <path d="M824 376 C799 365 814 316 824 288 C834 316 850 365 824 376Z"/>
       <path d="M1015 361 C983 349 1003 274 1015 240 C1026 274 1048 349 1015 361Z"/>
       <path d="M365 370 C340 363 354 311 365 283 C375 311 390 363 365 370Z"/>
     </g>
-    <g stroke="#667051" stroke-width="4" stroke-linecap="round">
+    <g stroke="#3a5147" stroke-width="4" stroke-linecap="round">
       <path d="M795 368 V386 M824 374 V390 M1015 358 V380 M365 368 V390"/>
     </g>
-    <path d="M0 469 Q380 422 690 478 T1440 452 V520 H0Z" fill="#d5bd97"/>
-    <path d="M0 483 Q350 445 690 495 T1440 468" fill="none" stroke="#ead6b5" stroke-width="3" opacity=".6"/>
+    <path d="M0 469 Q380 422 690 478 T1440 452 V520 H0Z" fill="#122637"/>
+    <path d="M0 483 Q350 445 690 495 T1440 468" fill="none" stroke="#2a4757" stroke-width="3" opacity=".6"/>
   </svg>
   <div class="sol-inner">
     <div class="sol-flag"></div>
