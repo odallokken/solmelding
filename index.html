@@ -370,7 +370,8 @@
 
     /* ── Solhjørnet: italiensk modus ── */
     #solMode { position: fixed; inset: 0; z-index: 60; display: flex; flex-direction: column;
-      align-items: center; padding: 48px 20px 0; text-align: center; overflow-y: auto; isolation: isolate;
+      align-items: center; padding: 0 16px max(12px, env(safe-area-inset-bottom)); text-align: center;
+      overflow-y: auto; isolation: isolate; scroll-padding-top: 76px;
       --nn-beat: .5556s; --nn-bar: 1.1111s;
       --muted: #9ab8d0;
       color: var(--text);
@@ -382,19 +383,28 @@
     .sol-landscape { position: fixed; inset: auto 0 0; width: 100%; height: min(46vh, 440px);
       pointer-events: none; z-index: -1; }
     .sol-inner { position: relative; z-index: 1; max-width: 660px; width: 100%; flex-shrink: 0;
-      margin-top: auto; }
-    .sol-flag { width: 56px; height: 4px; border-radius: 4px; margin: 0 auto 14px;
+      margin-top: 12px; }
+    .sol-toolbar { position: sticky; top: 0; z-index: 4; width: 100%; max-width: 660px;
+      display: flex; justify-content: space-between; gap: 8px; flex-shrink: 0;
+      padding: max(8px, env(safe-area-inset-top)) 0 8px; background: var(--bg); }
+    .sol-toolbar .sol-btn { min-height: 44px; padding: 8px 12px; font-size: .8rem; }
+    .sol-flag { width: 40px; height: 3px; border-radius: 4px; margin: 0 auto 10px;
       background: linear-gradient(90deg, #009246 0 33.3%, #f6f6f6 33.3% 66.6%, #ce2b37 66.6% 100%);
       box-shadow: 0 2px 8px rgba(0,0,0,.22); }
-    .sol-place { font-size: 2.1rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.1; color: var(--accent); }
-    .sol-place .um { display: block; font-size: 2.4rem; margin-bottom: 2px; }
-    .sol-state { margin-top: 16px; font-size: .72rem; font-weight: 600; text-transform: uppercase;
+    .sol-place { font-size: 1.6rem; font-weight: 800; letter-spacing: -.5px; line-height: 1.2; color: var(--accent); }
+    .sol-place .um { font-size: 1.4rem; margin-right: 7px; }
+    .sol-state { margin-top: 18px; font-size: .72rem; font-weight: 600; text-transform: uppercase;
       letter-spacing: .07em; color: var(--muted); }
-    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(3rem, 17vw, 5.2rem); font-weight: 800;
+    .sol-count { font-variant-numeric: tabular-nums; font-size: clamp(2.7rem, 14vw, 4.5rem); font-weight: 800;
       line-height: 1.1; letter-spacing: -.5px; margin: 6px 0 4px; color: var(--accent); }
-    .sol-note { font-size: .9rem; font-weight: 600; min-height: 1.3em; }
-    .sol-sub { margin-top: 8px; font-size: .78rem; color: var(--muted); }
-    .sol-actions { margin-top: 18px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .sol-count.is-long { font-size: clamp(1.8rem, 9.5vw, 3.2rem); }
+    .sol-note { font-size: .85rem; font-weight: 600; min-height: 1.3em; line-height: 1.5; }
+    .sol-sub { margin-top: 8px; font-size: .78rem; color: var(--muted); line-height: 1.5; overflow-wrap: anywhere; }
+    .sol-info { margin: 8px 0 0; color: var(--muted); font-size: .75rem; }
+    .sol-info > summary { display: list-item; width: fit-content; margin: auto; min-height: 44px;
+      padding: 12px 8px; cursor: pointer; }
+    .sol-info-body { padding: 0 12px 14px; max-width: 480px; margin: auto; line-height: 1.5; }
+    .sol-info a { color: inherit; }
     .sol-btn { border: 1px solid var(--cborder); cursor: pointer; font-family: inherit; font-weight: 600; font-size: .9rem;
       padding: 10px 18px; border-radius: 10px; background: var(--card); color: var(--text);
       transition: background .15s, transform .1s; }
@@ -403,36 +413,42 @@
     .sol-music-hint { margin-top: 10px; font-size: .73rem; line-height: 1.5; color: var(--muted); }
     .sol-spinner { font-size: .9rem; color: var(--muted); font-weight: 600; }
 
-    .sol-daily { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px;
-      margin-top: 22px; text-align: left; }
+    .sol-daily { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px;
+      margin-top: 10px; text-align: left; align-items: start; }
     .sol-day-card { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+    .sol-fact-panel { display: block; padding: 0; }
+    .sol-fact-panel > summary { padding: 16px; min-height: 52px; cursor: pointer;
+      color: var(--text); font-size: .85rem; font-weight: 600; }
+    .sol-fact-panel > summary::marker { color: var(--accent); }
+    .sol-fact-body { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 0 16px 12px; }
     .sol-card-kicker { margin: 0; font-size: .71rem; font-weight: 600;
       letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
     .sol-fact-date { font-size: .73rem; color: var(--muted); }
     .sol-fact { margin: 0; font-size: .9rem; line-height: 1.5; overflow-wrap: anywhere; }
     .sol-fact strong { font-weight: 700; }
-    .sol-fact-source { margin-top: auto; padding-top: 5px; font-size: .73rem; color: var(--text);
+    .sol-fact-source { margin-top: auto; padding: 12px 0; min-height: 44px; font-size: .73rem; color: var(--text);
       text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .sol-quiz { width: 100%; padding: 0; border: 0; background: none; color: inherit;
       text-align: left; font: inherit; cursor: pointer; perspective: 1000px; border-radius: 14px; }
     .sol-quiz-inner { display: grid; height: 100%; transform-style: preserve-3d;
       transition: transform .55s cubic-bezier(.2,.7,.2,1); }
     .sol-quiz.is-flipped .sol-quiz-inner { transform: rotateY(180deg); }
-    .sol-quiz-face { grid-area: 1 / 1; min-height: 200px; display: flex; flex-direction: column;
-      gap: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .sol-quiz-face { grid-area: 1 / 1; min-height: 136px; display: flex; flex-direction: column;
+      gap: 10px; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
     .sol-quiz-back { transform: rotateY(180deg); background: #1b3540; }
     .sol-quiz-copy { font-family: inherit; font-size: 1rem; font-weight: 600;
       line-height: 1.5; overflow-wrap: anywhere; }
     .sol-card-hint { margin-top: auto; font-size: .73rem; color: var(--muted); }
     .sol-quiz:hover .sol-card-hint { text-decoration: underline; text-underline-offset: 3px; }
-    .sol-quiz:focus-visible, .sol-btn:focus-visible, .sol-fact-source:focus-visible {
+    .sol-quiz:focus-visible, .sol-btn:focus-visible, .sol-fact-source:focus-visible,
+    #solMode summary:focus-visible, .sol-info a:focus-visible {
       outline: 3px solid var(--accent); outline-offset: 5px; }
     .sol-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
       overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 
     /* ── To nonnaer som danser kjøkkendans ── */
     /* Takten følger musikken: 108 punktert firedel gir 1,111 s per takt. */
-    .sol-nonnas { position: relative; width: 100%; height: 265px; flex-shrink: 0;
+    .sol-nonnas { position: relative; width: 100%; height: 215px; flex-shrink: 0;
       margin-top: auto; overflow: hidden; pointer-events: none; z-index: 2; }
     .nonna { position: absolute; bottom: 8px; width: 130px; height: 170px;
       padding: 0; border: 0; background: transparent; font: inherit; pointer-events: auto;
@@ -502,15 +518,19 @@
                         12%, 42% { opacity: 1; transform: translateX(-50%) scaleX(-1) scale(1); }
                         52%, 100% { opacity: 0; transform: translateX(-50%) scaleX(-1) scale(.9); } }
 
-    @media (max-width: 540px) {
-      #solMode { padding-top: 30px; }
-      .sol-daily { grid-template-columns: minmax(0, 1fr); margin-top: 22px; }
+    @media (min-width: 600px) {
+      .sol-inner { margin-top: 24px; }
+      .sol-place { font-size: 1.9rem; }
+      .sol-daily { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 20px; }
       .sol-quiz-face { min-height: 168px; }
+      .sol-nonnas { height: 265px; }
     }
-    @media (max-width: 480px) { .sol-nonnas { height: 215px; } .nonna { width: 100px; height: 132px; }
+    @media (max-width: 480px) { .sol-nonnas { height: 190px; } .nonna { width: 100px; height: 132px; }
       .nonna-b { width: 88px; height: 116px; } .nn-say { top: -48px; font-size: .68rem; } }
     @media (prefers-reduced-motion: reduce) {
-      #solMode { animation: none; padding-bottom: 36px; }
+      #solMode { animation: none; }
+      .sol-btn { transition: none; }
+      .sol-btn:hover { transform: none; }
       .sol-nonnas * { animation: none !important; }
       .nonna-a { left: 8%; }
       .nonna-b { left: auto; right: 8%; }
@@ -763,6 +783,10 @@
 
 <!-- ── Solhjørnet: italiensk modus ── -->
 <div id="solMode" class="hidden" role="dialog" aria-modal="true" aria-labelledby="solModeTitle">
+  <div class="sol-toolbar">
+    <button class="sol-btn" id="solCloseBtn" onclick="exitSolMode()">← Tilbake</button>
+    <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-describedby="solMusicHint">🎵 Musikk</button>
+  </div>
   <svg class="sol-landscape" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
     <defs>
       <linearGradient id="solHillFar" x2="0" y2="1">
@@ -803,25 +827,21 @@
   </svg>
   <div class="sol-inner">
     <div class="sol-flag"></div>
-    <div class="sol-place" id="solModeTitle"><span class="um">⛱️</span>Solhjørnet</div>
+    <h2 class="sol-place" id="solModeTitle"><span class="um" aria-hidden="true">⛱️</span>Solhjørnet</h2>
     <div class="sol-state" id="solState">Regner ut …</div>
     <div class="sol-count" id="solCount">–</div>
     <div class="sol-note" id="solNote"></div>
-    <div class="sol-sub" id="solSub"></div>
-    <div class="sol-sub" id="solPoint"></div>
-    <div class="sol-sub"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit">Bygningskart © OpenStreetMap-bidragsytere</a><span id="solBuildingDate"></span></div>
-    <div class="sol-actions">
-      <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-describedby="solMusicHint">🎵 Musikk</button>
-      <button class="sol-btn" onclick="exitSolMode()">← Tilbake</button>
-    </div>
     <p class="sol-music-hint hidden" id="solMusicHint" role="status"></p>
+    <details class="sol-info" id="solInfo">
+      <summary>Om soltidene</summary>
+      <div class="sol-info-body">
+        <p>Beregnet sol uten skydekke. Bygninger og terreng er med, nærliggende trær er ikke med.</p>
+        <div class="sol-sub" id="solSub"></div>
+        <div class="sol-sub" id="solPoint"></div>
+        <div class="sol-sub"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Bygningskart © OpenStreetMap-bidragsytere</a><span id="solBuildingDate"></span></div>
+      </div>
+    </details>
     <section class="sol-daily" aria-label="Dagens Italia">
-      <article class="sol-day-card" aria-labelledby="solFactHeading">
-        <h2 class="sol-card-kicker" id="solFactHeading">På denne dag</h2>
-        <time class="sol-fact-date" id="solFactDate"></time>
-        <p class="sol-fact"><strong id="solFactYear"></strong> <span id="solFactText">Henter dagens historie …</span></p>
-        <a class="sol-fact-source hidden" id="solFactSource" target="_blank" rel="noopener noreferrer">Les mer ↗</a>
-      </article>
       <button class="sol-quiz" id="solQuiz" type="button" onclick="solFlipQuiz()" aria-pressed="false">
         <span class="sol-quiz-inner" aria-hidden="true">
           <span class="sol-quiz-face sol-quiz-front">
@@ -836,6 +856,15 @@
           </span>
         </span>
       </button>
+      <details class="sol-day-card sol-fact-panel" id="solDailyFact">
+        <summary>Dagens Italia</summary>
+        <div class="sol-fact-body">
+          <h3 class="sol-card-kicker" id="solFactHeading">På denne dag</h3>
+          <time class="sol-fact-date" id="solFactDate"></time>
+          <p class="sol-fact"><strong id="solFactYear"></strong> <span id="solFactText">Henter dagens historie …</span></p>
+          <a class="sol-fact-source hidden" id="solFactSource" target="_blank" rel="noopener noreferrer">Les mer ↗</a>
+        </div>
+      </details>
       <span class="sol-sr-only" id="solQuizAnnouncement" aria-live="polite"></span>
     </section>
     <p class="sol-music-hint" id="solSpeechNotice" role="status">Trykk på en nonna 🔊 · KI-genererte stemmer</p>
@@ -3300,12 +3329,14 @@ function solRender(now = Date.now()) {
   const t = solCurrentTarget(now);
   if (!t) {
     solEl('solState').textContent = 'Ingen sol på en god stund';
+    solEl('solCount').classList.remove('is-long');
     solEl('solCount').textContent = '–';
     solEl('solNote').textContent = 'Sola når ikke hjørnet de neste månedene.';
     solEl('solSub').textContent = '';
     return;
   }
   const hhmm = ms => new Date(ms).toLocaleTimeString('nb-NO', { hour: '2-digit', minute: '2-digit' });
+  solEl('solCount').classList.toggle('is-long', t.at - now >= 86400000);
   solEl('solCount').textContent = solFmtCountdown(t.at - now);
 
   if (t.kind === 'left') {
@@ -3398,6 +3429,9 @@ async function enterSolMode() {
   box.style.setProperty('--nn-bar', (SOL_UNIT * SOL_BEATS) + 's');
   if (box.classList.contains('hidden')) solPreviousFocus = document.activeElement;
   box.classList.remove('hidden');
+  box.scrollTop = 0;
+  solEl('solInfo').open = false;
+  solEl('solDailyFact').open = false;
   solEl('app').inert = true;
   document.body.style.overflow = 'hidden';
   document.documentElement.style.overflowY = 'hidden';
@@ -3406,9 +3440,10 @@ async function enterSolMode() {
   solDailyTimer = setInterval(solUpdateDaily, 1000);
   solStartSaying();
   solStartMusic();
-  solEl('solMusicBtn').focus({ preventScroll: true });
+  solEl('solCloseBtn').focus({ preventScroll: true });
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';
+  solEl('solCount').classList.remove('is-long');
   solEl('solNote').textContent = 'Henter bygningskartet …';
   solEl('solSub').textContent = '';
   solEl('solPoint').textContent = `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° Ø · bakkeplan (${eye.toFixed(1).replace('.', ',')} m) · uten trær`;
@@ -3926,7 +3961,10 @@ document.addEventListener('keydown', e => {
   if (mode.classList.contains('hidden')) return;
   if (e.key === 'Escape') exitSolMode();
   if (e.key === 'Tab') {
-    const controls = [...mode.querySelectorAll('button, a[href]')].filter(el => el.offsetParent !== null);
+    const controls = [...mode.querySelectorAll('button, a[href], summary')].filter(el => {
+      const closed = el.closest('details:not([open])');
+      return el.offsetParent !== null && (!closed || el === closed.querySelector('summary'));
+    });
     const first = controls[0], last = controls[controls.length - 1];
     if (e.shiftKey && document.activeElement === first) {
       e.preventDefault(); last.focus();

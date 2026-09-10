@@ -120,6 +120,11 @@ Den store **⛱️ Solhjørnet**-knappen øverst på forsiden åpner en egen ful
 med italiensk sommerstemning. Visningen bruker forsidens mørkeblå bakgrunn,
 blå kort og gullfargede detaljer:
 
+- **Ryddig mobilvisning** – solstatus og nedtelling kommer først. **Tilbake** og
+  **Musikk** blir liggende øverst når du ruller. **Om soltidene** åpner
+  beregningsgrunnlag, koordinater og kilder, mens **Dagens Italia** åpner dagens
+  historie. Quizen og nonnaene er fortsatt lett tilgjengelige. Begge detaljfeltene
+  starter lukket ved hvert besøk, og kan åpnes med tastatur.
 - **Solstatus på knappen** – viser om sola er på hjørnet nå, hvor lenge den blir,
   eller hvor lenge det er til neste sol. En grønn linje tømmes gjennom soltiden;
   i skyggen fylles en blå linje de siste 24 timene før sola kommer. Lengre ventetid
