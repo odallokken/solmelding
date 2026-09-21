@@ -785,7 +785,7 @@
 <div id="solMode" class="hidden" role="dialog" aria-modal="true" aria-labelledby="solModeTitle">
   <div class="sol-toolbar">
     <button class="sol-btn" id="solCloseBtn" onclick="exitSolMode()">← Tilbake</button>
-    <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-describedby="solMusicHint">🎵 Musikk</button>
+    <button class="sol-btn" id="solMusicBtn" onclick="solToggleMusic()" aria-pressed="false" aria-describedby="solMusicHint">🎵 Musikk</button>
   </div>
   <svg class="sol-landscape" viewBox="0 0 1440 520" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false">
     <defs>
@@ -3495,7 +3495,6 @@ async function enterSolMode() {
   clearInterval(solDailyTimer);
   solDailyTimer = setInterval(solUpdateDaily, 1000);
   solStartSaying();
-  solStartMusic();
   solEl('solCloseBtn').focus({ preventScroll: true });
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';

@@ -197,8 +197,9 @@ blå kort og gullfargede detaljer:
   variasjoner erstatter den korte trekkspillsløyfen. Volumet er dempet, med myk
   inn- og utfading og uten vedvarende tamburin. Hele stykket rendres én gang og
   sløyfes av lydmotoren, uten tidtakere som kan forstyrre rytmen i bakgrunnen.
-  Musikken starter ved knappetrykket, uavhengig av hvor lang tid horisontdataene tar,
-  og kan slås av og på.
+  Musikken er **av som standard** hver gang Solhjørnet åpnes, også ved gjenåpning.
+  Den starter først når du trykker på **Musikk**, uavhengig av hvor lang tid
+  horisontdataene tar, og kan slås av og på. Den stoppes når modusen lukkes.
   På iPhone aktiveres lydmotoren i selve trykket. Nettlesere med Audio Session API
   bruker `playback` for musikken i stedet for Web Audios vanlige omgivelseslyd;
   forrige lydtype gjenopprettes når musikken stoppes. Blokkert eller avbrutt
