@@ -838,7 +838,7 @@
         <p>Beregnet sol uten skydekke. Bygninger og terreng er med, nærliggende trær er ikke med.</p>
         <div class="sol-sub" id="solSub"></div>
         <div class="sol-sub" id="solPoint"></div>
-        <p class="sol-sub" id="solCalibrationNote">Siste solslutt kalibreres etter observasjonen ca. kl. 18:55 den 10. september 2026. Dette er en foreløpig tidskorreksjon bare for Solhjørnet, ikke en ny måling av bygningene. Avviket kan variere med årstiden. Klokkeslett vises i norsk tid.</p>
+        <p class="sol-sub" id="solCalibrationNote">Siste solslutt kalibreres etter observasjonen ca. kl. 18:16 den 21. september 2026. Den brukes for alle framtidige datoer; kalibreringen fra 10. september beholdes for 10.–20. september. Dette er en foreløpig tidskorreksjon bare for Solhjørnet, ikke en ny måling av bygningene. Avviket kan variere med årstiden. Klokkeslett vises i norsk tid.</p>
         <div class="sol-sub"><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">Bygningskart © OpenStreetMap-bidragsytere</a><span id="solBuildingDate"></span></div>
       </div>
     </details>
@@ -3077,11 +3077,17 @@ function drawPanorama(d) {
 //  SOLHJØRNET – ITALIENSK MODUS MED NEDTELLING
 // ════════════════════════════════════════════════════════
 const SOL_EYE_HEIGHT = 1.7; // Fast øyehøyde for en person som står på bakkeplan.
-const SOL_OBSERVED_END = Object.freeze({
-  lat: 59.93413, lng: 10.76767, eye: 1.7,
-  day: Date.parse('2026-09-10T00:00:00Z'),
-  at: Date.parse('2026-09-10T18:55:00+02:00'),
-});
+const SOL_CALIBRATION_POINT = Object.freeze({ lat: 59.93413, lng: 10.76767, eye: 1.7 });
+const SOL_OBSERVED_ENDS = Object.freeze([
+  Object.freeze({
+    day: Date.parse('2026-09-10T00:00:00Z'),
+    at: Date.parse('2026-09-10T18:55:00+02:00'),
+  }),
+  Object.freeze({
+    day: Date.parse('2026-09-21T00:00:00Z'),
+    at: Date.parse('2026-09-21T18:16:00+02:00'),
+  }),
+]);
 let solCalibration = null;
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 let solProfilePromise = null, solProfileError = null, solProfileSourceDate = '';
@@ -3258,19 +3264,23 @@ function solDayStart(utcDay) {
 }
 
 function solCalibrateProfile(profile) {
-  const observation = SOL_OBSERVED_END;
-  if (profile.lat !== observation.lat || profile.lng !== observation.lng || profile.eye !== observation.eye) {
+  const point = SOL_CALIBRATION_POINT;
+  if (profile.lat !== point.lat || profile.lng !== point.lng || profile.eye !== point.eye) {
     throw new Error('calibration-point-mismatch');
   }
-  const reference = computeSunWindows(solDayStart(observation.day), profile.lat, profile.lng, profile);
-  if (reference.last === null) throw new Error('calibration-reference-missing');
-  // En modell som allerede slutter tidligere, skal ikke få lagt til sol.
-  return { offsetMs: Math.max(0, reference.last - observation.at) };
+  return SOL_OBSERVED_ENDS.map(observation => {
+    const reference = computeSunWindows(solDayStart(observation.day), profile.lat, profile.lng, profile);
+    if (reference.last === null) throw new Error('calibration-reference-missing');
+    // En modell som allerede slutter tidligere, skal ikke få lagt til sol.
+    return { day: observation.day, offsetMs: Math.max(0, reference.last - observation.at) };
+  });
 }
 
 function solApplyCalibration(result, utcDay) {
-  if (!solCalibration || solCalibration.offsetMs === 0 || utcDay < SOL_OBSERVED_END.day || result.last === null) return result;
-  const endAt = result.last - solCalibration.offsetMs;
+  // Observasjonene står i datorekkefølge; en nyere erstatter den gamle, uten å summeres.
+  const calibration = solCalibration && solCalibration.filter(entry => entry.day <= utcDay).pop();
+  if (!calibration || calibration.offsetMs === 0 || result.last === null) return result;
+  const endAt = result.last - calibration.offsetMs;
   // Juster bare siste solslutt. Starttidene og den lagrede horisonten er urørt.
   const windows = result.windows.map(([start, end]) => [
     start, Math.min(end, endAt),
