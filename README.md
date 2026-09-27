@@ -18,7 +18,7 @@ En enkel webapp som viser solstatistikk for valgfritt sted og dato i Norge.
 - **Sol-grafikk** av Arnte tegnet av Oda 10 år <3
 - **Instagram-eksport** – last ned 1080×1920 px PNG med gjennomsiktig bakgrunn slik at det ev. kan legges oppå annet bilde
 - Husker **siste posisjon** (localStorage)
-- Grunnberegningene kjører **offline** (NOAA-algoritme). Bare kartet og horisontberegningen trenger nett.
+- Grunnberegningene kjører **offline** (NOAA-algoritme). Kart, horisontberegning og felles backgammonpoeng trenger nett.
 
 ## Forsiden på mobil
 
@@ -246,13 +246,70 @@ heltall kan skrives inn. Under **Registreringer** vises nye resultater med
 norsk dato og klokkeslett. **Angre siste registrering** fjerner den siste nye
 registreringen, aldri startpoengene.
 
-Nye resultater lagres i `localStorage` under `solmelding_backgammon_v1` og
-beholdes etter oppfriskning, uten at startpoengene legges til flere ganger.
-De er **bare lagret i denne nettleseren**, ikke synkronisert mellom enheter.
-Sletting av nettleserdata sletter nye registreringer. Lagringsfeil vises
-uttrykkelig; ugyldige lagrede data blir ikke overskrevet med startpoengene.
-PIN-koden er en skjult inngang i en statisk nettside, **ikke sikker
-autentisering**. Ikke bruk rommet til sensitive opplysninger.
+Poengene lagres **på serveren i Netlify Blobs**, ikke i nettleseren.
+Alle enheter bruker samme tavle. Den hentes når PIN-koden godkjennes; trykk
+**Oppdater poeng** for å hente endringer fra andre spillere mens rommet er åpent.
+Samtidige registreringer overskriver ikke hverandre, og ny innsending etter en
+nettverksfeil teller ikke samme registrering dobbelt. Angring kontrollerer at
+registreringen fremdeles er den siste. Lagringsfeil vises uttrykkelig; det er
+ingen automatisk tilbakegang til lokale poeng eller nullstilling av skadede data.
+
+PIN-koden kontrolleres på serveren og holdes bare i minnet mens rommet er åpent.
+En firesifret, delt kode er **ikke sterk autentisering**. Ikke bruk rommet til
+sensitive opplysninger. Funksjonen har en grense på 30 forespørsler per minutt
+per IP/domene; vent et minutt hvis denne grensen nås.
+
+#### Publisering på Netlify
+
+Denne versjonens felles poengtavle krever Netlify; GitHub Pages kan ikke kjøre
+serverfunksjonen. Den eksisterende Pages-adressen er ikke flyttet automatisk.
+
+1. Koble `odallokken/solmelding` til en Netlify-side, og velg grenen med denne
+   endringen. `netlify.toml` angir Node 22, `npm run build` og publiseringsmappen
+   `dist`. Bruk Git-basert utrulling, ikke bare opplasting av statiske filer.
+2. Sett miljøvariabelen **`SCORES_PIN`** til den avtalte firesifrede koden i
+   Netlifys innstillinger, med tilgang for **Functions**. Koden må være en
+   streng som beholder innledende null. Ikke legg den i klientkode eller Git.
+3. Rull ut på nytt og åpne Netlify-adressen. Funksjonen på
+   `/.netlify/functions/scores` oppretter startpoengene én gang ved første
+   godkjente åpning. Blobs-tilgang håndteres automatisk av Netlify.
+4. Registrer et resultat på én enhet og åpne/oppdater tavlen på en annen.
+   Kontroller også at poengene beholdes etter en ny produksjonsutrulling før
+   Netlify-adressen tas i bruk av alle spillerne.
+
+Produksjonsdata ligger i den sideomfattende Blobs-lagringen **`backgammon`**,
+nøkkel **`scoreboard`**, og overlever nye utrullinger på samme Netlify-side.
+Forhåndsvisninger bruker egen lagring per utrulling og endrer ikke produksjon.
+En ny Netlify-side har et nytt datasett. Ikke slett produksjonslageret; ta en
+kopi av JSON-dokumentet før en eventuell flytting. Angrede registreringer
+beholdes som markeringer i dokumentet slik at ny innsending ikke gjenoppretter dem.
+
+#### Gamle poeng fra nettleseren
+
+Startpoengene er allerede på serveren. Ekstra resultater fra den gamle versjonen
+flyttes bare ved et uttrykkelig trykk på **Flytt gamle resultater → Importer
+resultater**. Lokal lagring på samme nettadresse kan leses automatisk som et
+importforslag, men endres eller slettes aldri. Import kan gjentas uten dobbeltelling.
+
+GitHub Pages og Netlify har forskjellige nettadresser og kan ikke lese hverandres
+nettleserlagring. For å hente en sikkerhetskopi: åpne den gamle Pages-siden i
+nettleseren som har resultatene, og kjør følgende i utviklerkonsollen:
+
+```js
+const saved = localStorage.getItem('solmelding_backgammon_v1');
+if (!saved) throw new Error('Ingen gamle resultater i denne nettleseren.');
+const url = URL.createObjectURL(new Blob([saved], { type: 'application/json' }));
+const link = document.createElement('a');
+link.href = url;
+link.download = 'backgammon-resultater.json';
+link.click();
+setTimeout(() => URL.revokeObjectURL(url), 1000);
+```
+
+Velg deretter filen under **Flytt gamle resultater** på Netlify-siden og trykk
+**Importer resultater**. Registreringer med samme ID importeres bare én gang;
+uavhengig registrerte kopier av samme kamp på ulike enheter må ikke importeres
+begge steder. Ved avbrutt import kan resten prøves igjen.
 
 ### Bygningsgrunnlag for Solhjørnet
 
@@ -313,10 +370,12 @@ Kan lagres på hjemskjerm på iPhone e.l.
 Solhjørnets bygningskart og den valgfrie 3D-visningen må åpnes via en webserver
 (for eksempel den publiserte siden), ikke `file://`. 3D-visningen bruker
 JavaScript-moduler og krever WebGL2. Kart- og høydedata krever nett.
+Felles backgammonpoeng krever Netlify-oppsettet beskrevet over.
 
 ## Teknisk
 
-- Ren HTML/CSS/JavaScript uten build-steg. Den valgfrie 3D-visningen bruker lokalt
+- Ren HTML/CSS/JavaScript; Netlify-byggesteget kopierer bare offentlige filer
+  til `dist` (ingen klientrammeverk). Den valgfrie 3D-visningen bruker lokalt
   medfølgende Three.js 0.186.0; resten av appen trenger ikke 3D-biblioteket.
 - `surroundings-data.mjs` bygger geometrien fra kartlegging og høydedata;
   `surroundings-view.mjs` tegner og styrer første-personsvisningen.
@@ -329,6 +388,11 @@ JavaScript-moduler og krever WebGL2. Kart- og høydedata krever nett.
   bare ved åpning av 3D og uten API-nøkkel. Større bruk må avklares med tjenesteleverandøren.
 - Kartbakgrunn via [Kartverkets WMTS-cache](https://kartverket.no/api-og-data/kartgrunnlag), tegnet i et eget lite kart uten kartbibliotek
 - All solberegning skjer lokalt i nettleseren
+- Backgammon: én Netlify Function og ett JSON-dokument i Netlify Blobs.
+  `npm ci`, `npm test` og `npm run build` krever Node 22.12 eller nyere.
+  Testene bruker SDK-et med en lokal testtransport for sterke lesinger og
+  betingede skrivinger; de kobler ikke til produksjonsdata. SDK-ets lokale
+  BlobsServer mangler ETag på lesinger og brukes derfor ikke til disse testene.
 
 ## Kreditering
 

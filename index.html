@@ -1039,8 +1039,9 @@
     </form>
 
     <section id="bgScores" hidden aria-label="Poengtavle">
-      <p class="bg-local">Lagres bare i denne nettleseren · ikke delt mellom enheter.</p>
+      <p class="bg-local">Felles poengtavle · lagres på serveren.</p>
       <p id="bgStatus" role="status" aria-live="polite"></p>
+      <button id="bgRefresh" type="button">Oppdater poeng</button>
       <button id="bgRetry" type="button" hidden>Prøv å lese poengene igjen</button>
       <div id="bgScoreData" hidden>
         <section aria-labelledby="bgTotalsTitle">
@@ -1080,6 +1081,15 @@
           <ol id="bgHistory"></ol>
           <button type="button" id="bgUndo" disabled>Angre siste registrering</button>
           <p id="bgUndoStatus" role="status" aria-live="polite"></p>
+        </details>
+        <details class="bg-panel">
+          <summary>Flytt gamle resultater</summary>
+          <p class="bg-muted">Importer bare nye registreringer fra den gamle poengtavlen. Startpoengene er allerede med. Samme registrering importeres ikke to ganger.</p>
+          <label for="bgImportFile">Velg sikkerhetskopi (JSON)</label>
+          <input id="bgImportFile" type="file" accept=".json,application/json">
+          <p id="bgImportInfo" class="bg-muted"></p>
+          <button id="bgImport" type="button" disabled>Importer resultater</button>
+          <p id="bgImportStatus" role="status" aria-live="polite"></p>
         </details>
       </div>
     </section>

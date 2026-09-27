@@ -36,6 +36,7 @@
 #bgMode p { line-height: 1.5; }
 #bgMode .bg-muted, #bgMode .bg-local { color: #d1c5ac; font-size: .8rem; }
 #bgMode .bg-local { margin: 14px 0 6px; }
+#bgMode #bgRefresh, #bgMode #bgRetry { margin-bottom: 16px; }
 #bgMode .bg-board {
   margin-top: 8px;
   background: #705035;
