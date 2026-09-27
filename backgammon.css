@@ -1,0 +1,150 @@
+#bgMode {
+  width: min(100% - 32px, 660px);
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 1px solid #786143;
+  border-radius: 22px;
+  background: #102b2d;
+  color: #f7efdf;
+  box-shadow: 0 24px 100px #0009;
+  font: inherit;
+  color-scheme: dark;
+}
+#bgMode::backdrop { background: #08131fe8; }
+#bgMode [hidden] { display: none !important; }
+#bgMode .bg-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: max(10px, env(safe-area-inset-top)) 16px 10px;
+  background: #102b2d;
+  border-bottom: 1px solid #38514e;
+}
+#bgMode .bg-toolbar span { color: #d1c5ac; font-size: .75rem; }
+#bgMode .bg-content { padding: 8px 20px max(24px, env(safe-area-inset-bottom)); }
+#bgMode h2 { font-size: 1.9rem; letter-spacing: -.04em; margin: 12px 0 6px; color: #f3cb83; }
+#bgMode #bgTitle:focus { outline: none; }
+#bgMode h3 { font-size: 1rem; margin: 0 0 10px; }
+#bgMode p { line-height: 1.5; }
+#bgMode .bg-muted, #bgMode .bg-local { color: #d1c5ac; font-size: .8rem; }
+#bgMode .bg-local { margin: 14px 0 6px; }
+#bgMode .bg-board {
+  margin-top: 8px;
+  background: #705035;
+  border: 3px solid #96724a;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 2px #3d2d20;
+}
+#bgMode .bg-board svg { display: block; width: 100%; height: auto; }
+#bgMode.is-unlocked .bg-board { max-width: 240px; }
+#bgMode.is-unlocked .bg-intro { display: none; }
+#bgMode button {
+  min-height: 44px;
+  padding: 10px 14px;
+  background: #29433f;
+  color: #f7efdf;
+  border: 1px solid #577068;
+  border-radius: 10px;
+  font: inherit;
+  font-size: .88rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+#bgMode button:hover { background: #36544d; }
+#bgMode button:disabled { opacity: .5; cursor: not-allowed; }
+#bgMode .bg-primary {
+  width: 100%;
+  background: #f3cb83;
+  border-color: #f3cb83;
+  color: #182a28;
+  font-weight: 750;
+}
+#bgMode .bg-primary:hover { background: #ffdda1; }
+#bgMode :is(button, input, select, summary):focus-visible {
+  outline: 3px solid #f3cb83;
+  outline-offset: 3px;
+}
+#bgMode .bg-panel {
+  margin: 20px 0;
+  padding: 16px;
+  border: 1px solid #456058;
+  border-radius: 14px;
+  background: #193732;
+}
+#bgMode fieldset { min-width: 0; border: 0; padding: 0; margin: 0; }
+#bgMode label { display: block; font-size: .82rem; font-weight: 650; margin: 12px 0 7px; }
+#bgMode input, #bgMode select {
+  width: 100%;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px;
+  border: 1px solid #668076;
+  border-radius: 9px;
+  background: #102b2d;
+  color: #f7efdf;
+  font: inherit;
+  font-size: 16px;
+}
+#bgMode #bgPin { max-width: 210px; font-size: 1.7rem; letter-spacing: .5em; text-align: center; }
+#bgMode .bg-error, #bgMode [role="status"][data-error="true"] { color: #ffc5b4; }
+#bgMode .bg-error { min-height: 1.5em; margin: 8px 0; font-size: .85rem; }
+#bgMode [role="status"] { margin: 8px 0 14px; font-size: .85rem; color: #bce7c6; }
+#bgMode [role="status"]:empty { display: none; }
+#bgMode .bg-totals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+#bgMode .bg-total {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px;
+  text-align: center;
+  border-radius: 12px;
+  background: #25433c;
+  border: 1px solid #456058;
+  overflow-wrap: anywhere;
+}
+#bgMode .bg-total span { font-size: .8rem; }
+#bgMode .bg-total strong { font-size: 1.7rem; color: #f3cb83; font-variant-numeric: tabular-nums; }
+#bgMode .bg-players { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+#bgMode .bg-points-row { display: flex; gap: 10px; align-items: center; }
+#bgMode .bg-points-row input { flex: 1; width: 0; }
+#bgMode .bg-quick { display: flex; gap: 6px; }
+#bgMode .bg-quick button { width: 44px; padding: 8px; }
+#bgMode .bg-quick [aria-pressed="true"] { background: #f3cb83; color: #182a28; border-color: #f3cb83; }
+#bgMode #bgResultPreview { margin: 12px 0; }
+#bgMode .bg-pairs { display: grid; gap: 8px; margin: 12px 0; }
+#bgMode .bg-pair {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  border-radius: 10px;
+  background: #193732;
+  border-left: 3px solid #bd744e;
+}
+#bgMode .bg-pair > :last-child { text-align: right; }
+#bgMode .bg-pair strong { font-size: 1.2rem; color: #f3cb83; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+#bgMode summary { min-height: 44px; cursor: pointer; padding: 10px 0; font-weight: 650; }
+#bgMode #bgHistory { list-style: none; margin: 12px 0; }
+#bgMode #bgHistory li { padding: 12px 0; border-top: 1px solid #456058; overflow-wrap: anywhere; line-height: 1.5; }
+#bgMode #bgHistory time { display: block; color: #d1c5ac; font-size: .75rem; }
+#bgMode .bg-sr-only {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip-path: inset(50%); white-space: nowrap;
+}
+@media (max-width: 480px) {
+  #bgMode { width: 100%; height: 100dvh; max-height: 100dvh; border: 0; border-radius: 0; }
+  #bgMode .bg-content { padding-left: 16px; padding-right: 16px; }
+  #bgMode .bg-panel { padding: 14px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #bgMode button { transition: none; }
+}

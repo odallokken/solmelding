@@ -227,6 +227,33 @@ blå kort og gullfargede detaljer:
   Ingen eksterne bilder lastes ned.
 - Lukkes med **← Tilbake** eller **Esc**.
 
+### Skjult backgammonrom
+
+Trykk fem ganger etter hverandre på **samme nonna** i Solhjørnet, og skriv
+PIN-koden **0478**. Bytter du nonna eller trykker et annet sted, starter tellingen
+på nytt. Tastaturaktivering med Enter eller mellomrom fungerer også. Tilbake
+eller Esc lukker rommet og går til Solhjørnet; neste besøk krever PIN på nytt.
+Musikk og tale stoppes når rommet åpnes.
+
+Poengtavlen starter med disse innbyrdes poengene (første spiller har vunnet
+poengene mot den andre): Arnt–Ola **18**, Arnt–Ørjan **5**, Ørjan–Arnt **6**,
+Ørjan–Ola **16**, Ola–Arnt **22**, Ola–Ørjan **4**. Den viser både totalpoeng
+og begge sider av hvert oppgjør.
+
+Velg **Poeng til**, **Motspiller** og antall poeng, og trykk **Legg til resultat**.
+Snarveier for 1, 2 og 3 poeng gjør vanlig registrering raskere; andre positive
+heltall kan skrives inn. Under **Registreringer** vises nye resultater med
+norsk dato og klokkeslett. **Angre siste registrering** fjerner den siste nye
+registreringen, aldri startpoengene.
+
+Nye resultater lagres i `localStorage` under `solmelding_backgammon_v1` og
+beholdes etter oppfriskning, uten at startpoengene legges til flere ganger.
+De er **bare lagret i denne nettleseren**, ikke synkronisert mellom enheter.
+Sletting av nettleserdata sletter nye registreringer. Lagringsfeil vises
+uttrykkelig; ugyldige lagrede data blir ikke overskrevet med startpoengene.
+PIN-koden er en skjult inngang i en statisk nettside, **ikke sikker
+autentisering**. Ikke bruk rommet til sensitive opplysninger.
+
 ### Bygningsgrunnlag for Solhjørnet
 
 `solhjornet-buildings.json` inneholder 1 101 bygningsomriss med eventuelle

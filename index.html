@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>☀️ Arntes solservice</title>
+  <link rel="stylesheet" href="backgammon.css">
   <!--
     v5 – mobilfix + automatisk bildeopplasting fra face.png
   -->
@@ -987,6 +988,103 @@
 
   </div>
 </div>
+
+<dialog id="bgMode" aria-labelledby="bgTitle">
+  <div class="bg-toolbar">
+    <button type="button" id="bgClose">← Solhjørnet</button>
+    <span>Klubbrommet</span>
+  </div>
+  <div class="bg-content">
+    <div class="bg-board" aria-hidden="true">
+      <svg viewBox="0 0 480 150" focusable="false">
+        <defs>
+          <pattern id="bgPoints" width="72" height="150" patternUnits="userSpaceOnUse">
+            <path d="M0 0H36L18 63ZM36 150H72L54 87Z" fill="#bd744e"/>
+            <path d="M36 0H72L54 63ZM0 150H36L18 87Z" fill="#203d40"/>
+          </pattern>
+        </defs>
+        <rect x="8" y="5" width="464" height="140" rx="8" fill="#dfc498"/>
+        <path d="M18 8H234V142H18ZM246 8H462V142H246Z" fill="url(#bgPoints)"/>
+        <path d="M240 5V145" stroke="#705035" stroke-width="12"/>
+        <g fill="#f9edda" stroke="#a08867" stroke-width="2">
+          <circle cx="36" cy="22" r="11"/><circle cx="36" cy="44" r="11"/>
+          <circle cx="180" cy="128" r="11"/><circle cx="180" cy="106" r="11"/>
+          <circle cx="324" cy="22" r="11"/>
+        </g>
+        <g fill="#243647" stroke="#132230" stroke-width="2">
+          <circle cx="432" cy="128" r="11"/><circle cx="432" cy="106" r="11"/>
+          <circle cx="108" cy="22" r="11"/><circle cx="108" cy="44" r="11"/>
+          <circle cx="288" cy="128" r="11"/>
+        </g>
+        <g transform="translate(330 61) rotate(-12)">
+          <rect width="28" height="28" rx="5" fill="#fff4df"/>
+          <g fill="#243647"><circle cx="8" cy="8" r="2.5"/><circle cx="20" cy="20" r="2.5"/></g>
+        </g>
+        <g transform="translate(369 67) rotate(10)">
+          <rect width="28" height="28" rx="5" fill="#fff4df"/>
+          <g fill="#243647"><circle cx="8" cy="8" r="2.5"/><circle cx="20" cy="8" r="2.5"/><circle cx="14" cy="14" r="2.5"/><circle cx="8" cy="20" r="2.5"/><circle cx="20" cy="20" r="2.5"/></g>
+        </g>
+      </svg>
+    </div>
+    <h2 id="bgTitle" tabindex="-1">Backgammon</h2>
+    <p class="bg-muted bg-intro">Gode kast. Litt rivalisering. Full kontroll på poengene.</p>
+
+    <form id="bgPinForm" class="bg-panel">
+      <h3>Velkommen til klubbrommet</h3>
+      <label for="bgPin">Firesifret PIN-kode</label>
+      <input id="bgPin" type="password" inputmode="numeric" pattern="[0-9]{4}" maxlength="4"
+        autocomplete="off" required aria-describedby="bgPinError">
+      <p id="bgPinError" class="bg-error" role="alert"></p>
+      <button class="bg-primary" type="submit">Åpne poengtavlen</button>
+    </form>
+
+    <section id="bgScores" hidden aria-label="Poengtavle">
+      <p class="bg-local">Lagres bare i denne nettleseren · ikke delt mellom enheter.</p>
+      <p id="bgStatus" role="status" aria-live="polite"></p>
+      <button id="bgRetry" type="button" hidden>Prøv å lese poengene igjen</button>
+      <div id="bgScoreData" hidden>
+        <section aria-labelledby="bgTotalsTitle">
+          <h3 id="bgTotalsTitle">Poeng vunnet totalt</h3>
+          <div id="bgTotals" class="bg-totals"></div>
+        </section>
+        <form id="bgResultForm" class="bg-panel">
+          <h3>Nytt resultat</h3>
+          <fieldset id="bgResultFields">
+            <legend class="bg-sr-only">Registrer poeng til vinneren</legend>
+            <div class="bg-players">
+              <div><label for="bgWinner">Poeng til</label><select id="bgWinner" required></select></div>
+              <div><label for="bgLoser">Motspiller</label><select id="bgLoser" required></select></div>
+            </div>
+            <label for="bgPointsInput">Antall poeng</label>
+            <div class="bg-points-row">
+              <input id="bgPointsInput" type="number" inputmode="numeric" min="1" step="1" value="1" required>
+              <div class="bg-quick" role="group" aria-label="Velg poeng">
+                <button type="button" data-bg-points="1" aria-pressed="true">1</button>
+                <button type="button" data-bg-points="2" aria-pressed="false">2</button>
+                <button type="button" data-bg-points="3" aria-pressed="false">3</button>
+              </div>
+            </div>
+            <p id="bgResultPreview" class="bg-muted"></p>
+            <button class="bg-primary" type="submit">Legg til resultat</button>
+          </fieldset>
+          <p id="bgResultStatus" role="status" aria-live="polite"></p>
+        </form>
+        <section aria-labelledby="bgPairsTitle">
+          <h3 id="bgPairsTitle">Innbyrdes poeng</h3>
+          <p class="bg-muted">Poeng hver spiller har vunnet mot den andre.</p>
+          <div id="bgPairs" class="bg-pairs"></div>
+        </section>
+        <details class="bg-panel" id="bgHistoryPanel">
+          <summary>Registreringer <span id="bgHistoryCount"></span></summary>
+          <p class="bg-muted">Startpoengene er inkludert. Nye resultater vises under.</p>
+          <ol id="bgHistory"></ol>
+          <button type="button" id="bgUndo" disabled>Angre siste registrering</button>
+          <p id="bgUndoStatus" role="status" aria-live="polite"></p>
+        </details>
+      </div>
+    </section>
+  </div>
+</dialog>
 
 <canvas id="instagramCanvas" style="display:none" width="1080" height="1920"></canvas>
 
@@ -3532,6 +3630,7 @@ async function enterSolMode() {
 }
 
 function exitSolMode() {
+  if (solEl('bgMode').open) solEl('bgMode').close();
   solRequest++;
   solEl('solMode').classList.add('hidden');
   solEl('app').inert = false;
@@ -4015,7 +4114,7 @@ function solToggleMusic() {
 
 document.addEventListener('keydown', e => {
   const mode = solEl('solMode');
-  if (mode.classList.contains('hidden')) return;
+  if (mode.classList.contains('hidden') || solEl('bgMode').open) return;
   if (e.key === 'Escape') exitSolMode();
   if (e.key === 'Tab') {
     const controls = [...mode.querySelectorAll('button, a[href], summary')].filter(el => {
@@ -4041,5 +4140,6 @@ function roundRect(ctx, x, y, w, h, r) {
   ctx.closePath();
 }
 </script>
+<script src="backgammon.js"></script>
 </body>
 </html>
