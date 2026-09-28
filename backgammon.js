@@ -10,7 +10,9 @@
     'maser_som_et_lokomotiv', 'nei_fytti_helvette_faen', 'noe_sa_jaevlig',
     'vi_har_juksa', 'vi_har_forsokt_a_lure_systemet',
     'jeg_har_fortsatt_mange_ubesvarte_sporsmal', 'det_er_uakseptabelt',
+    'din_jaevla_bavian', 'kjoss_meg_pa_mandan',
   ];
+  const OLA_WIN_CLIPS = ['bravo', 'det_er_jaevlig_bra'];
   const el = id => document.getElementById(id);
   const dialog = el('bgMode');
   const dateLabel = new Intl.DateTimeFormat('nb-NO', {
@@ -45,7 +47,7 @@
     }
     solReleaseAudioPlayback();
   }
-  function prepareWinSound(clip = WIN_CLIPS[Math.floor(Math.random() * WIN_CLIPS.length)]) {
+  function prepareWinSound(clip) {
     stopWinSound();
     const sound = { clip, controller: new AbortController(), context: null, source: null, timer: null };
     winSound = sound;
@@ -353,7 +355,8 @@
     }
     const entry = pendingResult;
     stopWinSound();
-    const sound = winner === 'Ola' ? prepareWinSound('bravo') : prepareWinSound();
+    const clips = winner === 'Ola' ? OLA_WIN_CLIPS : WIN_CLIPS;
+    const sound = prepareWinSound(clips[Math.floor(Math.random() * clips.length)]);
     if (await save('POST', entry, `Lagret: ${winner} +${points} poeng mot ${loser}.`, 'bgResultStatus')) {
       pendingResult = null;
       el('bgPointsInput').value = '1';

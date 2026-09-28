@@ -249,9 +249,10 @@ Importerte resultater beholder sine opprinnelige tidspunkter.
 registreringen, aldri startpoengene.
 
 Når **Arnt eller Ørjan** får registrert en seier, spilles ett tilfeldig klipp
-fra de 14 opplastede MP3-filene i `audio/backgammon/`, på enheten som registrerte
-resultatet. **Ola-seiere** spiller alltid `bravo.mp3`, som ikke er med i det
-tilfeldige utvalget for Arnt og Ørjan. Lyden starter først etter serverens
+fra de 16 opplastede MP3-filene i `audio/backgammon/`, på enheten som registrerte
+resultatet. **Ola-seiere** velger tilfeldig mellom `bravo.mp3` og
+`det_er_jaevlig_bra.mp3`. Disse er ikke med i utvalget for Arnt og Ørjan.
+Lyden starter først etter serverens
 bekreftelse, én gang per registrering (ikke per poeng). Import, oppdatering
 og angring er stille.
 **Stopp lyd**, lukking av rommet eller bytte til en annen fane stopper klippet.

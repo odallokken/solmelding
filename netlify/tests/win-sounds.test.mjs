@@ -6,7 +6,8 @@ import { runInNewContext } from 'node:vm';
 import { handleScores } from '../lib/scores.mjs';
 
 const client = await readFile(new URL('../../backgammon.js', import.meta.url), 'utf8');
-const clips = (await readdir(new URL('../../audio/backgammon/', import.meta.url))).filter(name => name !== 'bravo.mp3').sort();
+const olaClips = ['bravo.mp3', 'det_er_jaevlig_bra.mp3'];
+const clips = (await readdir(new URL('../../audio/backgammon/', import.meta.url))).filter(name => !olaClips.includes(name)).sort();
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const waitFor = async predicate => {
   for (let i = 0; i < 100; i++) { if (predicate()) return; await tick(); }
@@ -118,7 +119,7 @@ async function setup(t) {
 
 test('Arnt and Ørjan randomly use every supplied clip, once per confirmed result, never per point', async t => {
   const { state, submit, el } = await setup(t);
-  assert.equal(clips.length, 14);
+  assert.equal(clips.length, 16);
   for (let index = 0; index < clips.length; index++) {
     state.random = (index + 0.5) / clips.length;
     await submit(index % 2 ? 'Ørjan' : 'Arnt', 3);
@@ -136,8 +137,8 @@ test('Arnt and Ørjan randomly use every supplied clip, once per confirmed resul
   assert(state.contexts.every(context => context.state === 'closed'));
 });
 
-test('Ola wins always play Bravo after confirmation, once regardless of points or retry', async t => {
-  await readFile(new URL('../../audio/backgammon/bravo.mp3', import.meta.url));
+test('Ola wins randomly use only his two clips after confirmation, once regardless of points or retry', async t => {
+  for (const clip of olaClips) await readFile(new URL(`../../audio/backgammon/${clip}`, import.meta.url));
   const { state, submit, el } = await setup(t);
   let release;
   state.holdSave = new Promise(resolve => { release = resolve; });
@@ -159,7 +160,7 @@ test('Ola wins always play Bravo after confirmation, once regardless of points o
   state.random = 0.99;
   await submit('Ola');
   await waitFor(() => state.started.length === 2);
-  assert.deepEqual(state.clips, ['bravo.mp3', 'bravo.mp3']);
+  assert.deepEqual(state.clips, olaClips);
   assert.equal(state.started[0].stopped, true);
 });
 
