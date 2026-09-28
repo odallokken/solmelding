@@ -353,7 +353,7 @@
     }
     const entry = pendingResult;
     stopWinSound();
-    const sound = winner === 'Arnt' || winner === 'Ørjan' ? prepareWinSound() : null;
+    const sound = winner === 'Ola' ? prepareWinSound('bravo') : prepareWinSound();
     if (await save('POST', entry, `Lagret: ${winner} +${points} poeng mot ${loser}.`, 'bgResultStatus')) {
       pendingResult = null;
       el('bgPointsInput').value = '1';

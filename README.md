@@ -250,8 +250,10 @@ registreringen, aldri startpoengene.
 
 Når **Arnt eller Ørjan** får registrert en seier, spilles ett tilfeldig klipp
 fra de 14 opplastede MP3-filene i `audio/backgammon/`, på enheten som registrerte
-resultatet. Lyden starter først etter serverens bekreftelse, én gang per
-registrering (ikke per poeng). Ola-seiere, import, oppdatering og angring er stille.
+resultatet. **Ola-seiere** spiller alltid `bravo.mp3`, som ikke er med i det
+tilfeldige utvalget for Arnt og Ørjan. Lyden starter først etter serverens
+bekreftelse, én gang per registrering (ikke per poeng). Import, oppdatering
+og angring er stille.
 **Stopp lyd**, lukking av rommet eller bytte til en annen fane stopper klippet.
 Solhjørnets bakgrunnsmusikk forblir av. Hvis avspilling blokkeres eller mislykkes,
 vises **Spill av lyd**; det prøver bare lyden igjen, uten å registrere flere poeng.

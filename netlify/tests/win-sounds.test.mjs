@@ -6,7 +6,7 @@ import { runInNewContext } from 'node:vm';
 import { handleScores } from '../lib/scores.mjs';
 
 const client = await readFile(new URL('../../backgammon.js', import.meta.url), 'utf8');
-const clips = (await readdir(new URL('../../audio/backgammon/', import.meta.url))).sort();
+const clips = (await readdir(new URL('../../audio/backgammon/', import.meta.url))).filter(name => name !== 'bravo.mp3').sort();
 const tick = () => new Promise(resolve => setImmediate(resolve));
 const waitFor = async predicate => {
   for (let i = 0; i < 100; i++) { if (predicate()) return; await tick(); }
@@ -136,16 +136,42 @@ test('Arnt and Ørjan randomly use every supplied clip, once per confirmed resul
   assert(state.contexts.every(context => context.state === 'closed'));
 });
 
-test('Ola wins, refresh, imports and undo stay silent', async t => {
+test('Ola wins always play Bravo after confirmation, once regardless of points or retry', async t => {
+  await readFile(new URL('../../audio/backgammon/bravo.mp3', import.meta.url));
   const { state, submit, el } = await setup(t);
+  let release;
+  state.holdSave = new Promise(resolve => { release = resolve; });
+  const pending = submit('Ola', 3);
+  await tick();
+  assert.equal(state.started.length, 0);
+  assert.equal(state.clips.length, 0);
+  state.loseResponse = true;
+  release();
+  await pending;
+  assert.equal(state.started.length, 0);
+  assert.equal(state.saved.results.length, 7);
+  state.holdSave = null;
+  await submit('Ola', 3);
+  await waitFor(() => state.started.length === 1);
+  assert.equal(state.saved.results.length, 7);
+  assert.deepEqual(state.clips, ['bravo.mp3']);
+  assert.equal(el('bgResultStatus').textContent, 'Lagret: Ola +3 poeng mot Arnt.');
+  state.random = 0.99;
   await submit('Ola');
+  await waitFor(() => state.started.length === 2);
+  assert.deepEqual(state.clips, ['bravo.mp3', 'bravo.mp3']);
+  assert.equal(state.started[0].stopped, true);
+});
+
+test('refresh, imports and undo stay silent', async t => {
+  const { state, el } = await setup(t);
   await el('bgRefresh').fire('click');
   const result = { id: randomUUID(), winner: 'Arnt', loser: 'Ola', points: 2, at: Date.now() };
   el('bgImportFile').files = [{ size: 200, text: async () => JSON.stringify({ version: 1, results: [result] }) }];
   await el('bgImportFile').fire('change');
   await el('bgImport').fire('click');
   await el('bgUndo').fire('click');
-  assert.equal(state.saved.results.length, 7);
+  assert.equal(state.saved.results.length, 6);
   assert.equal(state.contexts.length, 0);
   assert.equal(state.clips.length, 0);
   assert.equal(state.started.length, 0);
