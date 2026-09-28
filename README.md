@@ -169,9 +169,16 @@ blå kort og gullfargede detaljer:
   tidskorreksjon fra den nyeste observasjonen som gjelder for datoen, ikke
   en måling av hvilket hinder som skjuler sola eller en utledet årsmodell.
   Avviket kan endre seg med årstiden.
-- **Horisonten** hentes fra hurtiglageret hvis den er beregnet før, ellers lastes den
-  ned fra Kartverket med en framdriftsvisning på knappen og i åpen fullskjermvisning. Solhjørnets profil har en egen,
-  versjonert lagernøkkel og kan ikke blandes med profiler som inkluderer trær.
+- **Horisonten** følger ferdig beregnet med nettsiden i `solhjornet-horizon.json`
+  (omtrent 27 kB). Profilen bruker det samme kontrollerte høydegrunnlaget fra
+  10. september 2026, ikke en forenklet eller flat horisont. Et førstegangsbesøk
+  på Netlify trenger derfor ikke hente rundt 8 500 høydepunkter fra Kartverket,
+  og er ikke avhengig av nettleserens gamle hurtiglager på GitHub Pages.
+  Profil og bygningskart lastes parallelt fra samme nettside; punkt, høyde,
+  bygningsversjon og alle 360 stråler kontrolleres før bruk. Langsom lasting
+  avbrytes etter åtte sekunder med synlig feil og mulighet til å prøve igjen.
+  Ingen soltid vises ved manglende eller feil data, og det startes ikke automatisk
+  en tung ny beregning. Det vanlige kartet beholder sine egne beregninger og lager.
 - **På denne dag** – en kort Italia-relatert historie med årstall og kildelenke.
   Kalenderen følger norsk dato (`Europe/Oslo`), også gjennom sommertid og skuddår.
   Historiene følger med appen i `italy-days.js`, uten et eksternt API ved hvert besøk.
@@ -355,6 +362,26 @@ Et manglende eller inkompatibelt bygningskart gir en synlig feil, aldri
 automatisk tilbakefall til beregninger med trær.
 Manglende høyder i nær- og mellomsonen avbryter beregningen, i stedet for å
 utelate en mulig hindring og lagre en misvisende profil.
+
+Etter oppdatering av bygningskartet må også den ferdige Solhjørnet-profilen
+beregnes og publiseres sammen med kartet:
+
+```powershell
+node scripts\update-solhjornet-horizon.mjs
+npm test
+npm run build
+```
+
+Dette vedlikeholdsskriptet bruker nettleserens eksisterende horisontmotor og
+Kartverkets høyde-API, med tidsavbrudd. Det skriver bare en ny profil etter
+kontroll av punkt, høyde, bygningsversjon og kalibreringsgrunnlag. Skriptet
+kjøres **ikke** ved hvert Netlify-bygg eller sidebesøk. En allerede målt, rå
+profil kan importeres med `--from-profile PROFIL.json`; importer aldri en
+testprofil eller en profil med manuelt justerte horisonthøyder. Den medfølgende
+profilen er den tidligere verifiserte målingen, med opprinnelig måletid bevart.
+Regresjonstesten låser denne profilens fingeravtrykk og referansetider. Ved en
+tilsiktet ny måling må de nye verdiene kontrolleres faglig før testgrunnlaget
+oppdateres; et testavvik er ikke i seg selv grunn til å endre forventningene.
 
 ## Nøyaktighet
 

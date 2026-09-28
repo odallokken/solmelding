@@ -7,7 +7,7 @@ await rm(output, { recursive: true, force: true });
 await mkdir(output, { recursive: true });
 for (const name of [
   'index.html', 'backgammon.js', 'backgammon.css', 'italy-days.js',
-  'surroundings-data.mjs', 'surroundings-view.mjs', 'solhjornet-buildings.json',
+  'surroundings-data.mjs', 'surroundings-view.mjs', 'solhjornet-buildings.json', 'solhjornet-horizon.json',
   'face.png', 'arntesol.png', 'audio', 'vendor',
 ]) {
   await cp(new URL(name, root), new URL(name, output), { recursive: true });

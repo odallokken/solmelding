@@ -3201,7 +3201,7 @@ const SOL_OBSERVED_ENDS = Object.freeze([
 let solCalibration = null;
 let solProfile = null, solTarget = null, solTimer = null, solRequest = 0;
 let solProfilePromise = null, solProfileError = null, solProfileSourceDate = '';
-let solLoadingText = 'Henter bygningskartet …', solTargetDay = '', solTargetCheckedAt = 0;
+let solLoadingText = 'Henter soltidene …', solTargetDay = '', solTargetCheckedAt = 0;
 let solDailyTimer = null, solDailyKey = '', solPreviousFocus = null;
 let solQuizIndex = -1, solQuizOrder = [], solQuizPosition = 0;
 
@@ -3520,17 +3520,55 @@ function solRender(now = Date.now()) {
 }
 
 let solBuildingMaskPromise = null;
+async function solFetchJSON(url, missingMessage) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 8000);
+  try {
+    const response = await fetch(url, { signal: controller.signal });
+    if (!response.ok) throw new Error(missingMessage);
+    return await response.json();
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error('sol-data-timeout');
+    throw error;
+  } finally { clearTimeout(timeout); }
+}
+
 function solLoadBuildingMask() {
   if (!solBuildingMaskPromise) {
-    solBuildingMaskPromise = fetch('solhjornet-buildings.json').then(response => {
-      if (!response.ok) throw new Error('building-mask-missing');
-      return response.json();
-    }).catch(error => {
+    solBuildingMaskPromise = solFetchJSON('solhjornet-buildings.json', 'building-mask-missing').catch(error => {
       solBuildingMaskPromise = null;
       throw error;
     });
   }
   return solBuildingMaskPromise;
+}
+
+function solValidateHorizonData(data, mask) {
+  const { lat, lng } = HZ_HOME_DEFAULT;
+  const variant = hzBuildingVariant(mask, lat, lng);
+  const p = data?.profile;
+  if (data?.version !== 1 || data.sourceDate !== mask.sourceDate
+      || !p || p.lat !== lat || p.lng !== lng || p.eye !== SOL_EYE_HEIGHT || p.variant !== variant
+      || !Number.isFinite(p.ground) || !Number.isFinite(p.eyeZ)
+      || Math.abs(p.eyeZ - p.ground - SOL_EYE_HEIGHT) > 1e-6
+      || !Number.isFinite(p.builtAt) || p.builtAt <= 0
+      || !Number.isFinite(p.nearest) || p.nearest <= 0
+      || !Array.isArray(p.rays) || p.rays.length !== HZ_BINS
+      || p.rays.some(ray => !ray || !Number.isFinite(ray.alt) || ray.alt < -2 || ray.alt > 90
+        || !Number.isFinite(ray.dist) || ray.dist <= 0 || ray.dist > 30001
+        || !Number.isFinite(ray.z) || !['bygg', 'terreng'].includes(ray.src))) {
+    throw new Error('sol-horizon-invalid');
+  }
+  return p;
+}
+
+async function solLoadPreparedProfile() {
+  const [mask, data] = await Promise.all([
+    solLoadBuildingMask(),
+    solFetchJSON('solhjornet-horizon.json', 'sol-horizon-missing'),
+  ]);
+  const profile = solValidateHorizonData(data, mask);
+  return { profile, sourceDate: data.sourceDate };
 }
 
 function solLoading(note) {
@@ -3543,20 +3581,11 @@ function solEnsureProfile() {
   if (solProfile) return Promise.resolve(solProfile);
   if (solProfilePromise) return solProfilePromise;
   solProfileError = null;
-  solLoading('Henter bygningskartet …');
+  solLoading('Henter soltidene …');
   solProfilePromise = (async () => {
-    const { lat, lng } = HZ_HOME_DEFAULT;
-    const mask = await solLoadBuildingMask();
-    const variant = hzBuildingVariant(mask, lat, lng);
-    solProfileSourceDate = mask.sourceDate;
-    let profile = hzLoadCached(lat, lng, SOL_EYE_HEIGHT, variant);
-    if (!profile) {
-      profile = await buildHorizonProfile(lat, lng, SOL_EYE_HEIGHT, (done, total) => {
-        solLoading(`Henter horisonten … ${Math.min(99, Math.round(done / total * 100))} %`);
-      }, mask);
-      hzSaveCached(profile);
-    }
+    const { profile, sourceDate } = await solLoadPreparedProfile();
     solCalibration = solCalibrateProfile(profile);
+    solProfileSourceDate = sourceDate;
     solProfile = profile;
     solTargetDay = '';
     return profile;
@@ -3609,7 +3638,7 @@ async function enterSolMode() {
   solEl('solState').textContent = 'Et øyeblikk';
   solEl('solCount').textContent = '⛱️';
   solEl('solCount').classList.remove('is-long');
-  solEl('solNote').textContent = 'Henter bygningskartet …';
+  solEl('solNote').textContent = solLoadingText;
   solEl('solSub').textContent = '';
   solEl('solPoint').textContent = `${lat.toFixed(5)}° N, ${lng.toFixed(5)}° Ø · bakkeplan (${eye.toFixed(1).replace('.', ',')} m) · uten trær`;
   solEl('solBuildingDate').textContent = '';
@@ -3628,6 +3657,10 @@ async function enterSolMode() {
       ? 'Åpne den publiserte nettsiden for å bruke Solhjørnets bygningskart.'
       : error.message === 'building-mask-missing'
       ? 'Bygningskartet mangler. Last siden på nytt og prøv igjen.'
+      : error.message === 'sol-data-timeout'
+        ? 'Hentingen tok for lang tid. Lukk Solhjørnet og åpne det igjen for å prøve på nytt.'
+      : error.message === 'sol-horizon-missing' || error.message === 'sol-horizon-invalid'
+        ? 'Den ferdige horisontprofilen mangler eller passer ikke til kartgrunnlaget. Last siden på nytt; ved fortsatt feil må nettsiden oppdateres.'
       : error.message === 'building-mask-coverage'
         ? 'Bygningskartet må oppdateres for Solhjørnets posisjon.'
         : error.message === 'calibration-reference-missing' || error.message === 'calibration-point-mismatch'
