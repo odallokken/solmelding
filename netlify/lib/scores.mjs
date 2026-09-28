@@ -18,11 +18,15 @@ function initial() {
   })), deleted: [] };
 }
 
+function validTimestamp(value) {
+  return Number.isSafeInteger(value) && value >= 0 && value <= 8640000000000000;
+}
+
 function validEntry(entry) {
   return entry && typeof entry.id === 'string' && ID.test(entry.id)
     && PLAYERS.includes(entry.winner) && PLAYERS.includes(entry.loser) && entry.winner !== entry.loser
     && Number.isSafeInteger(entry.points) && entry.points > 0
-    && Number.isSafeInteger(entry.at) && entry.at >= 0 && entry.at <= 8640000000000000;
+    && validTimestamp(entry.at);
 }
 
 function validate(data) {
@@ -80,12 +84,12 @@ async function body(request) {
   catch { throw new HttpError(400, 'Ugyldig JSON.'); }
 }
 
-function apply(data, method, input) {
+function apply(data, method, input, preserveTimestamp) {
   if (method === 'POST') {
     const existing = [...data.results, ...data.deleted].find(entry => entry.id === input.id);
     if (existing) {
       if (existing.winner !== input.winner || existing.loser !== input.loser
-          || existing.points !== input.points || existing.at !== input.at) {
+          || existing.points !== input.points || (preserveTimestamp && existing.at !== input.at)) {
         throw new HttpError(409, 'Denne registreringen finnes allerede med andre verdier.');
       }
       return false;
@@ -115,22 +119,26 @@ export async function handleScores(request, store, pin) {
       throw new HttpError(401, 'Feil PIN-kode.');
     }
     if (!['GET', 'POST', 'DELETE'].includes(request.method)) throw new HttpError(405, 'Ukjent handling.');
-    let input;
+    let input, preserveTimestamp = false;
     if (request.method !== 'GET') {
       input = await body(request);
       if (!input || typeof input.id !== 'string' || !ID.test(input.id) || input.id.startsWith('seed-')) {
         throw new HttpError(400, 'Ugyldig registrering.');
       }
       if (request.method === 'POST') {
-        if (!validEntry(input) || input.at > Date.now()) {
+        // Imports and older clients supply dates; new registrations use server time.
+        preserveTimestamp = Object.hasOwn(input, 'at');
+        const at = preserveTimestamp ? input.at : Date.now();
+        if (!validTimestamp(at)) throw new HttpError(400, 'Registreringen har et ugyldig tidspunkt.');
+        input = { id: input.id, winner: input.winner, loser: input.loser, points: input.points, at };
+        if (!validEntry(input)) {
           throw new HttpError(400, 'Velg to forskjellige spillere og et positivt heltall som poeng.');
         }
-        input = { id: input.id, winner: input.winner, loser: input.loser, points: input.points, at: input.at };
       }
     }
     for (let attempt = 0; attempt < 5; attempt++) {
       const { data, etag } = await read(store);
-      if (request.method === 'GET' || !apply(data, request.method, input)) {
+      if (request.method === 'GET' || !apply(data, request.method, input, preserveTimestamp)) {
         return new Response(JSON.stringify({ version: 1, results: data.results }), { headers });
       }
       // Conditional writes keep simultaneous phone updates from overwriting each other.

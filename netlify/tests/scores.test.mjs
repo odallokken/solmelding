@@ -11,7 +11,7 @@ import { config } from '../functions/scores.mjs';
 const TEST_PIN = '1234';
 const URL = 'https://scores.example/.netlify/functions/scores';
 const entry = (overrides = {}) => ({
-  id: randomUUID(), winner: 'Arnt', loser: 'Ola', points: 2, at: Date.now(), ...overrides,
+  id: randomUUID(), winner: 'Arnt', loser: 'Ola', points: 2, ...overrides,
 });
 const request = (method = 'GET', data, pin = TEST_PIN, headers = {}) => new Request(URL, {
   method, headers: { 'X-Scores-Pin': pin, 'Content-Type': 'application/json', ...headers },
@@ -90,13 +90,37 @@ test('idempotent concurrent requests and imports preserve original timestamps', 
   assert.equal((await call(store, 'GET')).results.at(-1).at, old.at);
 });
 
+test('a valid Ola-Arnt score from an older client is accepted even when its clock is ahead', async () => {
+  const store = new MemoryStore();
+  const result = entry({ winner: 'Ola', loser: 'Arnt', points: 1, at: Date.now() + 60000 });
+  const saved = await call(store, 'POST', result);
+  assert.equal(saved.results.filter(row => row.winner === 'Ola' && row.loser === 'Arnt')
+    .reduce((total, row) => total + row.points, 0), 23);
+});
+
+test('new scores use server time, and a later retry keeps the original timestamp', async () => {
+  const store = new MemoryStore();
+  const result = entry({ winner: 'Ola', loser: 'Arnt', points: 1, at: undefined });
+  const before = Date.now();
+  const saved = (await call(store, 'POST', result)).results.at(-1);
+  assert(saved.at >= before && saved.at <= Date.now());
+  await new Promise(resolve => setTimeout(resolve, 10));
+  const retried = await call(store, 'POST', result);
+  assert.equal(retried.results.length, 7);
+  assert.deepEqual(retried.results.at(-1), saved);
+  await call(store, 'POST', { ...result, points: 2 }, 409);
+  await call(store, 'DELETE', { id: result.id });
+  assert.equal((await call(store, 'POST', result)).results.length, 6);
+});
+
 test('invalid results, too-large totals and oversized bodies are rejected without changing scores', async () => {
   const store = new MemoryStore();
   const initial = await call(store, 'GET');
   for (const bad of [
     { winner: 'Ola', loser: 'Ola' }, { winner: '<script>' }, { points: 0 }, { points: -1 }, { points: 1.5 },
     { points: Number.MAX_SAFE_INTEGER }, { points: Number.MAX_SAFE_INTEGER + 1 },
-    { at: Date.now() + 86400000 }, { id: 'seed-forged' }, { id: '../../bad' },
+    { at: -1 }, { at: null }, { at: 'invalid' }, { at: 8640000000000001 },
+    { id: 'seed-forged' }, { id: '../../bad' },
   ]) await call(store, 'POST', entry(bad), 400);
   await call(store, 'POST', entry({ unused: 'x'.repeat(3000) }), 413);
   await call(store, 'PUT', entry(), 405);

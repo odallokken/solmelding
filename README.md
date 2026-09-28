@@ -243,7 +243,9 @@ og begge sider av hvert oppgjør.
 Velg **Poeng til**, **Motspiller** og antall poeng, og trykk **Legg til resultat**.
 Snarveier for 1, 2 og 3 poeng gjør vanlig registrering raskere; andre positive
 heltall kan skrives inn. Under **Registreringer** vises nye resultater med
-norsk dato og klokkeslett. **Angre siste registrering** fjerner den siste nye
+norsk dato og klokkeslett fra serveren, uavhengig av klokken på telefonen.
+Importerte resultater beholder sine opprinnelige tidspunkter.
+**Angre siste registrering** fjerner den siste nye
 registreringen, aldri startpoengene.
 
 Poengene lagres **på serveren i Netlify Blobs**, ikke i nettleseren.

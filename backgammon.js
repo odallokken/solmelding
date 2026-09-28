@@ -263,7 +263,7 @@
       return;
     }
     if (!pendingResult || pendingResult.winner !== winner || pendingResult.loser !== loser || pendingResult.points !== points) {
-      pendingResult = { id: crypto.randomUUID(), winner, loser, points, at: Date.now() };
+      pendingResult = { id: crypto.randomUUID(), winner, loser, points };
     }
     if (await save('POST', pendingResult, `Lagret: ${winner} +${points} poeng mot ${loser}.`, 'bgResultStatus')) {
       pendingResult = null;
