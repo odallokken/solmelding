@@ -4,6 +4,13 @@
   const PLAYERS = ['Arnt', 'Ola', 'Ørjan'];
   const LEGACY_KEY = 'solmelding_backgammon_v1';
   const API = '/.netlify/functions/scores';
+  const WIN_CLIPS = [
+    'ta_deg_sammen', 'hitler_nein', 'fy_skamme_deg', 'dere_ma_skamme_dere',
+    'huff_det_gar_aldri_bra', 'sa_jaevla_dum_trudde_ikke_jeg_du_var', 'hva_faen',
+    'maser_som_et_lokomotiv', 'nei_fytti_helvette_faen', 'noe_sa_jaevlig',
+    'vi_har_juksa', 'vi_har_forsokt_a_lure_systemet',
+    'jeg_har_fortsatt_mange_ubesvarte_sporsmal', 'det_er_uakseptabelt',
+  ];
   const el = id => document.getElementById(id);
   const dialog = el('bgMode');
   const dateLabel = new Intl.DateTimeFormat('nb-NO', {
@@ -12,11 +19,82 @@
   });
   let lastNonna = null, taps = 0, returnFocus = null, pin = '', results = [], legacy = [];
   let generation = 0, busy = false, pendingResult = null, pendingUndo = null;
+  let winSound = null, retrySound = null;
 
   function resetTaps() { lastNonna = null; taps = 0; }
   function status(message, error = false, id = 'bgStatus') {
     el(id).textContent = message;
     el(id).dataset.error = String(error);
+  }
+  function stopWinSound() {
+    const sound = winSound;
+    winSound = null;
+    retrySound = null;
+    el('bgSoundControl').hidden = true;
+    status('', false, 'bgSoundStatus');
+    if (!sound) return;
+    clearTimeout(sound.timer);
+    sound.controller.abort();
+    if (sound.source) {
+      sound.source.onended = null;
+      sound.source.stop();
+      sound.source.disconnect();
+    }
+    if (sound.context && sound.context.state !== 'closed') {
+      sound.context.close().catch(error => console.warn('Kunne ikke lukke resultatlyden:', error));
+    }
+    solReleaseAudioPlayback();
+  }
+  function prepareWinSound(clip = WIN_CLIPS[Math.floor(Math.random() * WIN_CLIPS.length)]) {
+    stopWinSound();
+    const sound = { clip, controller: new AbortController(), context: null, source: null, timer: null };
+    winSound = sound;
+    try {
+      solClaimAudioPlayback();
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      sound.context = new AudioContext();
+      // Unlock audio during the submit gesture, but stay silent until the server confirms.
+      sound.ready = sound.context.resume().then(() => null, error => error);
+    } catch (error) {
+      sound.ready = Promise.resolve(error);
+    }
+    return sound;
+  }
+  function soundFailed(sound, error) {
+    if (winSound !== sound) return;
+    console.warn('Kunne ikke spille resultatlyden:', error);
+    stopWinSound();
+    retrySound = sound.clip;
+    status('Poengene er lagret, men lyden kunne ikke spilles. Prøv «Spill av lyd».', true, 'bgSoundStatus');
+    el('bgSoundControl').textContent = 'Spill av lyd';
+    el('bgSoundControl').hidden = false;
+  }
+  async function playWinSound(sound) {
+    if (winSound !== sound) return;
+    if (!dialog.open || document.hidden) { stopWinSound(); return; }
+    el('bgSoundControl').textContent = 'Stopp lyd';
+    el('bgSoundControl').hidden = false;
+    status('Laster resultatlyd …', false, 'bgSoundStatus');
+    sound.timer = setTimeout(() => soundFailed(sound, new Error('Lydklippet svarte ikke innen fristen.')), 12000);
+    try {
+      const error = await sound.ready;
+      if (winSound !== sound) return;
+      if (error) throw error;
+      if (sound.context.state !== 'running') throw new Error('Nettleseren har satt lyden på pause.');
+      const response = await fetch(`audio/backgammon/${sound.clip}.mp3`, { signal: sound.controller.signal });
+      if (!response.ok) throw new Error(`Lydklippet svarte med HTTP ${response.status}.`);
+      const buffer = await sound.context.decodeAudioData(await response.arrayBuffer());
+      if (winSound !== sound) return;
+      if (!dialog.open || document.hidden) { stopWinSound(); return; }
+      const source = sound.context.createBufferSource();
+      source.buffer = buffer;
+      source.connect(sound.context.destination);
+      source.onended = () => { if (winSound === sound) stopWinSound(); };
+      source.start();
+      sound.source = source;
+      clearTimeout(sound.timer);
+      status('', false, 'bgSoundStatus');
+    } catch (error) { soundFailed(sound, error); }
   }
   function setBusy(value) {
     busy = value;
@@ -191,6 +269,7 @@
   el('bgClose').addEventListener('click', () => dialog.close());
   dialog.addEventListener('close', () => {
     generation++;
+    stopWinSound();
     pin = '';
     setBusy(false);
     resetTaps();
@@ -241,6 +320,13 @@
   });
   el('bgRetry').addEventListener('click', load);
   el('bgRefresh').addEventListener('click', load);
+  el('bgSoundControl').addEventListener('click', () => {
+    if (retrySound) void playWinSound(prepareWinSound(retrySound));
+    else stopWinSound();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopWinSound();
+  });
   for (const id of ['bgWinner', 'bgLoser']) el(id).replaceChildren(...PLAYERS.map(name => new Option(name, name)));
   el('bgLoser').value = 'Ola';
   el('bgWinner').addEventListener('change', updateOpponent);
@@ -265,14 +351,22 @@
     if (!pendingResult || pendingResult.winner !== winner || pendingResult.loser !== loser || pendingResult.points !== points) {
       pendingResult = { id: crypto.randomUUID(), winner, loser, points };
     }
-    if (await save('POST', pendingResult, `Lagret: ${winner} +${points} poeng mot ${loser}.`, 'bgResultStatus')) {
+    const entry = pendingResult;
+    stopWinSound();
+    const sound = winner === 'Arnt' || winner === 'Ørjan' ? prepareWinSound() : null;
+    if (await save('POST', entry, `Lagret: ${winner} +${points} poeng mot ${loser}.`, 'bgResultStatus')) {
       pendingResult = null;
       el('bgPointsInput').value = '1';
       updatePreview();
+      if (sound && results.some(result => result.id === entry.id)) void playWinSound(sound);
+      else if (sound && winSound === sound) stopWinSound();
+    } else if (sound && winSound === sound) {
+      stopWinSound();
     }
   });
   el('bgUndo').addEventListener('click', async () => {
     if (!pin || busy) return;
+    stopWinSound();
     pendingUndo = pendingUndo || results.filter(entry => !entry.seed).at(-1);
     if (!pendingUndo) return;
     if (await save('DELETE', { id: pendingUndo.id }, `Angret: ${pendingUndo.winner} +${pendingUndo.points} mot ${pendingUndo.loser}.`, 'bgUndoStatus')) {
@@ -298,6 +392,7 @@
   });
   el('bgImport').addEventListener('click', async () => {
     if (!pin || busy || !legacy.length) return;
+    stopWinSound();
     const current = generation;
     setBusy(true);
     let count = 0;
